@@ -16,5 +16,4 @@ namespace WebShopDQ.App.Models
         public List<Message> SentMessages { get; set; }
         public List<Message> ReceivedMessages { get; set; }
         public List<Notify> Notifies { get; set; }*/
-    }
 }

@@ -7,4 +7,5 @@ namespace WebShopDQ.App.Models
     public class RoleClaims : IdentityRoleClaim<Guid> { }
 
     public class UserRoles : IdentityUserRole<Guid> { }
+
 }
