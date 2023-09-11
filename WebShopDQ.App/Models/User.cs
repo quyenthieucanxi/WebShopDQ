@@ -9,7 +9,7 @@ namespace WebShopDQ.App.Models
         public string Introduce { get; set; }
         public string Gender { get; set; }
         public DateTime Dob { get; set; }
-        public string AvatarUrl { get; set; }
+        public string? AvatarUrl { get; set; }
         public bool IsActive { get; set; }
 
 /*        public List<Order> Orders { get; set; }
