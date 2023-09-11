@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebShopDQ.API", "WebShopDQ.API\WebShopDQ.API.csproj", "{08C825F5-AE73-46BA-BC31-4E7E9335E334}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebShopDQ.App", "WebShopDQ.App\WebShopDQ.App.csproj", "{DBFF31FE-796E-4F0F-B1B3-9AB6E65E2B06}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08C825F5-AE73-46BA-BC31-4E7E9335E334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08C825F5-AE73-46BA-BC31-4E7E9335E334}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08C825F5-AE73-46BA-BC31-4E7E9335E334}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08C825F5-AE73-46BA-BC31-4E7E9335E334}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBFF31FE-796E-4F0F-B1B3-9AB6E65E2B06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBFF31FE-796E-4F0F-B1B3-9AB6E65E2B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBFF31FE-796E-4F0F-B1B3-9AB6E65E2B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBFF31FE-796E-4F0F-B1B3-9AB6E65E2B06}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A799E5EA-CA27-469E-83A8-E953857218FE}
+	EndGlobalSection
+EndGlobal
