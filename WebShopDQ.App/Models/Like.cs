@@ -12,7 +12,7 @@ namespace WebShopDQ.App.Models
         public Guid UserID { get; set; }
         public Guid PostID { get; set; }
 
-/*        public User User { get; set; }
-        public Post Post { get; set; }*/
+        public User? User { get; set; }
+        public Post? Post { get; set; }
     }
 }

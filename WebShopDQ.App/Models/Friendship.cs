@@ -8,7 +8,7 @@ namespace WebShopDQ.App.Models
         public Guid FollowerID { get; set; }
         public Guid FollowingID { get; set; }
 
-/*        public User Follower { get; set; }
-        public User Following { get; set; }*/
+        public User? Follower { get; set; }
+        public User? Following { get; set; }
     }
 }

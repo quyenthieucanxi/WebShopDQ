@@ -10,15 +10,14 @@ using WebShopDQ.App.Models;
 
 namespace WebShopDQ.App.Data
 {
-    public class DatabaseContext : IdentityDbContext<IdentityUser>
+    public class DatabaseContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>
     {
-
+        public DatabaseContext() { }
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base (options)
         { 
 
         }
-
-        public DbSet<User> User { get; set; }
+        public DbSet<User> User { get; set; } 
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
@@ -27,12 +26,13 @@ namespace WebShopDQ.App.Data
             foreach (var entityType in builder.Model.GetEntityTypes())
             {
                 var tableName = entityType.GetTableName();
-                if (tableName.StartsWith("AspNet"))
+                if (!string.IsNullOrEmpty(tableName) && tableName.StartsWith("AspNet"))
                 {
                     entityType.SetTableName(tableName.Substring(6));
                 }
             }
-            builder.Entity<User>().ToTable("useracount");
+
+            builder.ApplyConfiguration(new UserMap());
         }
 
 

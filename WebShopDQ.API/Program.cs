@@ -6,12 +6,12 @@ using WebShopDQ.App.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Entity Framework
-builder.Services.AddDbContext<DbContextAPI>(options =>
+builder.Services.AddDbContext<DatabaseContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Identity
 builder.Services.AddIdentity<User, Role>()
-    .AddEntityFrameworkStores<DbContextAPI>()
+    .AddEntityFrameworkStores<DatabaseContext>()
     .AddDefaultTokenProviders();
 
 // Add services to the container.
