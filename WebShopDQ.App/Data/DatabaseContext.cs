@@ -17,7 +17,7 @@ namespace WebShopDQ.App.Data
         { 
 
         }
-        public DbSet<User> User { get; set; } 
+        public DbSet<User> User { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
