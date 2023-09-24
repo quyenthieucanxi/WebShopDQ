@@ -12,8 +12,8 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230912095109_Initial")]
-    partial class Initial
+    [Migration("20230924100846_name")]
+    partial class name
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,6 +34,10 @@ namespace WebShopDQ.App.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -50,6 +54,8 @@ namespace WebShopDQ.App.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Roles", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityRole<Guid>");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -225,6 +231,50 @@ namespace WebShopDQ.App.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("WebShopDQ.App.Models.Roles", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>");
+
+                    b.HasDiscriminator().HasValue("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("c3b05c61-7f35-4776-b4ae-49213126f974"),
+                            ConcurrencyStamp = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("96726c99-60d3-4019-a17d-33b624e44d10"),
+                            ConcurrencyStamp = "2",
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
+                        },
+                        new
+                        {
+                            Id = new Guid("2636f1c3-c4d3-48c9-a657-f44e1ee9e7b9"),
+                            ConcurrencyStamp = "3",
+                            Name = "Shiper",
+                            NormalizedName = "SHIPER"
+                        },
+                        new
+                        {
+                            Id = new Guid("249974e4-2a0c-4eb0-ab9b-77806cd7e9f2"),
+                            ConcurrencyStamp = "4",
+                            Name = "Seller",
+                            NormalizedName = "SELLER"
+                        },
+                        new
+                        {
+                            Id = new Guid("8a3c5dc3-f91e-4cc5-887b-53f069718301"),
+                            ConcurrencyStamp = "5",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("WebShopDQ.App.Models.User", b =>

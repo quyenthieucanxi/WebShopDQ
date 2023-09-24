@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebShopDQ.App.Migrations
 {
-    public partial class Initial : Migration
+    public partial class name : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,7 +16,8 @@ namespace WebShopDQ.App.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -160,6 +161,18 @@ namespace WebShopDQ.App.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { new Guid("249974e4-2a0c-4eb0-ab9b-77806cd7e9f2"), "4", "Roles", "Seller", "SELLER" },
+                    { new Guid("2636f1c3-c4d3-48c9-a657-f44e1ee9e7b9"), "3", "Roles", "Shiper", "SHIPER" },
+                    { new Guid("8a3c5dc3-f91e-4cc5-887b-53f069718301"), "5", "Roles", "User", "USER" },
+                    { new Guid("96726c99-60d3-4019-a17d-33b624e44d10"), "2", "Roles", "Manager", "MANAGER" },
+                    { new Guid("c3b05c61-7f35-4776-b4ae-49213126f974"), "1", "Roles", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
