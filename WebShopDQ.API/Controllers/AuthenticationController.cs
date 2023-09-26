@@ -21,5 +21,11 @@ namespace WebShopDQ.API.Controllers
         {
             return Ok(await _authenticationService.Register(registerModel, role));
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginModel loginModel)
+        {
+            return Ok(await _authenticationService.Login(loginModel));
+        }
     }
 }

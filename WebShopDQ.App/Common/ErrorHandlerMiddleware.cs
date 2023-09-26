@@ -30,6 +30,7 @@ namespace WebShopDQ.App.Common
                     DuplicateException => (int)HttpStatusCode.Conflict,// duplicatte error
                     PasswordException => (int)HttpStatusCode.BadRequest,// missing field error
                     MissingFieldException => (int)HttpStatusCode.BadRequest,// missing field error
+                    UnauthorizedException => (int)HttpStatusCode.Unauthorized,
                     KeyNotFoundException => (int)HttpStatusCode.NotFound,// not found error
                     _ => (int)HttpStatusCode.InternalServerError,// unhandled error
                 };

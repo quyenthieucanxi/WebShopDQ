@@ -1,5 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Net.Mail;
+using System.Security.Claims;
+using System.Text;
 using WebShopDQ.App.Common.Exceptions;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.Models;
@@ -12,14 +20,18 @@ namespace WebShopDQ.App.Repositories
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
-        //private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
+        private readonly SignInManager<User> _signInManager;
         //private readonly IMapper _mapper;
 
         public AuthenticationRepository(DatabaseContext databaseContext, UserManager<User> userManager,
-            RoleManager<Role> roleManager) : base(databaseContext)
+            RoleManager<Role> roleManager, IConfiguration configuration, SignInManager<User> signInManager) : base(databaseContext)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _configuration = configuration;
+            _signInManager = signInManager;
+
         }
 
         public async Task<IdentityResult> Register(RegisterModel registerModel, string role)
@@ -52,7 +64,8 @@ namespace WebShopDQ.App.Repositories
             {
                 Email = registerModel.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = registerModel.UserName,
+                UserName = registerModel.Email,
+                FullName = registerModel.UserName,
             };
             if (await _roleManager.RoleExistsAsync(role))
             {
@@ -62,9 +75,47 @@ namespace WebShopDQ.App.Repositories
                     await _userManager.AddToRoleAsync(user, role);
                     return result;
                 }
-                throw new Common.Exceptions.InvalidOperationException("User failed to create!");
+                throw new PasswordException("User failed to create!");
             }
-            throw new KeyNotFoundException("This role not exist!");
+            else throw new KeyNotFoundException("This role not exist!");
+        }
+
+        public async Task<LoginViewModel> Login(LoginModel loginModel)
+        {
+            var login = await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, false, false);
+            var user = await _userManager.FindByEmailAsync(loginModel.Email);
+            if (!login.Succeeded) throw new KeyNotFoundException("Wrong Email or password!");
+            if (user != null && !user.EmailConfirmed) throw new UnauthorizedException("Email has not confirmed!");
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("UserId", user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+            var userRoles = await _userManager.GetRolesAsync(user);
+            foreach (var role in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var jwtToken = GetToken(authClaims);
+            var token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+            //var expiration = jwtToken.ValidTo;
+            return new LoginViewModel { Token = token };
+        }
+
+        private JwtSecurityToken GetToken(List<Claim> authClaims)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddHours(3),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+            return token;
         }
     }
 }

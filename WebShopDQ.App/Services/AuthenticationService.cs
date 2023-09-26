@@ -23,5 +23,10 @@ namespace WebShopDQ.App.Services
         {
             return await _authenticationRepository.Register(registerModel, role);
         }
+
+        public async Task<LoginViewModel> Login(LoginModel loginModel)
+        {
+            return await _authenticationRepository.Login(loginModel);
+        }
     }
 }

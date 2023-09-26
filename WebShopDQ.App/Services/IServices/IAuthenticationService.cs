@@ -12,5 +12,6 @@ namespace WebShopDQ.App.Services.IServices
     public interface IAuthenticationService
     {
         Task<IdentityResult> Register(RegisterModel registerModel, string role);
+        Task<LoginViewModel> Login(LoginModel loginModel);
     }
 }

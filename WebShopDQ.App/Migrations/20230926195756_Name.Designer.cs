@@ -12,8 +12,8 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230925195609_ver1")]
-    partial class ver1
+    [Migration("20230926195756_Name")]
+    partial class Name
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -242,35 +242,35 @@ namespace WebShopDQ.App.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("331948a3-71bc-4dff-a8de-82de09a3a7dc"),
+                            Id = new Guid("d32e1217-795d-45eb-9a11-4d650e240cf5"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("269a7bdd-1e63-44be-8fd7-6ffa3d8aed29"),
+                            Id = new Guid("e5934e4e-3d39-4f64-9dd2-0d05687ecf1e"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("91632407-2930-403c-b503-6ad67507fc79"),
+                            Id = new Guid("0d8c588a-ba33-409a-8bf1-b44697f03d46"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("207be9a0-4a0c-432f-94b2-8c1b1d377561"),
+                            Id = new Guid("1672696e-9201-431c-8240-f72125fc58ac"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("41bded9c-5d05-4ff5-adce-742704dbe61a"),
+                            Id = new Guid("e1e33fef-eabd-4173-8959-1f1a4f4dbce1"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"
