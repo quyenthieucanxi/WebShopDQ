@@ -27,14 +27,13 @@ namespace WebShopDQ.App.Common
 
                 response.StatusCode = error switch
                 {
-                    AppException => (int)HttpStatusCode.BadRequest,// custom application error
                     DuplicateException => (int)HttpStatusCode.Conflict,// duplicatte error
                     PasswordException => (int)HttpStatusCode.BadRequest,// missing field error
                     MissingFieldException => (int)HttpStatusCode.BadRequest,// missing field error
                     KeyNotFoundException => (int)HttpStatusCode.NotFound,// not found error
                     _ => (int)HttpStatusCode.InternalServerError,// unhandled error
                 };
-                var result = JsonSerializer.Serialize(new { message = error?.Message });
+                var result = JsonSerializer.Serialize(new { message = error?.Message, statusCode = response.StatusCode });
                 await response.WriteAsync(result);
             }
         }

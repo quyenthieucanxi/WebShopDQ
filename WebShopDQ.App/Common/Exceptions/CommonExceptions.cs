@@ -2,13 +2,13 @@
 
 namespace WebShopDQ.App.Common.Exceptions
 {
-    public class AppException : Exception
+    public class InvalidOperationException : Exception
     {
-        public AppException() : base() { }
+        public InvalidOperationException() : base() { }
 
-        public AppException(string message) : base(message) { }
+        public InvalidOperationException(string message) : base(message) { }
 
-        public AppException(string message, params object[] args)
+        public InvalidOperationException(string message, params object[] args)
             : base(String.Format(CultureInfo.CurrentCulture, message, args))
         {
         }

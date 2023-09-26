@@ -10,7 +10,7 @@ namespace WebShopDQ.App.Data
         public DatabaseContext() { }
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base (options) { }
         public DbSet<User> Users { get; set; }
-        public DbSet<Roles> Roles { get; set; }
+        public DbSet<Role> Roles { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

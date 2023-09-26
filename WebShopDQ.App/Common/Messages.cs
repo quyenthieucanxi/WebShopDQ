@@ -2,8 +2,9 @@
 
 namespace WebShopDQ.App.Common
 {
-    public static class Messages
+    public class Messages
     {
+
     }
 
     public static class SuccessMessages

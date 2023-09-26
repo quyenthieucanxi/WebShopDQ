@@ -2,19 +2,45 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
+using WebShopDQ.App.AutoMapper;
+using WebShopDQ.App.Common;
 using WebShopDQ.App.Data;
+using WebShopDQ.App.Dependency;
 using WebShopDQ.App.Models;
+using WebShopDQ.App.Repositories;
+using WebShopDQ.App.Repositories.IRepositories;
+using WebShopDQ.App.Services;
+using WebShopDQ.App.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
+{
+    builder.Services
+        .AddRepository()
+        .AddServices()
+        .AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+}
+
+// Add auto mapper
+builder.Services.AddAutoMapper(typeof(Program));
+
 
 // Entity Framework
 builder.Services.AddDbContext<DatabaseContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Identity
-builder.Services.AddIdentity<User, Roles>()
+builder.Services.AddIdentity<User, Role>(options =>
+{
+    // Configure password checking
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+})
     .AddEntityFrameworkStores<DatabaseContext>()
     .AddDefaultTokenProviders();
+
 
 // Add Config for required Email
 /*builder.Services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);*/
@@ -79,6 +105,8 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -86,6 +114,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// global error handler
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

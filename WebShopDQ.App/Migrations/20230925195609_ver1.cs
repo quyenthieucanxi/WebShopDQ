@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebShopDQ.App.Migrations
 {
-    public partial class name : Migration
+    public partial class ver1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -168,11 +168,11 @@ namespace WebShopDQ.App.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("249974e4-2a0c-4eb0-ab9b-77806cd7e9f2"), "4", "Roles", "Seller", "SELLER" },
-                    { new Guid("2636f1c3-c4d3-48c9-a657-f44e1ee9e7b9"), "3", "Roles", "Shiper", "SHIPER" },
-                    { new Guid("8a3c5dc3-f91e-4cc5-887b-53f069718301"), "5", "Roles", "User", "USER" },
-                    { new Guid("96726c99-60d3-4019-a17d-33b624e44d10"), "2", "Roles", "Manager", "MANAGER" },
-                    { new Guid("c3b05c61-7f35-4776-b4ae-49213126f974"), "1", "Roles", "Admin", "ADMIN" }
+                    { new Guid("207be9a0-4a0c-432f-94b2-8c1b1d377561"), "4", "Role", "Seller", "SELLER" },
+                    { new Guid("269a7bdd-1e63-44be-8fd7-6ffa3d8aed29"), "2", "Role", "Manager", "MANAGER" },
+                    { new Guid("331948a3-71bc-4dff-a8de-82de09a3a7dc"), "1", "Role", "Admin", "ADMIN" },
+                    { new Guid("41bded9c-5d05-4ff5-adce-742704dbe61a"), "5", "Role", "User", "USER" },
+                    { new Guid("91632407-2930-403c-b503-6ad67507fc79"), "3", "Role", "Shiper", "SHIPER" }
                 });
 
             migrationBuilder.CreateIndex(

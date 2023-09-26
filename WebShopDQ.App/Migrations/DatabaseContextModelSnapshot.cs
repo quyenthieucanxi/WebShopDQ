@@ -231,44 +231,44 @@ namespace WebShopDQ.App.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("WebShopDQ.App.Models.Roles", b =>
+            modelBuilder.Entity("WebShopDQ.App.Models.Role", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>");
 
-                    b.HasDiscriminator().HasValue("Roles");
+                    b.HasDiscriminator().HasValue("Role");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c3b05c61-7f35-4776-b4ae-49213126f974"),
+                            Id = new Guid("331948a3-71bc-4dff-a8de-82de09a3a7dc"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("96726c99-60d3-4019-a17d-33b624e44d10"),
+                            Id = new Guid("269a7bdd-1e63-44be-8fd7-6ffa3d8aed29"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("2636f1c3-c4d3-48c9-a657-f44e1ee9e7b9"),
+                            Id = new Guid("91632407-2930-403c-b503-6ad67507fc79"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("249974e4-2a0c-4eb0-ab9b-77806cd7e9f2"),
+                            Id = new Guid("207be9a0-4a0c-432f-94b2-8c1b1d377561"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("8a3c5dc3-f91e-4cc5-887b-53f069718301"),
+                            Id = new Guid("41bded9c-5d05-4ff5-adce-742704dbe61a"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"
