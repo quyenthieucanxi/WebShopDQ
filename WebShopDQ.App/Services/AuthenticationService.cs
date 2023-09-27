@@ -28,5 +28,10 @@ namespace WebShopDQ.App.Services
         {
             return await _authenticationRepository.Login(loginModel);
         }
+
+        public async Task<LoginViewModel> NewToken(LoginViewModel loginViewModel)
+        {
+            return await _authenticationRepository.NewToken(loginViewModel);
+        }
     }
 }

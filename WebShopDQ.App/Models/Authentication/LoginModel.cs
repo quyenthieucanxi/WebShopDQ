@@ -18,6 +18,7 @@ namespace WebShopDQ.App.Models.Authentication
 
     public class LoginViewModel
     {
-        public string? Token { get; set; }
+        public string? AccessToken { get; set; }
+        public string? RefreshToken { get; set; }
     }
 }

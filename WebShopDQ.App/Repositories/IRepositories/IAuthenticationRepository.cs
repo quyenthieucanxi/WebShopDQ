@@ -7,5 +7,6 @@ namespace WebShopDQ.App.Repositories.IRepositories
     {
         Task<IdentityResult> Register(RegisterModel registerModel, string role);
         Task<LoginViewModel> Login(LoginModel loginModel);
+        Task<LoginViewModel> NewToken(LoginViewModel loginViewModel);
     }
 }

@@ -79,6 +79,30 @@ namespace WebShopDQ.App.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RefreshToken",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    JwtId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
+                    IsRevoked = table.Column<bool>(type: "bit", nullable: false),
+                    IssuedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshToken", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshToken_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserClaims",
                 columns: table => new
                 {
@@ -168,12 +192,17 @@ namespace WebShopDQ.App.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("0d8c588a-ba33-409a-8bf1-b44697f03d46"), "3", "Role", "Shiper", "SHIPER" },
-                    { new Guid("1672696e-9201-431c-8240-f72125fc58ac"), "4", "Role", "Seller", "SELLER" },
-                    { new Guid("d32e1217-795d-45eb-9a11-4d650e240cf5"), "1", "Role", "Admin", "ADMIN" },
-                    { new Guid("e1e33fef-eabd-4173-8959-1f1a4f4dbce1"), "5", "Role", "User", "USER" },
-                    { new Guid("e5934e4e-3d39-4f64-9dd2-0d05687ecf1e"), "2", "Role", "Manager", "MANAGER" }
+                    { new Guid("0b0b84f3-899c-43d3-9c4a-db83ac35c652"), "3", "Role", "Shiper", "SHIPER" },
+                    { new Guid("61ca54cd-0851-49cf-8561-c5026847c18b"), "1", "Role", "Admin", "ADMIN" },
+                    { new Guid("79b11d08-2097-4771-abc4-7d20820e6215"), "5", "Role", "User", "USER" },
+                    { new Guid("85938f57-db01-492a-b2af-b8ce9d3bbc8a"), "2", "Role", "Manager", "MANAGER" },
+                    { new Guid("e278a3f6-1731-4277-a0bf-c371eb1ec247"), "4", "Role", "Seller", "SELLER" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshToken_UserId",
+                table: "RefreshToken",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
@@ -217,6 +246,9 @@ namespace WebShopDQ.App.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "RefreshToken");
+
             migrationBuilder.DropTable(
                 name: "RoleClaims");
 

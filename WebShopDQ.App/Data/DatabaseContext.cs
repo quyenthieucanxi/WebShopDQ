@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WebShopDQ.App.Entities;
 using WebShopDQ.App.Models;
 
 namespace WebShopDQ.App.Data
@@ -11,6 +12,8 @@ namespace WebShopDQ.App.Data
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base (options) { }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

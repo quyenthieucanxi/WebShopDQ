@@ -60,11 +60,15 @@ builder.Services.AddAuthentication(options =>
     options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters()
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidAudience = builder.Configuration["JWT:ValidAudience"],
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        //        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        //        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
+
+        ClockSkew = TimeSpan.Zero
     };
 });
 
@@ -105,6 +109,12 @@ builder.Services.AddSwaggerGen(option =>
             new string[]{}
         }
     });
+});
+
+// Login check
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.SignIn.RequireConfirmedEmail = true;
 });
 
 var app = builder.Build();

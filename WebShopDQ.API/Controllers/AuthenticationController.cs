@@ -27,5 +27,11 @@ namespace WebShopDQ.API.Controllers
         {
             return Ok(await _authenticationService.Login(loginModel));
         }
+
+        [HttpPost("newToken")]
+        public async Task<IActionResult> NewToken(LoginViewModel loginViewModel)
+        {
+            return Ok(await _authenticationService.NewToken(loginViewModel));
+        }
     }
 }
