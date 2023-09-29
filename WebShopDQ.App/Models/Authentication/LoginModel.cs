@@ -10,10 +10,10 @@ namespace WebShopDQ.App.Models.Authentication
     public class LoginModel
     {
         [EmailAddress, Required(ErrorMessage = "Email is required")]
-        public string? Email { get; set; }
+        public string Email { get; set; } = null!;
 
         [Required(ErrorMessage = "Password is required")]
-        public string? Password { get; set; }
+        public string Password { get; set; } = null!;
     }
 
     public class LoginViewModel

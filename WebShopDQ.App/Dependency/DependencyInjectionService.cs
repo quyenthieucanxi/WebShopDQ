@@ -9,6 +9,7 @@ namespace WebShopDQ.App.Dependency
         public static IServiceCollection AddServices(this IServiceCollection service)
         {
             service.AddTransient<IAuthenticationService, AuthenticationService>();
+            service.AddTransient<IEmailService, EmailService>();
             return service;
         }
     }

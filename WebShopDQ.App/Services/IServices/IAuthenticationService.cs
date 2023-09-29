@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using WebShopDQ.App.Models;
 using WebShopDQ.App.Models.Authentication;
 
 namespace WebShopDQ.App.Services.IServices
@@ -14,5 +9,7 @@ namespace WebShopDQ.App.Services.IServices
         Task<IdentityResult> Register(RegisterModel registerModel, string role);
         Task<LoginViewModel> Login(LoginModel loginModel);
         Task<LoginViewModel> NewToken(LoginViewModel loginViewModel);
+        Task<LinkedEmailModel> GetConfirmEmail(string email);
+        Task<bool> ConfirmEmail(string token, string email);
     }
 }

@@ -12,6 +12,8 @@ namespace WebShopDQ.App.Dependency
             service.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
             service.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             service.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
+            service.AddTransient<IGetHTMLBodyRepository, GetHTMLBodyRepository>();
+            service.AddTransient<IEmailRepository, EmailRepository>();
             return service;
         }
     }

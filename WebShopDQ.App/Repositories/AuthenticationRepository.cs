@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
-using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
-using System.Net.Mail;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using WebShopDQ.App.Common;
 using WebShopDQ.App.Common.Exceptions;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.Entities;
@@ -27,16 +24,19 @@ namespace WebShopDQ.App.Repositories
         private readonly RoleManager<Role> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly SignInManager<User> _signInManager;
+        private readonly IUrlHelper _urlHelper;
         //private readonly IMapper _mapper;
 
         public AuthenticationRepository(DatabaseContext databaseContext, UserManager<User> userManager,
-            RoleManager<Role> roleManager, IConfiguration configuration, SignInManager<User> signInManager) : base(databaseContext)
+            RoleManager<Role> roleManager, IConfiguration configuration, SignInManager<User> signInManager,
+            IUrlHelper urlHelper) : base(databaseContext)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _signInManager = signInManager;
             _databaseContext = databaseContext;
+            _urlHelper = urlHelper;
         }
 
         public async Task<IdentityResult> Register(RegisterModel registerModel, string role)
@@ -245,6 +245,39 @@ namespace WebShopDQ.App.Repositories
             dateTimeInterval.AddSeconds(utcExpireDate).ToUniversalTime();
 
             return dateTimeInterval;
+        }
+    
+        public async Task<LinkedEmailModel> GetConfirmEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) throw new KeyNotFoundException(Messages.UserNotFound);
+            if (user.EmailConfirmed == true) throw new DuplicateException(Messages.ConfirmEmail);
+            try
+            {
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var confirmLink = _urlHelper.Action("ConfirmEmail", new { token, email });
+                var linkEmail = new LinkedEmailModel
+                {
+                    Email = email,
+                    Link = confirmLink,
+                };
+                return await Task.FromResult(linkEmail);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public async Task<bool> ConfirmEmail(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                {
+                    return await Task.FromResult(true);
+                }
+            }
+            throw new KeyNotFoundException("Email not exits");
         }
     }
 }

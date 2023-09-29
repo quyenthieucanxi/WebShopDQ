@@ -33,5 +33,15 @@ namespace WebShopDQ.App.Services
         {
             return await _authenticationRepository.NewToken(loginViewModel);
         }
+
+        public async Task<LinkedEmailModel> GetConfirmEmail(string email)
+        {
+            return await _authenticationRepository.GetConfirmEmail(email);
+        }
+
+        public async Task<bool> ConfirmEmail(string token, string email)
+        {
+            return await _authenticationRepository.ConfirmEmail(token, email);
+        }
     }
 }
