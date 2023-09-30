@@ -9,15 +9,17 @@ using WebShopDQ.App.Models;
 
 namespace WebShopDQ.App.Data
 {
-    public class NotifyMap : IEntityTypeConfiguration<Notify>
+    public class SavePostsMap : IEntityTypeConfiguration<SavePosts>
     {
-        public void Configure(EntityTypeBuilder<Notify> builder)
+        public void Configure(EntityTypeBuilder<SavePosts> builder)
         {
-            builder.Property(p => p.NotifyText).HasMaxLength(256);
-            builder.Property(p => p.TypeNotify).HasMaxLength(50);
             builder.HasOne(p => p.User)
-                    .WithMany(q => q.Notifies)
+                    .WithMany(q=> q.SavePosts)
                     .HasForeignKey(p => p.UserID)
+                    .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(p => p.Post)
+                    .WithMany()
+                    .HasForeignKey(p => p.PostID)
                     .OnDelete(DeleteBehavior.Cascade);
         }
     }

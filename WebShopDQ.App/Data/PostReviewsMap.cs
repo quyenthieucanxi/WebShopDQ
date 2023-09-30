@@ -9,18 +9,18 @@ using WebShopDQ.App.Models;
 
 namespace WebShopDQ.App.Data
 {
-    public class MessageMap : IEntityTypeConfiguration<Message>
+    public class PostReviewsMap : IEntityTypeConfiguration<PostReviews>
     {
-        public void Configure(EntityTypeBuilder<Message> builder)
+        public void Configure(EntityTypeBuilder<PostReviews> builder)
         {
-            builder.Property(p => p.Content).HasMaxLength(1000);
+            builder.Property(p => p.ReviewText).HasMaxLength(256);
             builder.HasOne(p => p.User)
-                    .WithMany(q => q.Messages)
+                    .WithMany()
                     .HasForeignKey(p => p.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(p => p.Chats)
-                    .WithOne()
-                    .HasForeignKey<Message>(p => p.ChatId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(p => p.Post)
+                    .WithMany()
+                    .HasForeignKey(p => p.PostId)
                     .OnDelete(DeleteBehavior.Cascade);
         }
     }

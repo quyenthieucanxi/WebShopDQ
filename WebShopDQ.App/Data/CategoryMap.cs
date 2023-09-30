@@ -13,7 +13,7 @@ namespace WebShopDQ.App.Data
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
-            
+            builder.Property(p => p.CategoryName).HasMaxLength(50);
         }
     }
 }

@@ -15,6 +15,9 @@ namespace WebShopDQ.App.Data
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.Property(p => p.FullName).HasMaxLength(50);
+            builder.Property(p => p.Address).HasMaxLength(150);
+            builder.Property(p => p.Introduce).HasMaxLength(256);
+            builder.Property(p => p.AvatarUrl).HasMaxLength(1000);
         }
     }
 }

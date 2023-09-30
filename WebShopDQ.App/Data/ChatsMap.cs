@@ -9,18 +9,18 @@ using WebShopDQ.App.Models;
 
 namespace WebShopDQ.App.Data
 {
-    public class FriendShipMap : IEntityTypeConfiguration<Friendship>
+    public class ChatsMap : IEntityTypeConfiguration<Chats>
     {
-        public void Configure(EntityTypeBuilder<Friendship> builder)
+        public void Configure(EntityTypeBuilder<Chats> builder)
         {
-            builder.HasKey(p => new { p.FollowingID, p.FollowerID });
-            builder.HasOne(p => p.Follower)
+            builder.HasIndex(p => new { p.SenderID, p.ReceiverID });
+            builder.HasOne(p => p.Sender)
                     .WithMany()
-                    .HasForeignKey(p => p.FollowerID)
+                    .HasForeignKey(p => p.SenderID)
                     .OnDelete(DeleteBehavior.NoAction);
-            builder.HasOne(p => p.Following)
+            builder.HasOne(p => p.Receiver)
                     .WithMany()
-                    .HasForeignKey(p => p.FollowingID)
+                    .HasForeignKey(p => p.ReceiverID)
                     .OnDelete(DeleteBehavior.NoAction);
         }
     }

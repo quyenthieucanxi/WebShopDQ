@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebShopDQ.App.Data;
 
@@ -11,9 +12,10 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230928133140_init_v2")]
+    partial class init_v2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -441,7 +443,7 @@ namespace WebShopDQ.App.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<Guid?>("UserID")
+                    b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -710,8 +712,7 @@ namespace WebShopDQ.App.Migrations
 
                     b.HasOne("WebShopDQ.App.Models.User", "User")
                         .WithMany("Posts")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserID");
 
                     b.Navigation("Category");
 

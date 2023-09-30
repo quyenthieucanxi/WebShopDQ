@@ -4,15 +4,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebShopDQ.App.Models
 {
-    public class Message
+    public class Message : BaseModel
     {
-        public Guid Id { get; set; }
-        public Guid SenderID { get; set; }
-        public Guid ReceiverID { get; set; }
+        public Guid ChatId { get; set; }
+        public Guid UserId { get; set; }
         public string? Content { get; set; }
-        public DateTime Created { get; set; }
-
-        public User? Sender { get; set; }
-        public User? Receiver { get; set; }
+        public virtual Chats? Chats { get; set; }
+        public virtual User? User { get; set; }      
     }
 }
