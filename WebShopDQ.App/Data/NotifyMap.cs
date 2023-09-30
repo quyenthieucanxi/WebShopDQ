@@ -13,7 +13,12 @@ namespace WebShopDQ.App.Data
     {
         public void Configure(EntityTypeBuilder<Notify> builder)
         {
-            
+            builder.Property(p => p.NotifyText).HasMaxLength(256);
+            builder.Property(p => p.TypeNotify).HasMaxLength(50);
+            builder.HasOne(p => p.User)
+                    .WithMany(q => q.Notifies)
+                    .HasForeignKey(p => p.UserID)
+                    .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

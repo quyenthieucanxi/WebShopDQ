@@ -13,7 +13,15 @@ namespace WebShopDQ.App.Data
     {
         public void Configure(EntityTypeBuilder<Message> builder)
         {
-            
+            builder.Property(p => p.Content).HasMaxLength(1000);
+            builder.HasOne(p => p.User)
+                    .WithMany(q => q.Messages)
+                    .HasForeignKey(p => p.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.Chats)
+                    .WithOne()
+                    .HasForeignKey<Message>(p => p.ChatId)
+                    .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
