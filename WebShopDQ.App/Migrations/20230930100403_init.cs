@@ -172,7 +172,7 @@ namespace WebShopDQ.App.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CategoryID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
@@ -271,7 +271,15 @@ namespace WebShopDQ.App.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    JwtId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: true),
+                    IsRevoked = table.Column<bool>(type: "bit", nullable: true),
+                    IssuedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -282,6 +290,11 @@ namespace WebShopDQ.App.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserTokens_Users_UserId1",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

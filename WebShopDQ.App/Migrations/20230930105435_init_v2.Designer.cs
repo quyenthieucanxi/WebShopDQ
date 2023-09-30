@@ -12,7 +12,7 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230928133140_init_v2")]
+    [Migration("20230930105435_init_v2")]
     partial class init_v2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -225,12 +225,18 @@ namespace WebShopDQ.App.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUserToken<Guid>");
                 });
 
             modelBuilder.Entity("WebShopDQ.App.Models.Category", b =>
@@ -443,7 +449,7 @@ namespace WebShopDQ.App.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<Guid>("UserID")
+                    b.Property<Guid?>("UserID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -562,6 +568,31 @@ namespace WebShopDQ.App.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasDiscriminator().HasValue("User");
+                });
+
+            modelBuilder.Entity("WebShopDQ.App.Models.UserToken", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>");
+
+                    b.Property<DateTime>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("IssuedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("JwtId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("UserToken");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -712,7 +743,8 @@ namespace WebShopDQ.App.Migrations
 
                     b.HasOne("WebShopDQ.App.Models.User", "User")
                         .WithMany("Posts")
-                        .HasForeignKey("UserID");
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Category");
 
@@ -753,6 +785,18 @@ namespace WebShopDQ.App.Migrations
                         .IsRequired();
 
                     b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WebShopDQ.App.Models.UserToken", b =>
+                {
+                    b.HasOne("WebShopDQ.App.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("FK_UserTokens_Users_UserId1");
 
                     b.Navigation("User");
                 });
