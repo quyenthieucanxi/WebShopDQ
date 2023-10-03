@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using WebShopDQ.App.ViewModels;
 
-namespace WebShopDQ.App.Services.IServices
+namespace WebShopDQ.App.Repositories.IRepositories
 {
-    public interface ITokenInfoService
+    public interface IUserRepository
     {
-        Task<TokenViewModel> GetTokenInfo();
+        Task<UserInfoViewModel> GetById(Guid id);
     }
 }

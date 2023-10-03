@@ -22,14 +22,14 @@ namespace WebShopDQ.App.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<TokenModel> GetTokenInfo()
+        public async Task<TokenViewModel> GetTokenInfo()
         {
             var authHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
             var token = authHeader?.Replace("Bearer ", string.Empty);
             var decodedInfo = _decodeRepository.Decode(token);
             if (!string.IsNullOrEmpty(decodedInfo?.UserId) && Guid.TryParse(decodedInfo.UserId, out var userId))
             {
-                var tokenModel = new TokenModel
+                var tokenModel = new TokenViewModel
                 {
                     UserId = new Guid(decodedInfo.UserId),
                 };

@@ -7,8 +7,8 @@ using WebShopDQ.App.ViewModels;
 
 namespace WebShopDQ.App.Services.IServices
 {
-    public interface ITokenInfoService
+    public interface IUserService
     {
-        Task<TokenViewModel> GetTokenInfo();
+        Task<UserInfoViewModel> GetById(Guid userId);
     }
 }

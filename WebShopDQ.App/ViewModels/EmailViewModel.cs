@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WebShopDQ.App.ViewModels
 {
-    public class EmailModel
+    public class EmailViewModel
     {
 
     }

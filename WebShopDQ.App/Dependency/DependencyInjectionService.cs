@@ -11,6 +11,7 @@ namespace WebShopDQ.App.Dependency
             service.AddTransient<IAuthenticationService, AuthenticationService>();
             service.AddTransient<IEmailService, EmailService>();
             service.AddTransient<ITokenInfoService, TokenInfoService>();
+            service.AddTransient<IUserService, UserService>();
             return service;
         }
     }
