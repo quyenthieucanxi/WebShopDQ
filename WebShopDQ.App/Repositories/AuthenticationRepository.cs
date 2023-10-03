@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -11,8 +13,9 @@ using WebShopDQ.App.Common;
 using WebShopDQ.App.Common.Exceptions;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.Models;
-using WebShopDQ.App.Models.Authentication;
 using WebShopDQ.App.Repositories.IRepositories;
+using WebShopDQ.App.ViewModels;
+using WebShopDQ.App.ViewModels.Authentication;
 
 namespace WebShopDQ.App.Repositories
 {
@@ -99,7 +102,7 @@ namespace WebShopDQ.App.Repositories
             return jwtToken;
         }
 
-        private async Task<LoginViewModel> GenerateToken(User? user)
+        private async Task<LoginViewModel> GenerateToken(User user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"] ?? ""));
@@ -120,7 +123,7 @@ namespace WebShopDQ.App.Repositories
             var refreshToken = GenerateRefreshToken();
 
             // add rf token
-            var refreshTokenEntity = new UserToken
+            var refreshTokenEntity = new RefreshToken
             {
                 //Id = Guid.NewGuid(),
                 JwtId = token.Id,
@@ -227,14 +230,14 @@ namespace WebShopDQ.App.Repositories
                 await _databaseContext.SaveChangesAsync();
 
                 //create new token
-                var user = await _databaseContext.User.SingleOrDefaultAsync(nd => nd.Id == storedToken.UserId);
+                //var user = await _databaseContext.User.SingleOrDefaultAsync(nd => nd.Id == storedToken.UserId);
+                var user = await _userManager.FindByEmailAsync(loginViewModel.AccessToken);
                 var token = await GenerateToken(user);
-
                 return token;
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -277,6 +280,39 @@ namespace WebShopDQ.App.Repositories
                 }
             }
             throw new KeyNotFoundException("Email not exits");
+        }
+
+        public async Task<LinkedEmailModel> ForgetPassword(ForgetPasswordModel model)
+        {
+            if (model.NewPassword != model.ConfirmPassword) throw new AppException("Confirm Password doesn't match Password.");
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            var passwordValidator = new PasswordValidator<User>();
+            var passwordValidate = await passwordValidator.ValidateAsync(_userManager, null, model.NewPassword);
+            List<string> passwordErrors = new List<string>();
+            if (user != null)
+            {
+                if (passwordValidate.Succeeded)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var resetLink = _urlHelper.Action("ResetPassword", new { token = token, email = model.Email, pass = model.NewPassword });
+                    LinkedEmailModel result = new()
+                    {
+                        Email = model.Email,
+                        Link = resetLink
+                    };
+                    return await Task.FromResult(result);
+                }
+                else throw new PasswordException("Password must have 6 characters," +
+                                "one non alphanumeric character, one digit ('0'-'9'), one uppercase, one lowercase");
+            }
+            else throw new KeyNotFoundException(Messages.EmailNotFound);
+        }
+
+        public async Task<IdentityResult> ChangePassword(Guid userId, string oldPassword, string newPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+            return result;
         }
     }
 }

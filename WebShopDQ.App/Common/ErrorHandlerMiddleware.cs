@@ -27,6 +27,7 @@ namespace WebShopDQ.App.Common
 
                 response.StatusCode = error switch
                 {
+                    AppException => (int)HttpStatusCode.BadRequest,
                     DuplicateException => (int)HttpStatusCode.Conflict,// duplicatte error
                     PasswordException => (int)HttpStatusCode.BadRequest,// missing field error
                     ValidateException => (int)HttpStatusCode.BadRequest, // validate error

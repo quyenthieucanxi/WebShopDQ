@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebShopDQ.App.Models.Authentication
+namespace WebShopDQ.App.ViewModels.Authentication
 {
     public class RegisterModel
     {

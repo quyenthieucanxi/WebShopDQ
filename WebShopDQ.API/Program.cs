@@ -22,6 +22,7 @@ using WebShopDQ.App.Services.IServices;
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services
+        .AddCors()
         .AddRepository()
         .AddServices()
         .AddAutoMapper(typeof(AutoMapperProfile).Assembly);
@@ -80,6 +81,9 @@ builder.Services.AddAuthentication(options =>
 /*var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<IEmailService, EmailService>();*/
+
+// Add Cors\
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
 // Add IUrlHelper
 builder.Services.AddScoped<IUrlHelper>(x =>
@@ -145,9 +149,9 @@ app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
-
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseAuthorization();
-
+app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();

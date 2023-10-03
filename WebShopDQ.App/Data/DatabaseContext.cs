@@ -19,7 +19,7 @@ namespace WebShopDQ.App.Data
 
         }
         public DbSet<User> User { get; set; } = null!;
-        public DbSet<UserToken> UserToken { get;set; } = null!; 
+        public DbSet<RefreshToken> UserToken { get;set; } = null!; 
         public DbSet<Role> Role { get; set; } = null!;
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<Chats> Chats { get; set; } = null!;
@@ -44,7 +44,7 @@ namespace WebShopDQ.App.Data
                 }
             }
             builder.ApplyConfiguration(new UserMap());
-            builder.ApplyConfiguration(new UserTokenMap());
+            builder.ApplyConfiguration(new RefreshTokenMap());
             builder.ApplyConfiguration(new PostMap());
             builder.ApplyConfiguration(new CategoryMap());
             builder.ApplyConfiguration(new OrderMap());
@@ -54,6 +54,8 @@ namespace WebShopDQ.App.Data
             builder.ApplyConfiguration(new PostReviewsMap());
             builder.ApplyConfiguration(new SavePostsMap());
             builder.ApplyConfiguration(new ChatsMap());
+
+            Seeding.SeedRoles(builder);
         }
     }
 }

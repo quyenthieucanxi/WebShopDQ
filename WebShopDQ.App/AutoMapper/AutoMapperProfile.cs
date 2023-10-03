@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using WebShopDQ.App.Models;
-using WebShopDQ.App.Models.Authentication;
+using WebShopDQ.App.ViewModels.Authentication;
 
 namespace WebShopDQ.App.AutoMapper
 {

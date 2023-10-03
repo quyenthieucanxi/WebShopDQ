@@ -1,7 +1,6 @@
-﻿
-using WebShopDQ.App.Models;
-using WebShopDQ.App.Repositories.IRepositories;
+﻿using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Services.IServices;
+using WebShopDQ.App.ViewModels;
 
 namespace WebShopDQ.App.Services
 {
@@ -29,13 +28,28 @@ namespace WebShopDQ.App.Services
         public async Task<bool> SendEmailRegister(string email, string token)
         {
             //var emailModel = await _authenticationRepository.GetConfirmEmail(email);
-            var verifLink = "https://localhost:7279" + token;
+            var verifLink = "https://localhost:5000" + token;
             var body = await _htmlBodyRepository.GetBody("Verify.html");
             body = body.Replace("[[verilink]]", verifLink);
             var confirmationMail = new EmailMessageModel
             {
                 To = email,
                 Subject = "Verified your email",
+                Body = body
+            };
+            return await _emailRepository.SendEmail(confirmationMail);
+        }
+
+        public async Task<bool> SendEmailForgetPassword(string email, string token)
+        {
+            //var emailModel = await _authenticationRepository.GetConfirmEmail(email);
+            var verifLink = "https://localhost:5000" + token;
+            var body = await _htmlBodyRepository.GetBody("ForgetPassword.html");
+            body = body.Replace("[[verilink]]", verifLink);
+            var confirmationMail = new EmailMessageModel
+            {
+                To = email,
+                Subject = "Forget password!",
                 Body = body
             };
             return await _emailRepository.SendEmail(confirmationMail);

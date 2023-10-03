@@ -5,6 +5,7 @@ namespace WebShopDQ.App.Common
     public class Messages
     {
         public const string UserNotFound = "User not found!";
+        public const string EmailNotFound = "Email not found!";
         public const string ConfirmEmail = "Your account has been confirmed.";
     }
 

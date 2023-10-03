@@ -9,9 +9,9 @@ using WebShopDQ.App.Models;
 
 namespace WebShopDQ.App.Data
 {
-    public class UserTokenMap : IEntityTypeConfiguration<UserToken>
+    public class RefreshTokenMap : IEntityTypeConfiguration<RefreshToken>
     {
-        public void Configure(EntityTypeBuilder<UserToken> builder)
+        public void Configure(EntityTypeBuilder<RefreshToken> builder)
         {
             builder.HasOne(p => p.User)
                     .WithMany()

@@ -3,8 +3,8 @@ using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using MimeKit.Text;
-using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
+using WebShopDQ.App.ViewModels;
 
 namespace WebShopDQ.App.Repositories
 {

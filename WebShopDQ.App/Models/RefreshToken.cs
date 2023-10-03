@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace WebShopDQ.App.Models
 {
-    public class UserToken : IdentityUserToken<Guid>
+    public class RefreshToken : BaseModel
     {
+        public Guid UserId { get; set; }
         public User? User { get; set; }
         public string? Token { get; set; }
         public string? JwtId { get; set; }

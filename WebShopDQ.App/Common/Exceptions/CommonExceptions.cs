@@ -2,6 +2,18 @@
 
 namespace WebShopDQ.App.Common.Exceptions
 {
+    public class AppException : Exception
+    {
+        public AppException() : base() { }
+
+        public AppException(string message) : base(message) { }
+
+        public AppException(string message, params object[] args)
+            : base(String.Format(CultureInfo.CurrentCulture, message, args))
+        {
+        }
+    }
+
     public class ValidateException : Exception
     {
         public ValidateException() : base() { }

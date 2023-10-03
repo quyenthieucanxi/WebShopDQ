@@ -12,8 +12,8 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230930105435_init_v2")]
-    partial class init_v2
+    [Migration("20231003092255_Name")]
+    partial class Name
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -225,18 +225,12 @@ namespace WebShopDQ.App.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens", (string)null);
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUserToken<Guid>");
                 });
 
             modelBuilder.Entity("WebShopDQ.App.Models.Category", b =>
@@ -495,6 +489,46 @@ namespace WebShopDQ.App.Migrations
                     b.ToTable("PostReviews");
                 });
 
+            modelBuilder.Entity("WebShopDQ.App.Models.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("IssuedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("JwtId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserToken");
+                });
+
             modelBuilder.Entity("WebShopDQ.App.Models.SavePosts", b =>
                 {
                     b.Property<Guid>("Id")
@@ -527,6 +561,43 @@ namespace WebShopDQ.App.Migrations
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>");
 
                     b.HasDiscriminator().HasValue("Role");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("c15d52f5-fea9-4464-a286-94dee5ec51c9"),
+                            ConcurrencyStamp = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("5d7c0d6b-7620-45c5-8080-ca8c34f7b248"),
+                            ConcurrencyStamp = "2",
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
+                        },
+                        new
+                        {
+                            Id = new Guid("6381b1ac-0567-46e2-86a4-c7177c31a249"),
+                            ConcurrencyStamp = "3",
+                            Name = "Shiper",
+                            NormalizedName = "SHIPER"
+                        },
+                        new
+                        {
+                            Id = new Guid("17e8e0cf-6db9-4eec-bc9e-4092d1f7d78a"),
+                            ConcurrencyStamp = "4",
+                            Name = "Seller",
+                            NormalizedName = "SELLER"
+                        },
+                        new
+                        {
+                            Id = new Guid("e148e602-f64f-4a57-985f-8cda71ea28b3"),
+                            ConcurrencyStamp = "5",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("WebShopDQ.App.Models.User", b =>
@@ -568,31 +639,6 @@ namespace WebShopDQ.App.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasDiscriminator().HasValue("User");
-                });
-
-            modelBuilder.Entity("WebShopDQ.App.Models.UserToken", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>");
-
-                    b.Property<DateTime>("ExpiredAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRevoked")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("IssuedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("JwtId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Token")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("UserToken");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -770,6 +816,17 @@ namespace WebShopDQ.App.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("WebShopDQ.App.Models.RefreshToken", b =>
+                {
+                    b.HasOne("WebShopDQ.App.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("WebShopDQ.App.Models.SavePosts", b =>
                 {
                     b.HasOne("WebShopDQ.App.Models.Post", "Post")
@@ -785,18 +842,6 @@ namespace WebShopDQ.App.Migrations
                         .IsRequired();
 
                     b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("WebShopDQ.App.Models.UserToken", b =>
-                {
-                    b.HasOne("WebShopDQ.App.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired()
-                        .HasConstraintName("FK_UserTokens_Users_UserId1");
 
                     b.Navigation("User");
                 });
