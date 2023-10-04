@@ -26,7 +26,7 @@ namespace WebShopDQ.API.Controllers
         {
             await _authenticationService.Register(registerModel, role);
             var email = await _authenticationService.GetConfirmEmail(registerModel.Email);
-            await _emailService.SendEmailRegister(email.Email, email.Link);
+            await _emailService.SendEmailRegister(email.Email ?? "", email.Link ?? "");
             return Ok();
         }
 

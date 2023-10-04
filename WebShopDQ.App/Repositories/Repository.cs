@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.Repositories.IRepositories;
 
@@ -34,17 +36,19 @@ namespace WebShopDQ.App.Repositories
 
         public IQueryable<TEntity> GetAll()
         {
-            return Entities;
+            return  Entities;
+             
         }
 
-        public TEntity GetById(object id)
+        public async Task<TEntity?> GetById(object id)
         {
-            throw new NotImplementedException();
+            var a = await Entities.FindAsync(id);
+            return a;
         }
 
-        public void Remove(int id)
+        public async void Remove(int id)
         {
-            var entity = GetById(id);
+            var entity = await GetById(id);
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 

@@ -5,7 +5,7 @@
         Task Add(TEntity entity);
         Task Add(IEnumerable<TEntity> entities);
 
-        TEntity GetById(object id);
+        Task<TEntity?> GetById(object id);
 
         IQueryable<TEntity> GetAll();
 

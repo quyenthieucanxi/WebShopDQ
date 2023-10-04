@@ -107,8 +107,8 @@ namespace WebShopDQ.App.Repositories
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim("UserId", user.Id.ToString()),
+                    new Claim(ClaimTypes.Email, user?.Email ?? ""),
+                    new Claim("UserId", user?.Id.ToString() ?? ""),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
                 Expires = DateTime.UtcNow.AddSeconds(20),
@@ -124,7 +124,7 @@ namespace WebShopDQ.App.Repositories
             {
                 //Id = Guid.NewGuid(),
                 JwtId = token.Id,
-                UserId = user.Id,
+                UserId = user.Id ,
                 Token = refreshToken,
                 IsUsed = false,
                 IsRevoked = false,
@@ -234,7 +234,7 @@ namespace WebShopDQ.App.Repositories
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
