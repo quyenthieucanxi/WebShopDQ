@@ -9,6 +9,6 @@ namespace WebShopDQ.App.Services.IServices
 {
     public interface ITokenInfoService
     {
-        Task<TokenModel> GetTokenInfo();
+        Task<TokenViewModel> GetTokenInfo();
     }
 }

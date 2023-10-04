@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net.WebSockets;
 using WebShopDQ.App.Data;
+using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -109,9 +110,7 @@ namespace WebShopDQ.App.Repositories
 
         public async Task Update(TEntity entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
+            
             Entities.Update(entity);
             await _databaseContext.SaveChangesAsync();
         }
