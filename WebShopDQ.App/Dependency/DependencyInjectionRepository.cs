@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Repositories;
+using WebShopDQ.App.Services.IServices;
 
 namespace WebShopDQ.App.Dependency
 {
@@ -14,6 +15,7 @@ namespace WebShopDQ.App.Dependency
             service.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
             service.AddTransient<IGetHTMLBodyRepository, GetHTMLBodyRepository>();
             service.AddTransient<IEmailRepository, EmailRepository>();
+            service.AddTransient<IDecodeRepository, DecodeRepository>();
             return service;
         }
     }

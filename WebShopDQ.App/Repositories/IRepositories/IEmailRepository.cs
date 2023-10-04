@@ -1,4 +1,4 @@
-﻿using WebShopDQ.App.Models;
+﻿using WebShopDQ.App.ViewModels;
 
 namespace WebShopDQ.App.Repositories.IRepositories
 {

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebShopDQ.App.Migrations
 {
-    public partial class init : Migration
+    public partial class Name : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -265,21 +265,38 @@ namespace WebShopDQ.App.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserToken",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    JwtId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
+                    IsRevoked = table.Column<bool>(type: "bit", nullable: false),
+                    IssuedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserToken", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserToken_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserTokens",
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    JwtId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsUsed = table.Column<bool>(type: "bit", nullable: true),
-                    IsRevoked = table.Column<bool>(type: "bit", nullable: true),
-                    IssuedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -290,11 +307,6 @@ namespace WebShopDQ.App.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserTokens_Users_UserId1",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -407,6 +419,18 @@ namespace WebShopDQ.App.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { new Guid("17e8e0cf-6db9-4eec-bc9e-4092d1f7d78a"), "4", "Role", "Seller", "SELLER" },
+                    { new Guid("5d7c0d6b-7620-45c5-8080-ca8c34f7b248"), "2", "Role", "Manager", "MANAGER" },
+                    { new Guid("6381b1ac-0567-46e2-86a4-c7177c31a249"), "3", "Role", "Shiper", "SHIPER" },
+                    { new Guid("c15d52f5-fea9-4464-a286-94dee5ec51c9"), "1", "Role", "Admin", "ADMIN" },
+                    { new Guid("e148e602-f64f-4a57-985f-8cda71ea28b3"), "5", "Role", "User", "USER" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Chats_ReceiverID",
                 table: "Chats",
@@ -517,6 +541,11 @@ namespace WebShopDQ.App.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserToken_UserId",
+                table: "UserToken",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -550,6 +579,9 @@ namespace WebShopDQ.App.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserRoles");
+
+            migrationBuilder.DropTable(
+                name: "UserToken");
 
             migrationBuilder.DropTable(
                 name: "UserTokens");

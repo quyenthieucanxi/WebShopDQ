@@ -1,4 +1,4 @@
-﻿using WebShopDQ.App.Models;
+﻿using WebShopDQ.App.ViewModels;
 
 namespace WebShopDQ.App.Services.IServices
 {
@@ -6,5 +6,6 @@ namespace WebShopDQ.App.Services.IServices
     {
         Task<bool> SendEmail(EmailMessageModel emailMessageModel);
         Task<bool> SendEmailRegister(string email, string token);
+        Task<bool> SendEmailForgetPassword(string email, string token);
     }
 }

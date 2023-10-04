@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebShopDQ.App.Models
+namespace WebShopDQ.App.ViewModels
 {
     public class EmailModel
     {

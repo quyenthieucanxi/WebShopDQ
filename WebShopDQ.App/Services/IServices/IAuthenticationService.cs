@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using WebShopDQ.App.Models;
-using WebShopDQ.App.Models.Authentication;
+using WebShopDQ.App.ViewModels;
+using WebShopDQ.App.ViewModels.Authentication;
 
 namespace WebShopDQ.App.Services.IServices
 {
@@ -11,5 +11,7 @@ namespace WebShopDQ.App.Services.IServices
         Task<LoginViewModel> NewToken(LoginViewModel loginViewModel);
         Task<LinkedEmailModel> GetConfirmEmail(string email);
         Task<bool> ConfirmEmail(string token, string email);
+        Task<LinkedEmailModel> ForgetPassword(ForgetPasswordModel model);
+        Task<IdentityResult> ChangePassword(Guid userId, string oldPassword, string newPassword);
     }
 }
