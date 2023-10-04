@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using WebShopDQ.App.Models;
 using WebShopDQ.App.ViewModels;
 using WebShopDQ.App.ViewModels.Authentication;
 
