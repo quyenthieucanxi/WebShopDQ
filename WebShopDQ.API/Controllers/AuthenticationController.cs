@@ -29,7 +29,7 @@ namespace WebShopDQ.API.Controllers
         {
             await _authenticationService.Register(registerModel, role);
             var email = await _authenticationService.GetConfirmEmail(registerModel.Email);
-            await _emailService.SendEmailRegister(email.Email, email.Link);
+            await _emailService.SendEmailRegister(email.Email!, email.Link!);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Message = $"User created & Email sent to successfully!" });
         }
@@ -66,7 +66,7 @@ namespace WebShopDQ.API.Controllers
         public async Task<IActionResult> ForgetPassword(ForgetPasswordModel model)
         {
             var mail = await _authenticationService.ForgetPassword(model);
-            await _emailService.SendEmailForgetPassword(mail.Email, mail.Link);
+            await _emailService.SendEmailForgetPassword(mail.Email!, mail.Link!);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Message = $"User forget password & Email sent to successfully!" });
         }

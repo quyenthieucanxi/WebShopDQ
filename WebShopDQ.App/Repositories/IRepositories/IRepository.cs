@@ -13,7 +13,7 @@
 
         Task Update(IEnumerable<TEntity> entities);
 
-        void Remove(int id);
+        Task Remove(int id);
 
         void Remove(TEntity entity);
 
