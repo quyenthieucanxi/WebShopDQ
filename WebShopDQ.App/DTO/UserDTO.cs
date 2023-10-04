@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebShopDQ.App.ViewModels
+namespace WebShopDQ.App.DTO
 {
-    public class UserInfoViewModel
+    public class UserDTO
     {
-        public Guid Id { get; set; }
+    }
+
+    public class UserInfoDTO
+    {
         public string? Email { get; set; }
         public string? FullName { get; set; }
         public string? PhoneNumber { get; set; }
@@ -18,13 +20,5 @@ namespace WebShopDQ.App.ViewModels
         public string? Gender { get; set; }
         public DateTime Dob { get; set; }
         public string? AvatarUrl { get; set; }
-        public bool IsActive { get; set; } = true;
-        public string? Role { get; set; }
-    }
-
-    public class UserListViewModel
-    {
-        public int TotalUser { get; set; }
-        public ICollection<UserInfoViewModel>? UserList { get; set; }
     }
 }

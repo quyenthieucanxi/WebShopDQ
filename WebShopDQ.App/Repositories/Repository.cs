@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 using WebShopDQ.App.Common;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.Models;
@@ -39,14 +40,15 @@ namespace WebShopDQ.App.Repositories
             return Entities;
         }
 
-        public async Task<TEntity> GetById(object id)
+        public async Task<TEntity?> GetById(object id)
         {
             var entity = await Entities.FindAsync(id);
-            if (entity == null) throw new KeyNotFoundException(Messages.UserNotFound);
+            if (entity == null)
+                throw new ArgumentNullException($"{nameof(entity)} not found!");
             return entity;
         }
 
-        public async void Remove(int id)
+        public async Task Remove(int id)
         {
             var entity = await GetById(id);
             if (entity == null)
@@ -81,9 +83,7 @@ namespace WebShopDQ.App.Repositories
 
         public async Task Update(TEntity entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
+            
             Entities.Update(entity);
             await _databaseContext.SaveChangesAsync();
         }

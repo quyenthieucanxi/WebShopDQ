@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebShopDQ.App.DTO;
 using WebShopDQ.App.Services;
 using WebShopDQ.App.Services.IServices;
+using WebShopDQ.App.ViewModels;
 
 namespace WebShopDQ.API.Controllers
 {
@@ -25,9 +27,28 @@ namespace WebShopDQ.API.Controllers
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
-            //await _userAccountService.GetById(userId);
             var user = await _userService.GetById(userId);
             return Ok(user);
+        }
+
+        [HttpPut("[action]")]
+        //[Authorize(Roles = "User, Manager, Shipper")]
+        public async Task<IActionResult> Update(Guid UserId,UserInfoDTO model)
+        {
+            //var infoToken = await _tokenInfoService.GetTokenInfo();
+            //var userId = infoToken.UserId;
+            var user = await _userService.Update(UserId, model);
+            return Ok(user);
+        }
+
+        [HttpGet("[action]")]
+        //[Authorize(Roles = "Manager")]
+        public async Task<IActionResult> GetAll(int page, int limit)
+        {
+            //var infoToken = await _tokenInfoService.GetTokenInfo();
+            //var userId = infoToken.UserId;
+            var userList = await _userService.GetAll(page, limit);
+            return Ok(userList);
         }
     }
 }

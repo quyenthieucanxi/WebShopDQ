@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using InsternShip.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,12 +29,35 @@ namespace WebShopDQ.App.Repositories
             _repository = repository;
         }
 
-        public async Task<UserInfoViewModel> GetById(Guid id)
+        public async Task<UserListViewModel> GetAll(int page, int limit)
         {
-            var data = await _repository.GetById(id);
-            //var data = await _userManager.FindByIdAsync(id.ToString());
-            var user = _mapper.Map<UserInfoViewModel>(data);
-            return user;
+            try
+            {
+                page = page != 0 ? page : 1;
+                limit = limit != 0 ? limit : 10;
+                var listData = new List<UserInfoViewModel>();
+                var data = await Entities.OrderByDescending(user => user.CreatedTime)
+                    .Where(user => user.IsActive == true && user.EmailConfirmed == true).ToListAsync();
+                var totalCount = data.Count;
+                data = data.Skip((page - 1) * limit).Take(limit).ToList();
+                foreach (var item in data)
+                {
+                    var roles = await _userManager.GetRolesAsync(item);
+                    var role = roles.Count > 0 ? roles[0] : "";
+                    var user = _mapper.Map<UserInfoViewModel>(item);
+                    user.Role = role;
+                    listData.Add(user);
+                }
+                return new UserListViewModel
+                {
+                    TotalUser = totalCount,
+                    UserList = listData
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

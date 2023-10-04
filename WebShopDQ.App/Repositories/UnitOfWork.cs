@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using WebShopDQ.App.Data;
 
-namespace InsternShip.Data
+namespace WebShopDQ.App.Data
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {

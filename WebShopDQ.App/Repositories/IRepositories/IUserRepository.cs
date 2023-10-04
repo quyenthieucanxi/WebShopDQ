@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShopDQ.App.Models;
 using WebShopDQ.App.ViewModels;
 
 namespace WebShopDQ.App.Repositories.IRepositories
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<User>
     {
-        Task<UserInfoViewModel> GetById(Guid id);
+        Task<UserListViewModel> GetAll(int page, int limit);
     }
 }

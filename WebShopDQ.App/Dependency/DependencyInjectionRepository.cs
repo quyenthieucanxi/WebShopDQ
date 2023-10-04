@@ -1,8 +1,8 @@
-﻿using InsternShip.Data;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Repositories;
 using WebShopDQ.App.Services.IServices;
+using WebShopDQ.App.Data;
 
 namespace WebShopDQ.App.Dependency
 {
