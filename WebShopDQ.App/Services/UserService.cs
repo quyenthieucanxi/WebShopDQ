@@ -38,17 +38,6 @@ namespace WebShopDQ.App.Services
             return user;
         }
 
-        /*public async Task<UserInfoViewModel> Update(Guid userId, UserInfoDTO model)
-        {
-            var userT = await _userRepository.GetById(userId);
-            //var user = _mapper.Map<User>(model);
-            //user.Id = userT.Id;
-            //await _userRepository.Update(user);
-            //var updatedUser = _mapper.Map<UserInfoViewModel>(user);
-            //return updatedUser;
-            return null;
-        }*/
-
         public async Task<UserInfoViewModel> Update(Guid userId, UserInfoDTO model)
         {
             var userUpdate = await _userRepository.Update(userId, model);

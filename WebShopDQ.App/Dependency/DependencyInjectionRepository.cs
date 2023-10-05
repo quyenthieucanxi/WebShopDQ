@@ -17,6 +17,7 @@ namespace WebShopDQ.App.Dependency
             service.AddTransient<IEmailRepository, EmailRepository>();
             service.AddTransient<IDecodeRepository, DecodeRepository>();
             service.AddTransient<IUserRepository, UserRepository>();
+            service.AddTransient<IPostRepository, PostRepository>();
             return service;
         }
     }
