@@ -1,46 +1,44 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using WebShopDQ.App.Data;
-using WebShopDQ.App.DTO;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.ViewModels;
 
 namespace WebShopDQ.App.Repositories
 {
-    public class PostRepository : Repository<Post>, IPostRepository
+    public class CategoryRepository : Repository<Category>, ICategoryRepository
     {
         private readonly IMapper _mapper;
-        private readonly DatabaseContext _databaseContext;
-
-        public PostRepository(IMapper mapper, DatabaseContext databaseContext) : base(databaseContext)
+        public CategoryRepository(DatabaseContext databaseContext, IMapper mapper) : base(databaseContext)
         {
-            _databaseContext = databaseContext;
             _mapper = mapper;
         }
 
-        public async Task<PostListViewModel> GetAll(int page, int limit)
+        public async Task<CategoryListViewModel> GetAll(int page, int limit)
         {
             try
             {
-                var query = Entities.Include(p => p.Category);
                 page = page != 0 ? page : 1;
                 limit = limit != 0 ? limit : 10;
-                var listData = new List<PostViewModel>();
-                var data = await query.OrderByDescending(post => post.CreatedTime).ToListAsync();
+                var listData = new List<CategoryViewModel>();
+                var data = await Entities.OrderByDescending(category => category.CreatedTime).ToListAsync();
                 var totalCount = data.Count;
                 data = data.Skip((page - 1) * limit).Take(limit).ToList();
                 foreach (var item in data)
                 {
-                    var post = _mapper.Map<PostViewModel>(item);
+                    var post = _mapper.Map<CategoryViewModel>(item);
                     listData.Add(post);
                 }
-                return new PostListViewModel
+                return new CategoryListViewModel
                 {
-                    TotalPost = totalCount,
-                    PostList = listData
+                    TotalCategory = totalCount,
+                    CategoryList = listData
                 };
             }
             catch (Exception ex)

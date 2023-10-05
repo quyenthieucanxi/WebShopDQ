@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebShopDQ.App.Common;
 using WebShopDQ.App.DTO;
+using WebShopDQ.App.Models;
 using WebShopDQ.App.Services;
 using WebShopDQ.App.Services.IServices;
 using WebShopDQ.App.ViewModels;
@@ -28,27 +30,28 @@ namespace WebShopDQ.API.Controllers
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
             var user = await _userService.GetById(userId);
-            return Ok(user);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get my info successfully.", Data = user });
         }
 
         [HttpPut("[action]")]
         //[Authorize(Roles = "User, Manager, Shipper")]
-        public async Task<IActionResult> Update(Guid UserId,UserInfoDTO model)
+        public async Task<IActionResult> Update(UserInfoDTO model)
         {
-            //var infoToken = await _tokenInfoService.GetTokenInfo();
-            //var userId = infoToken.UserId;
-            var user = await _userService.Update(UserId, model);
-            return Ok(user);
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            await _userService.Update(userId, model);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Update info successfully." });
         }
 
         [HttpGet("[action]")]
         //[Authorize(Roles = "Manager")]
         public async Task<IActionResult> GetAll(int page, int limit)
         {
-            //var infoToken = await _tokenInfoService.GetTokenInfo();
-            //var userId = infoToken.UserId;
             var userList = await _userService.GetAll(page, limit);
-            return Ok(userList);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get all user successfully.", Data = userList });
         }
 
         [HttpDelete("[action]")]
@@ -56,7 +59,8 @@ namespace WebShopDQ.API.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             var userDelete = await _userService.Delete(id);
-            return Ok(userDelete);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "The account has been successfully deleted." });
         }
     }
 }

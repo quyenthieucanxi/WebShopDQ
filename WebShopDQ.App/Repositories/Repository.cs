@@ -76,7 +76,7 @@ namespace WebShopDQ.App.Repositories
             return a;
         }
 
-        public async Task Remove(int id)
+        public async Task Remove(Guid id)
         {
             var entity = await GetById(id);
             if (entity == null)

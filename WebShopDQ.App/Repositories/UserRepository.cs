@@ -33,7 +33,7 @@ namespace WebShopDQ.App.Repositories
             _databaseContext = databaseContext;
         }
 
-        public async Task<UserInfoViewModel> Update(Guid id, UserInfoDTO model)
+        public async Task<bool> Update(Guid id, UserInfoDTO model)
         {
             var data = await _userManager.FindByIdAsync(id.ToString());
             try
@@ -43,9 +43,7 @@ namespace WebShopDQ.App.Repositories
                 entry.CurrentValues.SetValues(model);
                 _uow.SaveChanges();
                 _uow.CommitTransaction();
-                var user = await _userManager.FindByIdAsync(id.ToString());
-                var result = _mapper.Map<UserInfoViewModel>(user);
-                return result;
+                return await Task.FromResult(true);
             }
             catch (Exception ex)
             {

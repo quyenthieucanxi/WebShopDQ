@@ -13,6 +13,7 @@ namespace WebShopDQ.App.Dependency
             service.AddTransient<ITokenInfoService, TokenInfoService>();
             service.AddTransient<IUserService, UserService>();
             service.AddTransient<IPostService, PostService>();
+            service.AddTransient<ICategoryService, CategoryService>();
             return service;
         }
     }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebShopDQ.App.Common;
 using WebShopDQ.App.DTO;
+using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories;
 using WebShopDQ.App.Services;
 using WebShopDQ.App.Services.IServices;
@@ -25,14 +27,17 @@ namespace WebShopDQ.API.Controllers
             //var infoToken = await _tokenInfoService.GetTokenInfo();
             //var userId = infoToken.UserId;
             var post = await _postService.Create(postDTO, id);
-            return Ok(post);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Create post successfully." });
+
         }
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetAll(int page, int limit)
         {
             var postList = await _postService.GetAll(page, limit);
-            return Ok(postList);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get all post successfully.",Data = postList });
         }
     }
 }
