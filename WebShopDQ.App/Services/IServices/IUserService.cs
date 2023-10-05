@@ -13,5 +13,6 @@ namespace WebShopDQ.App.Services.IServices
         Task<UserInfoViewModel> GetById(Guid userId);
         Task<UserInfoViewModel> Update(Guid userId, UserInfoDTO model);
         Task<UserListViewModel> GetAll(int page, int limit);
+        Task<bool> Delete(Guid id);
     }
 }

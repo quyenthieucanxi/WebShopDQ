@@ -1,13 +1,11 @@
-﻿
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebShopDQ.App.Models
 {
     public class Post : BaseModel
     { 
-        public Guid? UserID { get; set; }
+        public Guid UserID { get; set; }
         public Guid CategoryID { get; set; }
         [Required]
         public string? Title { get; set; }

@@ -50,5 +50,13 @@ namespace WebShopDQ.API.Controllers
             var userList = await _userService.GetAll(page, limit);
             return Ok(userList);
         }
+
+        [HttpDelete("[action]")]
+        //[Authorize(Roles = "Manager")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var userDelete = await _userService.Delete(id);
+            return Ok(userDelete);
+        }
     }
 }

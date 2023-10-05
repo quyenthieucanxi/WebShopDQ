@@ -106,8 +106,10 @@ namespace WebShopDQ.App.Repositories
         {
             var login = await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, false, false);
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
+            if (!user.IsActive)
+                throw new UnauthorizedException();
             if (!login.Succeeded)
-            {   
+            {
                 if (user != null && !user.EmailConfirmed)
                     throw new UnauthorizedException("Email has not confirmed!");
                 throw new KeyNotFoundException("Wrong Email or password!");
@@ -130,7 +132,7 @@ namespace WebShopDQ.App.Repositories
                 Expires = DateTime.UtcNow.AddSeconds(20),
                 SigningCredentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha512Signature)
             };
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user!);
             foreach (var role in roles)
             {
                 tokenDescription.Subject.AddClaim(new Claim(ClaimTypes.Role, role));

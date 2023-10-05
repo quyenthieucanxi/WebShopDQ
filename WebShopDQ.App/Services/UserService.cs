@@ -2,6 +2,7 @@
 using MailKit.Search;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,21 +38,35 @@ namespace WebShopDQ.App.Services
             return user;
         }
 
+        /*public async Task<UserInfoViewModel> Update(Guid userId, UserInfoDTO model)
+        {
+            var userT = await _userRepository.GetById(userId);
+            //var user = _mapper.Map<User>(model);
+            //user.Id = userT.Id;
+            //await _userRepository.Update(user);
+            //var updatedUser = _mapper.Map<UserInfoViewModel>(user);
+            //return updatedUser;
+            return null;
+        }*/
+
         public async Task<UserInfoViewModel> Update(Guid userId, UserInfoDTO model)
         {
-            var user = await _userRepository.GetById(userId);
-            //var user = _mapper.Map<User>(model);
-            //_dbContext.Entry(user).State = EntityState.Modified;
-            //user.PhoneNumber = model.PhoneNumber;
-            await _userRepository.Update(user);
-            var updatedUser = _mapper.Map<UserInfoViewModel>(user);
-            return updatedUser;
+            var userUpdate = await _userRepository.Update(userId, model);
+            return userUpdate;
         }
 
         public async Task<UserListViewModel> GetAll(int page, int limit)
         {
             var data = await _userRepository.GetAll(page, limit);
             return data;
+        }
+
+        public async Task<bool> Delete(Guid id)
+        {
+            var user = await _userRepository.GetById(id);
+            user!.IsActive = false;
+            await _userRepository.Update(user);
+            return await Task.FromResult(true);
         }
     }
 }
