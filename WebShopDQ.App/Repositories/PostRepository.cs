@@ -25,11 +25,12 @@ namespace WebShopDQ.App.Repositories
         {
             try
             {
-                var query = Entities.Include(p => p.Category);
+                var query = Entities.Include(p => p.Category)
+                                    .Include(p => p.User);
                 page = page != 0 ? page : 1;
                 limit = limit != 0 ? limit : 10;
                 var listData = new List<PostViewModel>();
-                var data = await query.OrderByDescending(post => post.CreatedTime).ToListAsync();
+                var data = await query.OrderByDescending(post => post.CreatedTime).Where(post => post.Status == "Đang hiển thị").ToListAsync();
                 var totalCount = data.Count;
                 data = data.Skip((page - 1) * limit).Take(limit).ToList();
                 foreach (var item in data)

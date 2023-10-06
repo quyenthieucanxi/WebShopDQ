@@ -16,7 +16,11 @@ namespace WebShopDQ.App.AutoMapper
             CreateMap<User, UserInfoDTO>().ReverseMap();
             CreateMap<Post, PostViewModel>()
                 .ForMember(destination => destination.CategoryName,
-                    options => options.MapFrom(source => source.Category!.CategoryName));
+                    options => options.MapFrom(source => source.Category!.CategoryName))
+                .ForMember(destination => destination.UserId,
+                    options => options.MapFrom(source => source.User!.Id))
+                .ForMember(destination => destination.AvatarUrl,
+                    options => options.MapFrom(source => source.User!.AvatarUrl));
             CreateMap<Category, CategoryViewModel>();
                 /*.ForMember(destination => destination.IdCategory,
                     options => options.MapFrom(source => source.Id));*/

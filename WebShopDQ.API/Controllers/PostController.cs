@@ -22,11 +22,11 @@ namespace WebShopDQ.API.Controllers
 
         [HttpPost("[action]")]
         //[Authorize(Roles = "User, Seller")]
-        public async Task<IActionResult> Create(Guid id, PostDTO postDTO)
+        public async Task<IActionResult> Create(Guid categoryId, Guid userId, PostDTO postDTO)
         {
             //var infoToken = await _tokenInfoService.GetTokenInfo();
             //var userId = infoToken.UserId;
-            var post = await _postService.Create(postDTO, id);
+            var post = await _postService.Create(postDTO, userId, categoryId);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Create post successfully." });
 

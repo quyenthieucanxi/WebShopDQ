@@ -56,9 +56,9 @@ namespace WebShopDQ.API.Controllers
 
         [HttpDelete("[action]")]
         //[Authorize(Roles = "Manager")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid userId)
         {
-            var userDelete = await _userService.Delete(id);
+            var userDelete = await _userService.Delete(userId);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Delete user successfully." });
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
+using WebShopDQ.App.Common;
 using WebShopDQ.App.DTO;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
@@ -16,23 +17,28 @@ namespace WebShopDQ.App.Services
     {
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICategoryRepository _categoryRepository;
+        
 
-        public PostService(IPostRepository postRepository, IUserRepository userRepository)
+        public PostService(IPostRepository postRepository, IUserRepository userRepository,
+            ICategoryRepository categoryRepository)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
+            _categoryRepository = categoryRepository;
         }
 
-        public async Task<bool> Create(PostDTO postDTO, Guid id)
+        public async Task<bool> Create(PostDTO postDTO, Guid userId, Guid categoryId)
         {
-            var user = await _userRepository.GetById(id);
+            var user = await _userRepository.GetById(userId);
+            var category = await _categoryRepository.GetById(categoryId) ?? 
+                throw new KeyNotFoundException(Messages.CategoryNotFound);
             try
             {
                 var post = new Post
                 {
                     UserID = user!.Id,
-                    //UserID = new Guid(user.Id.ToString()),
-                    CategoryID = postDTO.CategoryID,
+                    CategoryID = category!.Id,
                     Title = postDTO.Title,
                     Description = postDTO.Description,
                     UrlImage = postDTO.UrlImage,

@@ -50,12 +50,16 @@ namespace WebShopDQ.App.Services
             return data;
         }
 
-        public async Task<bool> Delete(Guid id)
+        public async Task<bool> Delete(Guid userId)
         {
-            var user = await _userRepository.GetById(id);
-            user!.IsActive = false;
-            await _userRepository.Update(user);
-            return await Task.FromResult(true);
+            var user = await _userRepository.GetById(userId);
+            if (user != null)
+            {
+                user!.IsActive = false;
+                await _userRepository.Update(user);
+                return await Task.FromResult(true);
+            }
+            throw new KeyNotFoundException(Messages.UserNotFound);
         }
     }
 }

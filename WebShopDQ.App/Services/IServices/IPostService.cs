@@ -10,7 +10,7 @@ namespace WebShopDQ.App.Services.IServices
 {
     public interface IPostService
     {
-        Task<bool> Create(PostDTO postDTO, Guid id);
+        Task<bool> Create(PostDTO postDTO, Guid userId, Guid categoryId);
         Task<PostListViewModel> GetAll(int page, int limit);
     }
 }

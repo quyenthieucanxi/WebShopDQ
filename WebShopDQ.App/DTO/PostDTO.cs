@@ -9,8 +9,6 @@ namespace WebShopDQ.App.DTO
 {
     public class PostDTO
     {
-        //public Guid UserID { get; set; }
-        public Guid CategoryID { get; set; }
         [Required]
         public string? Title { get; set; }
         [Required]

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShopDQ.App.Common;
 using WebShopDQ.App.DTO;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories;
@@ -59,9 +60,13 @@ namespace WebShopDQ.App.Services
         public async Task<bool> Delete(Guid idCategory)
         {
             var category = await _categoryRepository.GetById(idCategory);
-            category!.IsDelete = true;
-            await _categoryRepository.Update(category);
-            return await Task.FromResult(true);
+            if (category != null)
+            {
+                category!.IsDelete = true;
+                await _categoryRepository.Update(category);
+                return await Task.FromResult(true);
+            }
+            throw new KeyNotFoundException(Messages.CategoryNotFound);
         }
     }
 }
