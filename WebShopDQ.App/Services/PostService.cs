@@ -28,17 +28,17 @@ namespace WebShopDQ.App.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<bool> Create(PostDTO postDTO, Guid userId, Guid categoryId)
+        public async Task<bool> Create(PostDTO postDTO, Guid userId)
         {
             var user = await _userRepository.GetById(userId);
-            var category = await _categoryRepository.GetById(categoryId) ?? 
-                throw new KeyNotFoundException(Messages.CategoryNotFound);
+            //var category = await _categoryRepository.GetById(categoryId) ?? 
+                //throw new KeyNotFoundException(Messages.CategoryNotFound);
             try
             {
                 var post = new Post
                 {
                     UserID = user!.Id,
-                    CategoryID = category!.Id,
+                    CategoryID = postDTO.CategoryId,
                     Title = postDTO.Title,
                     Description = postDTO.Description,
                     UrlImage = postDTO.UrlImage,

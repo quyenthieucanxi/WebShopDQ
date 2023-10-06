@@ -35,7 +35,7 @@ namespace WebShopDQ.API.Controllers
                         new Response { Status = "Success", Code = 200, Message = "Get all category successfully.", Data = categoryList });
         }
 
-        [HttpPut("[action]")]
+        [HttpPut("[action]/{idCategory}")]
         //[Authorize(Roles = "Manager")]
         public async Task<IActionResult> Update(Guid idCategory, CategoryDTO model)
         {
@@ -44,7 +44,7 @@ namespace WebShopDQ.API.Controllers
                         new Response { Status = "Success", Code = 200, Message = "Update category successfully." });
         }
 
-        [HttpDelete("[action]")]
+        [HttpDelete("[action]/{idCategory}")]
         //[Authorize(Roles = "Manager")]
         public async Task<IActionResult> Delete(Guid idCategory)
         {

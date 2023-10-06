@@ -36,7 +36,7 @@ namespace WebShopDQ.API.Controllers
 
         [HttpPut("[action]")]
         //[Authorize(Roles = "User, Manager, Shipper")]
-        public async Task<IActionResult> Update(UserInfoDTO model)
+        public async Task<IActionResult> UpdateInfo(UserInfoDTO model)
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
@@ -54,7 +54,7 @@ namespace WebShopDQ.API.Controllers
                         new Response { Status = "Success", Code = 200, Message = "Get all user successfully.", Data = userList });
         }
 
-        [HttpDelete("[action]")]
+        [HttpDelete("[action]/{userId}")]
         //[Authorize(Roles = "Manager")]
         public async Task<IActionResult> Delete(Guid userId)
         {

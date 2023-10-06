@@ -14,22 +14,24 @@ namespace WebShopDQ.API.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostService _postService;
+        private readonly ITokenInfoService _tokenInfoService;
 
-        public PostController(IPostService postService)
+        public PostController(IPostService postService, ITokenInfoService tokenInfoService)
         {
             _postService = postService;
+            _tokenInfoService = tokenInfoService;
+
         }
 
         [HttpPost("[action]")]
         //[Authorize(Roles = "User, Seller")]
-        public async Task<IActionResult> Create(Guid categoryId, Guid userId, PostDTO postDTO)
+        public async Task<IActionResult> Create(PostDTO postDTO)
         {
-            //var infoToken = await _tokenInfoService.GetTokenInfo();
-            //var userId = infoToken.UserId;
-            var post = await _postService.Create(postDTO, userId, categoryId);
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            var post = await _postService.Create(postDTO, userId);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Create post successfully." });
-
         }
 
         [HttpGet("[action]")]
