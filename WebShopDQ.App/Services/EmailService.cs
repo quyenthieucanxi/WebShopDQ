@@ -32,7 +32,7 @@ namespace WebShopDQ.App.Services
         {
             //var emailModel = await _authenticationRepository.GetConfirmEmail(email);
            
-            var verifLink =  "https://localhost:5000" + token;
+            var verifLink =  "https://localhost:7279" + token;
             var body = await _htmlBodyRepository.GetBody("Verify.html");
             body = body.Replace("[[verilink]]", verifLink);
             var confirmationMail = new EmailMessageModel

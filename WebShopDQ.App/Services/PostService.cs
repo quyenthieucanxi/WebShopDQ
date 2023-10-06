@@ -58,5 +58,10 @@ namespace WebShopDQ.App.Services
         {
             return await _postRepository.GetAll(page, limit);
         }
+
+        public async Task<PostListViewModel> GetByStatus(int page, int limit, string status, Guid userId)
+        {
+            return await _postRepository.GetByStatus(page, limit, status, userId);
+        }
     }
 }

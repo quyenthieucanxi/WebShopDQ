@@ -11,5 +11,6 @@ namespace WebShopDQ.App.Repositories.IRepositories
     public interface IPostRepository : IRepository<Post>
     {
         Task<PostListViewModel> GetAll(int page, int limit);
+        Task<PostListViewModel> GetByStatus(int page, int limit, string status, Guid userId);
     }
 }
