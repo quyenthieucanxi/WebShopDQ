@@ -4,7 +4,7 @@ namespace WebShopDQ.App.Repositories.IRepositories
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        Task<bool> Add(TEntity entity);
+        Task Add(TEntity entity);
         Task Add(IEnumerable<TEntity> entities);
 
         Task<TEntity?> GetById(object id);

@@ -31,7 +31,7 @@ namespace WebShopDQ.API.Controllers
             var userId = infoToken.UserId;
             var user = await _userService.GetById(userId);
             return StatusCode(StatusCodes.Status200OK,
-                        new Response { Status = "Success", Code = 200, Message = "Get my info successfully.", Data = user });
+                        new Response { Status = "Success", Code = 200, Message = "Get my info user successfully.", Data = user });
         }
 
         [HttpPut("[action]")]
@@ -42,7 +42,7 @@ namespace WebShopDQ.API.Controllers
             var userId = infoToken.UserId;
             await _userService.Update(userId, model);
             return StatusCode(StatusCodes.Status200OK,
-                        new Response { Status = "Success", Code = 200, Message = "Update info successfully." });
+                        new Response { Status = "Success", Code = 200, Message = "Update info user successfully." });
         }
 
         [HttpGet("[action]")]
@@ -60,7 +60,7 @@ namespace WebShopDQ.API.Controllers
         {
             var userDelete = await _userService.Delete(id);
             return StatusCode(StatusCodes.Status200OK,
-                        new Response { Status = "Success", Code = 200, Message = "The account has been successfully deleted." });
+                        new Response { Status = "Success", Code = 200, Message = "Delete user successfully." });
         }
     }
 }

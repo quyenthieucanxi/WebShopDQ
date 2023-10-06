@@ -12,8 +12,8 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20231004124543_init")]
-    partial class init
+    [Migration("20231006082020_Name")]
+    partial class Name
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -247,6 +247,9 @@ namespace WebShopDQ.App.Migrations
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
 
@@ -427,11 +430,18 @@ namespace WebShopDQ.App.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -443,7 +453,7 @@ namespace WebShopDQ.App.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<Guid?>("UserID")
+                    b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -565,35 +575,35 @@ namespace WebShopDQ.App.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ed5a7bba-0c88-4ada-bbfc-51c14e723913"),
+                            Id = new Guid("5a3695ff-bcab-4d9b-bf03-c31de6f7a77b"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("77ae7db1-4585-4477-ba7a-ca1748edd0ba"),
+                            Id = new Guid("71345846-7613-415b-a58b-2e0fcf5eba83"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("d1599dfd-0901-4be3-b39e-c2d7515f1edf"),
+                            Id = new Guid("e69db602-e986-43bd-a379-bc875f8a035f"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("5cc47a8f-adb0-44b4-8035-d9e5be8dd7fa"),
+                            Id = new Guid("ca2fb005-5e68-42fe-a2de-a3355299fefb"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("40f1685b-acf3-4bef-839b-39f50a3f0065"),
+                            Id = new Guid("2822430f-7e29-41b0-a5ae-9e97a49db915"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"
@@ -790,7 +800,8 @@ namespace WebShopDQ.App.Migrations
                     b.HasOne("WebShopDQ.App.Models.User", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
 

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebShopDQ.App.DTO;
 using WebShopDQ.App.Models;
+using WebShopDQ.App.Repositories;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Services.IServices;
 using WebShopDQ.App.ViewModels;
@@ -31,8 +32,8 @@ namespace WebShopDQ.App.Services
                 {
                     CategoryName = categoryDTO.CategoryName
                 };
-                var result = await _categoryRepository.Add(category);
-                return result;
+                await _categoryRepository.Add(category);
+                return await Task.FromResult(true);
             }
             catch (Exception ex)
             {
@@ -55,11 +56,12 @@ namespace WebShopDQ.App.Services
             return await Task.FromResult(true);
         }
 
-        /*public async Task<bool> Delete(Guid idCategory)
+        public async Task<bool> Delete(Guid idCategory)
         {
-            //var category = await _categoryRepository.GetById(idCategory);
-            var a = await _categoryRepository.Remove(idCategory);
+            var category = await _categoryRepository.GetById(idCategory);
+            category!.IsDelete = true;
+            await _categoryRepository.Update(category);
             return await Task.FromResult(true);
-        }*/
+        }
     }
 }

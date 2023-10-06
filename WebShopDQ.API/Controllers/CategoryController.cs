@@ -37,11 +37,20 @@ namespace WebShopDQ.API.Controllers
 
         [HttpPut("[action]")]
         //[Authorize(Roles = "Manager")]
-        public async Task<IActionResult> Update(Guid categoryId, CategoryDTO model)
+        public async Task<IActionResult> Update(Guid idCategory, CategoryDTO model)
         {
-            var categoryUpdate = await _categoryService.Update(categoryId, model);
+            var categoryUpdate = await _categoryService.Update(idCategory, model);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Update category successfully." });
+        }
+
+        [HttpDelete("[action]")]
+        //[Authorize(Roles = "Manager")]
+        public async Task<IActionResult> Delete(Guid idCategory)
+        {
+            var userDelete = await _categoryService.Delete(idCategory);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Delete category successfully." });
         }
     }
 }

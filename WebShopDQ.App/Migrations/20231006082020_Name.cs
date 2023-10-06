@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebShopDQ.App.Migrations
 {
-    public partial class init : Migration
+    public partial class Name : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,6 +15,7 @@ namespace WebShopDQ.App.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CategoryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -172,13 +173,15 @@ namespace WebShopDQ.App.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CategoryID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     UrlImage = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -424,11 +427,11 @@ namespace WebShopDQ.App.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("40f1685b-acf3-4bef-839b-39f50a3f0065"), "5", "Role", "User", "USER" },
-                    { new Guid("5cc47a8f-adb0-44b4-8035-d9e5be8dd7fa"), "4", "Role", "Seller", "SELLER" },
-                    { new Guid("77ae7db1-4585-4477-ba7a-ca1748edd0ba"), "2", "Role", "Manager", "MANAGER" },
-                    { new Guid("d1599dfd-0901-4be3-b39e-c2d7515f1edf"), "3", "Role", "Shiper", "SHIPER" },
-                    { new Guid("ed5a7bba-0c88-4ada-bbfc-51c14e723913"), "1", "Role", "Admin", "ADMIN" }
+                    { new Guid("2822430f-7e29-41b0-a5ae-9e97a49db915"), "5", "Role", "User", "USER" },
+                    { new Guid("5a3695ff-bcab-4d9b-bf03-c31de6f7a77b"), "1", "Role", "Admin", "ADMIN" },
+                    { new Guid("71345846-7613-415b-a58b-2e0fcf5eba83"), "2", "Role", "Manager", "MANAGER" },
+                    { new Guid("ca2fb005-5e68-42fe-a2de-a3355299fefb"), "4", "Role", "Seller", "SELLER" },
+                    { new Guid("e69db602-e986-43bd-a379-bc875f8a035f"), "3", "Role", "Shiper", "SHIPER" }
                 });
 
             migrationBuilder.CreateIndex(

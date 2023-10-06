@@ -20,14 +20,13 @@ namespace WebShopDQ.App.Repositories
             Entities = _databaseContext.Set<TEntity>();
         }
 
-        public async Task<bool> Add(TEntity entity)
+        public async Task Add(TEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
             Entities.Add(entity);
             await _databaseContext.SaveChangesAsync();
-            return await Task.FromResult(true);
         }
 
         public async Task Add(IEnumerable<TEntity> entities)

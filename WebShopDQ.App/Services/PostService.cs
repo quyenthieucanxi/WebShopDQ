@@ -39,8 +39,8 @@ namespace WebShopDQ.App.Services
                     Price = postDTO.Price,
                     Address = postDTO.Address,
                 };
-                var result = await _postRepository.Add(post);
-                return result;
+                await _postRepository.Add(post);
+                return await Task.FromResult(true);
             }
             catch (Exception ex)
             {
