@@ -35,6 +35,7 @@ namespace WebShopDQ.API.Controllers
         }
 
         [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Seller")]
         public async Task<IActionResult> GetAll(int page, int limit)
         {
             var postList = await _postService.GetAll(page, limit);
@@ -43,13 +44,23 @@ namespace WebShopDQ.API.Controllers
         }
 
         [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Seller")]
         public async Task<IActionResult> GetByStatus(int page, int limit, string status)
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
             var postList = await _postService.GetByStatus(page, limit, status, userId);
             return StatusCode(StatusCodes.Status200OK,
-                        new Response { Status = "Success", Code = 200, Message = "Get all post successfully.", Data = postList });
+                        new Response { Status = "Success", Code = 200, Message = "Get posts successfully.", Data = postList });
+        }
+
+        [HttpPut("[action]/{idPost}")]
+        //[Authorize(Roles = "Manager")]
+        public async Task<IActionResult> Delete(Guid idPost)
+        {
+            var userDelete = await _postService.Update(idPost);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Update post successfully." });
         }
     }
 }

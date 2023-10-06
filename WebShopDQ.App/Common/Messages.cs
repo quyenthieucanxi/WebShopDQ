@@ -6,6 +6,7 @@ namespace WebShopDQ.App.Common
     {
         public const string UserNotFound = "User not found!";
         public const string EmailNotFound = "Email not found!";
+        public const string PostNotFound = "Post not found!";
         public const string CategoryNotFound = "Category not found!";
         public const string ConfirmEmail = "Your account has been confirmed.";
     }

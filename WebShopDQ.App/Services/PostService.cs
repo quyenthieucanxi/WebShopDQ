@@ -63,5 +63,13 @@ namespace WebShopDQ.App.Services
         {
             return await _postRepository.GetByStatus(page, limit, status, userId);
         }
+
+        public async Task<bool> Update(Guid postId)
+        {
+            var post = await _postRepository.GetById(postId) ?? throw new KeyNotFoundException(Messages.PostNotFound);
+            post.Status = "Đang hiển thị";
+            await _postRepository.Update(post);
+            return await Task.FromResult(true);
+        }
     }
 }
