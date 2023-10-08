@@ -124,15 +124,15 @@ namespace WebShopDQ.App.Migrations
                 name: "Friendships",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FollowerID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FollowingID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Friendships", x => new { x.FollowingID, x.FollowerID });
+                    table.PrimaryKey("PK_Friendships", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Friendships_Users_FollowerID",
                         column: x => x.FollowerID,
@@ -427,11 +427,11 @@ namespace WebShopDQ.App.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("2822430f-7e29-41b0-a5ae-9e97a49db915"), "5", "Role", "User", "USER" },
-                    { new Guid("5a3695ff-bcab-4d9b-bf03-c31de6f7a77b"), "1", "Role", "Admin", "ADMIN" },
-                    { new Guid("71345846-7613-415b-a58b-2e0fcf5eba83"), "2", "Role", "Manager", "MANAGER" },
-                    { new Guid("ca2fb005-5e68-42fe-a2de-a3355299fefb"), "4", "Role", "Seller", "SELLER" },
-                    { new Guid("e69db602-e986-43bd-a379-bc875f8a035f"), "3", "Role", "Shiper", "SHIPER" }
+                    { new Guid("0e8dcc24-ef30-407a-87a7-bd305c481ec9"), "1", "Role", "Admin", "ADMIN" },
+                    { new Guid("6db06a85-fb41-497f-b335-36febdf2b8bb"), "4", "Role", "Seller", "SELLER" },
+                    { new Guid("79da5fcb-8b34-40ab-8de6-69f9b58b3779"), "5", "Role", "User", "USER" },
+                    { new Guid("a41c1f52-61f8-4909-b61c-8809d160bdc2"), "3", "Role", "Shiper", "SHIPER" },
+                    { new Guid("c8fb4f67-e609-412b-aec0-30e26aebe1ed"), "2", "Role", "Manager", "MANAGER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -448,6 +448,11 @@ namespace WebShopDQ.App.Migrations
                 name: "IX_Friendships_FollowerID",
                 table: "Friendships",
                 column: "FollowerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Friendships_FollowingID",
+                table: "Friendships",
+                column: "FollowingID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Message_ChatId",

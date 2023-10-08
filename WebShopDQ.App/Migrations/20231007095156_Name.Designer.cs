@@ -12,7 +12,7 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20231006082020_Name")]
+    [Migration("20231007095156_Name")]
     partial class Name
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -287,24 +287,27 @@ namespace WebShopDQ.App.Migrations
 
             modelBuilder.Entity("WebShopDQ.App.Models.Friendship", b =>
                 {
-                    b.Property<Guid>("FollowingID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("FollowerID")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("FollowerID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FollowingID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("FollowingID", "FollowerID");
+                    b.HasKey("Id");
 
                     b.HasIndex("FollowerID");
+
+                    b.HasIndex("FollowingID");
 
                     b.ToTable("Friendships");
                 });
@@ -575,35 +578,35 @@ namespace WebShopDQ.App.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5a3695ff-bcab-4d9b-bf03-c31de6f7a77b"),
+                            Id = new Guid("0e8dcc24-ef30-407a-87a7-bd305c481ec9"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("71345846-7613-415b-a58b-2e0fcf5eba83"),
+                            Id = new Guid("c8fb4f67-e609-412b-aec0-30e26aebe1ed"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("e69db602-e986-43bd-a379-bc875f8a035f"),
+                            Id = new Guid("a41c1f52-61f8-4909-b61c-8809d160bdc2"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("ca2fb005-5e68-42fe-a2de-a3355299fefb"),
+                            Id = new Guid("6db06a85-fb41-497f-b335-36febdf2b8bb"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("2822430f-7e29-41b0-a5ae-9e97a49db915"),
+                            Id = new Guid("79da5fcb-8b34-40ab-8de6-69f9b58b3779"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"

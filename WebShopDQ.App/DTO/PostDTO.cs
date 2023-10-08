@@ -20,4 +20,17 @@ namespace WebShopDQ.App.DTO
         [Required]
         public string? Address { get; set; }
     }
+
+    public class UpdatePostDTO
+    {
+        [Required]
+        public string? Title { get; set; }
+        [Required]
+        public string? Description { get; set; }
+        [Required]
+        public string? UrlImage { get; set; }
+        public double Price { get; set; }
+        [Required]
+        public string? Address { get; set; }
+    }
 }

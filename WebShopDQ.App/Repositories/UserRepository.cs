@@ -20,16 +20,14 @@ namespace WebShopDQ.App.Repositories
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
-        private readonly IRepository<User> _repository;
         private readonly DatabaseContext _databaseContext;
 
         public UserRepository(DatabaseContext databaseContext, IUnitOfWork uow, IMapper mapper,
-            UserManager<User> userManager, IRepository<User> repository) : base(databaseContext)
+            UserManager<User> userManager) : base(databaseContext)
         {
             _uow = uow;
             _mapper = mapper;
             _userManager = userManager;
-            _repository = repository;
             _databaseContext = databaseContext;
         }
 

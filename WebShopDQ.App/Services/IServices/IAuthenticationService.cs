@@ -6,7 +6,7 @@ namespace WebShopDQ.App.Services.IServices
 {
     public interface IAuthenticationService
     {
-        Task<IdentityResult> Register(RegisterModel registerModel, string role);
+        Task<IdentityResult> Register(RegisterModel registerModel);
         Task<LoginViewModel> Login(LoginModel loginModel);
         Task<LoginViewModel> NewToken(LoginViewModel loginViewModel);
         Task<LinkedEmailModel> GetConfirmEmail(string email);

@@ -21,6 +21,8 @@ namespace WebShopDQ.App.Repositories.IRepositories
 
         Task Update(IEnumerable<TEntity> entities);
 
+        Task<bool> Remove(Expression<Func<TEntity, bool>> criteria);
+
         Task Remove(Guid id);
 
         void Remove(TEntity entity);

@@ -56,7 +56,7 @@ namespace WebShopDQ.App.Repositories
                 throw new DuplicateException("Username already exists!");
             }
         }
-        public async Task<IdentityResult> Register(RegisterModel registerModel, string role)
+        public async Task<IdentityResult> Register(RegisterModel registerModel)
         {
             //chekc user
             var userByEmail = await _userManager.FindByEmailAsync(registerModel.Email);
@@ -89,6 +89,7 @@ namespace WebShopDQ.App.Repositories
                 UserName = registerModel.Email,
                 FullName = registerModel.UserName,
             };
+            string role = "User";
             if (await _roleManager.RoleExistsAsync(role))
             {
                 var result = await _userManager.CreateAsync(user, registerModel.Password);
@@ -106,14 +107,15 @@ namespace WebShopDQ.App.Repositories
         {
             var login = await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, false, false);
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
-            if (!user.IsActive)
-                throw new UnauthorizedException();
+            
             if (!login.Succeeded)
             {
                 if (user != null && !user.EmailConfirmed)
                     throw new UnauthorizedException("Email has not confirmed!");
                 throw new KeyNotFoundException("Wrong Email or password!");
             }
+            if (!user.IsActive)
+                throw new UnauthorizedException();
             var jwtToken = await GenerateToken(user);
             return jwtToken;
         }

@@ -29,7 +29,7 @@ namespace WebShopDQ.API.Controllers
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
-            var post = await _postService.Create(postDTO, userId);
+            await _postService.Create(postDTO, userId);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Create post successfully." });
         }
@@ -56,9 +56,9 @@ namespace WebShopDQ.API.Controllers
 
         [HttpPut("[action]/{idPost}")]
         //[Authorize(Roles = "Manager")]
-        public async Task<IActionResult> Delete(Guid idPost)
+        public async Task<IActionResult> UpdateStatus(Guid idPost)
         {
-            var userDelete = await _postService.Update(idPost);
+            await _postService.UpdateStatus(idPost);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Update post successfully." });
         }

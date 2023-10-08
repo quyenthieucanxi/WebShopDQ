@@ -13,11 +13,9 @@ namespace WebShopDQ.App.Repositories
     public class PostRepository : Repository<Post>, IPostRepository
     {
         private readonly IMapper _mapper;
-        private readonly DatabaseContext _databaseContext;
 
         public PostRepository(IMapper mapper, DatabaseContext databaseContext) : base(databaseContext)
         {
-            _databaseContext = databaseContext;
             _mapper = mapper;
         }
 

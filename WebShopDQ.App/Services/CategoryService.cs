@@ -50,10 +50,10 @@ namespace WebShopDQ.App.Services
 
         public async Task<bool> Update(Guid idCategory, CategoryDTO categoryDTO)
         {
-            var category = await _categoryRepository.GetById(idCategory);
+            var category = await _categoryRepository.GetById(idCategory) ??
+                throw new KeyNotFoundException(Messages.CategoryNotFound);
             category!.CategoryName = categoryDTO.CategoryName;
             await _categoryRepository.Update(category);
-            _mapper.Map<CategoryViewModel>(category);
             return await Task.FromResult(true);
         }
 

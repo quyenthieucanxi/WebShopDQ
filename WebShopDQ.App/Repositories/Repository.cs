@@ -68,11 +68,21 @@ namespace WebShopDQ.App.Repositories
             return await query.Where(criteria).ToListAsync();
         }
 
-
         public async Task<TEntity?> GetById(object id)
         {
             var a = await Entities.FindAsync(id);
             return a;
+        }
+
+        public async Task<bool> Remove(Expression<Func<TEntity, bool>> criteria)
+        {
+            var entity = Entities.FirstOrDefault(criteria);
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            Entities.Remove(entity);
+            await _databaseContext.SaveChangesAsync();
+            return await Task.FromResult(true);
         }
 
         public async Task Remove(Guid id)

@@ -25,13 +25,13 @@ namespace WebShopDQ.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Resgister([FromBody] RegisterModel registerModel, string role)
+        public async Task<IActionResult> Resgister([FromBody] RegisterModel registerModel)
         {
-            await _authenticationService.Register(registerModel, role);
+            await _authenticationService.Register(registerModel);
             var email = await _authenticationService.GetConfirmEmail(registerModel.Email);
             await _emailService.SendEmailRegister(email.Email!, email.Link!);
             return StatusCode(StatusCodes.Status200OK,
-                        new Response { Status = "Success", Code = 200, Message = "User created & Email sent to successfully!" });
+                        new Response { Status = "Success", Code = 200, Message = "User created & Email sent to verify account!" });
         }
 
         [HttpPost("login")]

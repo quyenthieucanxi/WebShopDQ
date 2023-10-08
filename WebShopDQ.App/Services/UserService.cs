@@ -40,8 +40,8 @@ namespace WebShopDQ.App.Services
 
         public async Task<bool> Update(Guid userId, UserInfoDTO model)
         {
-            await _userRepository.Update(userId, model);
-            return await Task.FromResult(true);
+            var data = await _userRepository.Update(userId, model);
+            return data;
         }
 
         public async Task<UserListViewModel> GetAll(int page, int limit)

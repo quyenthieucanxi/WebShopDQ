@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using WebShopDQ.App.Common;
+using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
@@ -17,22 +19,24 @@ namespace WebShopDQ.App.Services
     {
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
+        private readonly DatabaseContext _databaseContext;
+        private readonly IUnitOfWork _uow;
         private readonly ICategoryRepository _categoryRepository;
         
 
-        public PostService(IPostRepository postRepository, IUserRepository userRepository,
-            ICategoryRepository categoryRepository)
+        public PostService(DatabaseContext databaseContext, IPostRepository postRepository, IUserRepository userRepository,
+            ICategoryRepository categoryRepository, IUnitOfWork uow)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
             _categoryRepository = categoryRepository;
+            _databaseContext = databaseContext;
+            _uow = uow;
         }
 
         public async Task<bool> Create(PostDTO postDTO, Guid userId)
         {
             var user = await _userRepository.GetById(userId);
-            //var category = await _categoryRepository.GetById(categoryId) ?? 
-                //throw new KeyNotFoundException(Messages.CategoryNotFound);
             try
             {
                 var post = new Post
@@ -64,7 +68,7 @@ namespace WebShopDQ.App.Services
             return await _postRepository.GetByStatus(page, limit, status, userId);
         }
 
-        public async Task<bool> Update(Guid postId)
+        public async Task<bool> UpdateStatus(Guid postId)
         {
             var post = await _postRepository.GetById(postId) ?? throw new KeyNotFoundException(Messages.PostNotFound);
             post.Status = "Đang hiển thị";
