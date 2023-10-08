@@ -30,5 +30,9 @@ namespace WebShopDQ.App.Repositories.IRepositories
         void Remove(params TEntity[] entities);
 
         void Remove(IEnumerable<TEntity> entities);
+
+        Task<int> Count(Expression<Func<TEntity, bool>> criteria);
+
+        Task<TEntity> CheckExist(Expression<Func<TEntity, bool>> criteria);
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebShopDQ.App.Common;
+using WebShopDQ.App.Common.Exceptions;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Services.IServices;
@@ -23,8 +24,16 @@ namespace WebShopDQ.App.Services
 
         public async Task<bool> Follow(Guid followerId, Guid followingId)
         {
+            if (followerId == followingId) throw new DuplicateException("Can not follow!");
+            var existingFriendship = await _friendshipRepository.CheckExist(f => f.FollowerID == followerId);
+            if (existingFriendship != null)
+            {
+                throw new DuplicateException("Friendship already exists!");
+            }
+
             var follower = await _userRepository.GetById(followerId);
             var following = await _userRepository.GetById(followingId) ?? throw new KeyNotFoundException(Messages.UserNotFound);
+            
             var friendship = new Friendship
             {
                 FollowerID = follower!.Id,

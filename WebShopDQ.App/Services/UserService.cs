@@ -23,19 +23,34 @@ namespace WebShopDQ.App.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly DatabaseContext _dbContext;
+        private readonly IFriendshipRepository _friendshipRepository;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, DatabaseContext dbContext)
+        public UserService(IUserRepository userRepository, IMapper mapper,
+            DatabaseContext dbContext, IFriendshipRepository friendshipRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _dbContext = dbContext;
+            _friendshipRepository = friendshipRepository;
         }
 
         public async Task<UserInfoViewModel> GetById(Guid userId)
         {
-            var data = await _userRepository.GetById(userId);
-            var user = _mapper.Map<UserInfoViewModel>(data);
-            return user;
+            try
+            {
+                var data = await _userRepository.GetById(userId);
+                var followingCount = await _friendshipRepository.Count(f => f.FollowerID == userId);
+                var followedCount = await _friendshipRepository.Count(f => f.FollowingID == userId);
+
+                var user = _mapper.Map<UserInfoViewModel>(data);
+                user.FollowedCount = followedCount;
+                user.FollowingCount = followingCount;
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<bool> Update(Guid userId, UserInfoDTO model)

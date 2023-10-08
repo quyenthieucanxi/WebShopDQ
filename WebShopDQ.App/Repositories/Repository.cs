@@ -133,5 +133,22 @@ namespace WebShopDQ.App.Repositories
             Entities.UpdateRange(entities);
             await _databaseContext.SaveChangesAsync();
         }
+
+        public async Task<int> Count(Expression<Func<TEntity, bool>> criteria)
+        {
+            var entity = Entities.CountAsync(criteria);
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            return await entity;
+        }
+
+        public async Task<TEntity> CheckExist(Expression<Func<TEntity, bool>> criteria)
+        {
+            var entity = await Entities.FirstOrDefaultAsync(criteria);
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            return entity;
+        }
     }
 }
