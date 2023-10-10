@@ -48,6 +48,7 @@ namespace WebShopDQ.App.Services
                     UrlImage = postDTO.UrlImage,
                     Price = postDTO.Price,
                     Address = postDTO.Address,
+                    Quantity = postDTO.Quantity
                 };
                 await _postRepository.Add(post);
                 return await Task.FromResult(true);

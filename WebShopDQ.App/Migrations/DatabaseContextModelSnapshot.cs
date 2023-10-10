@@ -440,6 +440,9 @@ namespace WebShopDQ.App.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -576,35 +579,35 @@ namespace WebShopDQ.App.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("0e8dcc24-ef30-407a-87a7-bd305c481ec9"),
+                            Id = new Guid("85df8d8e-1120-44d9-8e39-ff9f18aa1934"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("c8fb4f67-e609-412b-aec0-30e26aebe1ed"),
+                            Id = new Guid("d10dfb48-d373-4cdd-a13a-a9e4b369552a"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("a41c1f52-61f8-4909-b61c-8809d160bdc2"),
+                            Id = new Guid("a418f688-5ec0-4132-b9d5-bbd0d6883d28"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("6db06a85-fb41-497f-b335-36febdf2b8bb"),
+                            Id = new Guid("1d3b0a42-a6f2-4785-8a61-0811c0008ec8"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("79da5fcb-8b34-40ab-8de6-69f9b58b3779"),
+                            Id = new Guid("0a8ab90e-571b-4384-a7c2-cb3180d8d388"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"

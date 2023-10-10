@@ -19,6 +19,7 @@ namespace WebShopDQ.App.DTO
         public double Price { get; set; }
         [Required]
         public string? Address { get; set; }
+        public int Quantity { get; set; }
     }
 
     public class UpdatePostDTO

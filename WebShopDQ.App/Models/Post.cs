@@ -18,6 +18,8 @@ namespace WebShopDQ.App.Models
         public string? Address { get; set; }
         public bool IsDelete { get; set; } = false;
         public string Status { get; set; } = "Chờ duyệt";
+        [Required]
+        public int Quantity { get; set; }
         [NotMapped]
         public User? User { get; set; }
         [NotMapped]

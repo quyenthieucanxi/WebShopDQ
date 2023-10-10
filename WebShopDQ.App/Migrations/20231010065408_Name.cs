@@ -182,6 +182,7 @@ namespace WebShopDQ.App.Migrations
                     Address = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     IsDelete = table.Column<bool>(type: "bit", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -427,11 +428,11 @@ namespace WebShopDQ.App.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("0e8dcc24-ef30-407a-87a7-bd305c481ec9"), "1", "Role", "Admin", "ADMIN" },
-                    { new Guid("6db06a85-fb41-497f-b335-36febdf2b8bb"), "4", "Role", "Seller", "SELLER" },
-                    { new Guid("79da5fcb-8b34-40ab-8de6-69f9b58b3779"), "5", "Role", "User", "USER" },
-                    { new Guid("a41c1f52-61f8-4909-b61c-8809d160bdc2"), "3", "Role", "Shiper", "SHIPER" },
-                    { new Guid("c8fb4f67-e609-412b-aec0-30e26aebe1ed"), "2", "Role", "Manager", "MANAGER" }
+                    { new Guid("0a8ab90e-571b-4384-a7c2-cb3180d8d388"), "5", "Role", "User", "USER" },
+                    { new Guid("1d3b0a42-a6f2-4785-8a61-0811c0008ec8"), "4", "Role", "Seller", "SELLER" },
+                    { new Guid("85df8d8e-1120-44d9-8e39-ff9f18aa1934"), "1", "Role", "Admin", "ADMIN" },
+                    { new Guid("a418f688-5ec0-4132-b9d5-bbd0d6883d28"), "3", "Role", "Shiper", "SHIPER" },
+                    { new Guid("d10dfb48-d373-4cdd-a13a-a9e4b369552a"), "2", "Role", "Manager", "MANAGER" }
                 });
 
             migrationBuilder.CreateIndex(
