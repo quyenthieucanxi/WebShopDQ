@@ -14,5 +14,6 @@ namespace WebShopDQ.App.Services.IServices
         Task<PostListViewModel> GetAll(int page, int limit);
         Task<PostListViewModel> GetByStatus(int page, int limit, string status, Guid userId);
         Task<bool> UpdateStatus(Guid postId);
+        Task<PostViewModel> GetById(Guid postId);
     }
 }

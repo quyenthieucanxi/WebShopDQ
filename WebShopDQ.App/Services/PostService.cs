@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using WebShopDQ.App.Common;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
 using WebShopDQ.App.Models;
+using WebShopDQ.App.Repositories;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Services.IServices;
 using WebShopDQ.App.ViewModels;
@@ -22,16 +24,18 @@ namespace WebShopDQ.App.Services
         private readonly DatabaseContext _databaseContext;
         private readonly IUnitOfWork _uow;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
         
 
         public PostService(DatabaseContext databaseContext, IPostRepository postRepository, IUserRepository userRepository,
-            ICategoryRepository categoryRepository, IUnitOfWork uow)
+            ICategoryRepository categoryRepository, IUnitOfWork uow, IMapper mapper)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
             _categoryRepository = categoryRepository;
             _databaseContext = databaseContext;
             _uow = uow;
+            _mapper = mapper;
         }
 
         public async Task<bool> Create(PostDTO postDTO, Guid userId)
@@ -67,6 +71,21 @@ namespace WebShopDQ.App.Services
         public async Task<PostListViewModel> GetByStatus(int page, int limit, string status, Guid userId)
         {
             return await _postRepository.GetByStatus(page, limit, status, userId);
+        }
+
+        public async Task<PostViewModel> GetById(Guid postId)
+        {
+            try
+            {
+                var data = await _postRepository.GetById(postId);
+
+                var post = _mapper.Map<PostViewModel>(data);
+                return post;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<bool> UpdateStatus(Guid postId)

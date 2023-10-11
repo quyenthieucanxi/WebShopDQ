@@ -22,8 +22,9 @@ namespace WebShopDQ.App.AutoMapper
                 .ForMember(destination => destination.AvatarUrl,
                     options => options.MapFrom(source => source.User!.AvatarUrl));
             CreateMap<Category, CategoryViewModel>();
-                /*.ForMember(destination => destination.IdCategory,
-                    options => options.MapFrom(source => source.Id));*/
+            /*.ForMember(destination => destination.IdCategory,
+                options => options.MapFrom(source => source.Id));*/
+            CreateMap<Order, OrderViewModel>();
         }
     }
 }

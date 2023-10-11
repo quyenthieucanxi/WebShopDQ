@@ -20,7 +20,6 @@ namespace WebShopDQ.API.Controllers
         {
             _postService = postService;
             _tokenInfoService = tokenInfoService;
-
         }
 
         [HttpPost("[action]")]
@@ -61,6 +60,14 @@ namespace WebShopDQ.API.Controllers
             await _postService.UpdateStatus(idPost);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Update post successfully." });
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetById(Guid postId)
+        {
+            var post = await _postService.GetById(postId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get detail post successfully.", Data = post });
         }
     }
 }
