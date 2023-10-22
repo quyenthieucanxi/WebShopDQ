@@ -67,7 +67,9 @@ namespace WebShopDQ.App.Migrations
                     AvatarUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -350,6 +352,10 @@ namespace WebShopDQ.App.Migrations
                     ProductID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<float>(type: "real", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -428,11 +434,11 @@ namespace WebShopDQ.App.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("0a8ab90e-571b-4384-a7c2-cb3180d8d388"), "5", "Role", "User", "USER" },
-                    { new Guid("1d3b0a42-a6f2-4785-8a61-0811c0008ec8"), "4", "Role", "Seller", "SELLER" },
-                    { new Guid("85df8d8e-1120-44d9-8e39-ff9f18aa1934"), "1", "Role", "Admin", "ADMIN" },
-                    { new Guid("a418f688-5ec0-4132-b9d5-bbd0d6883d28"), "3", "Role", "Shiper", "SHIPER" },
-                    { new Guid("d10dfb48-d373-4cdd-a13a-a9e4b369552a"), "2", "Role", "Manager", "MANAGER" }
+                    { new Guid("03e769a3-a3fa-49b2-9594-7c4f548ce533"), "4", "Role", "Seller", "SELLER" },
+                    { new Guid("88df8b94-df09-4154-84d5-7c934900e224"), "3", "Role", "Shiper", "SHIPER" },
+                    { new Guid("97ecef3e-f964-4b65-9173-2274f0863352"), "2", "Role", "Manager", "MANAGER" },
+                    { new Guid("d38c60aa-ab43-438a-b739-0cbae99b6eb7"), "5", "Role", "User", "USER" },
+                    { new Guid("e53219ef-b101-41dd-b593-f28ff12901cd"), "1", "Role", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

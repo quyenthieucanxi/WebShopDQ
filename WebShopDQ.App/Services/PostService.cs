@@ -21,19 +21,17 @@ namespace WebShopDQ.App.Services
     {
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
-        private readonly DatabaseContext _databaseContext;
         private readonly IUnitOfWork _uow;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
         
 
-        public PostService(DatabaseContext databaseContext, IPostRepository postRepository, IUserRepository userRepository,
+        public PostService(IPostRepository postRepository, IUserRepository userRepository,
             ICategoryRepository categoryRepository, IUnitOfWork uow, IMapper mapper)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
             _categoryRepository = categoryRepository;
-            _databaseContext = databaseContext;
             _uow = uow;
             _mapper = mapper;
         }

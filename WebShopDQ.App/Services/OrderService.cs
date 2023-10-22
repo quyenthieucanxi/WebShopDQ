@@ -30,8 +30,8 @@ namespace WebShopDQ.App.Services
                 var order = new Order
                 {
                     //UserId = userId,
-                    UserId = user!.Id,
-                    ProductId = orderDTO.ProductId,
+                    UserID = user!.Id,
+                    ProductID = orderDTO.ProductId,
                     Address = orderDTO.Address,
                     PhoneNumber = orderDTO.PhoneNumber,
                     Note = orderDTO.Note,

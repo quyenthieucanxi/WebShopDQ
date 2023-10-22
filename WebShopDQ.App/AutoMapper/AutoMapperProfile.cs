@@ -25,6 +25,7 @@ namespace WebShopDQ.App.AutoMapper
             /*.ForMember(destination => destination.IdCategory,
                 options => options.MapFrom(source => source.Id));*/
             CreateMap<Order, OrderViewModel>();
+            CreateMap<UserInfoDTO, UserDTO>().ReverseMap();
         }
     }
 }

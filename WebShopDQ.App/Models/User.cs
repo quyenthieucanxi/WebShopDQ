@@ -18,6 +18,8 @@ namespace WebShopDQ.App.Models
         public bool IsActive { get; set; } = true;
         public DateTime CreatedTime { get; set; } = DateTime.Now;
         public DateTime ModifiedTime { get; set; } = DateTime.Now;
+        public string? Url { get; set; }
+        public string? PublicId {  get; set; } 
         public virtual List<Post>? Posts { get; set; }
         public virtual List<SavePosts>? SavePosts { get; set; }
         public virtual List<Message>? Messages { get; set; }

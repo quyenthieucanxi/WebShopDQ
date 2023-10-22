@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using MailKit.Search;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using WebShopDQ.App.Common;
@@ -22,16 +24,16 @@ namespace WebShopDQ.App.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        private readonly DatabaseContext _dbContext;
         private readonly IFriendshipRepository _friendshipRepository;
+        private readonly IFileRepository _fileUploadRepository;
 
         public UserService(IUserRepository userRepository, IMapper mapper,
-            DatabaseContext dbContext, IFriendshipRepository friendshipRepository)
+            IFriendshipRepository friendshipRepository, IFileRepository fileUploadRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
-            _dbContext = dbContext;
             _friendshipRepository = friendshipRepository;
+            _fileUploadRepository = fileUploadRepository;
         }
 
         public async Task<UserInfoViewModel> GetById(Guid userId)
@@ -55,6 +57,10 @@ namespace WebShopDQ.App.Services
 
         public async Task<bool> Update(Guid userId, UserInfoDTO model)
         {
+            //var file = await _fileUploadRepository.UploadFile(formFile);
+            //var userInfo = _mapper.Map<UserDTO>(model);
+            //userInfo.UrlAvatar = file.Url;
+            //userInfo.PublicIdAvatar = file.PublicId;
             var data = await _userRepository.Update(userId, model);
             return data;
         }

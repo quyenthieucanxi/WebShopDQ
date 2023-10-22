@@ -32,7 +32,7 @@ namespace WebShopDQ.App.Repositories
                 limit = limit != 0 ? limit : 4;
                 var listData = new List<OrderViewModel>();
                 var data = await query.OrderByDescending(post => post.CreatedTime)
-                    .Where(p => p.Status == status && p.UserId == userId).ToListAsync();
+                    .Where(p => p.Status == status && p.UserID == userId).ToListAsync();
                 var totalCount = data.Count;
                 data = data.Skip((page - 1) * limit).Take(limit).ToList();
                 foreach (var item in data)

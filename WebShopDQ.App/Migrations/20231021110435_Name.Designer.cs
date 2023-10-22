@@ -12,7 +12,7 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20231010065408_Name")]
+    [Migration("20231021110435_Name")]
     partial class Name
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -383,17 +383,31 @@ namespace WebShopDQ.App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("ProductID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("TotalPrice")
                         .HasColumnType("real");
@@ -581,35 +595,35 @@ namespace WebShopDQ.App.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("85df8d8e-1120-44d9-8e39-ff9f18aa1934"),
+                            Id = new Guid("e53219ef-b101-41dd-b593-f28ff12901cd"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("d10dfb48-d373-4cdd-a13a-a9e4b369552a"),
+                            Id = new Guid("97ecef3e-f964-4b65-9173-2274f0863352"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("a418f688-5ec0-4132-b9d5-bbd0d6883d28"),
+                            Id = new Guid("88df8b94-df09-4154-84d5-7c934900e224"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("1d3b0a42-a6f2-4785-8a61-0811c0008ec8"),
+                            Id = new Guid("03e769a3-a3fa-49b2-9594-7c4f548ce533"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("0a8ab90e-571b-4384-a7c2-cb3180d8d388"),
+                            Id = new Guid("d38c60aa-ab43-438a-b739-0cbae99b6eb7"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"
@@ -653,6 +667,12 @@ namespace WebShopDQ.App.Migrations
 
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("User");
                 });
