@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using MailKit.Search;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.WebSockets;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.Repositories.IRepositories;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using WebShopDQ.App.Common.Constant;
 
 namespace WebShopDQ.App.Repositories
 {
@@ -66,7 +66,29 @@ namespace WebShopDQ.App.Repositories
 
             return await query.Where(criteria).ToListAsync();
         }
+        public async Task<IEnumerable<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> criteria, int take, int skip)
+        {
+            return await Entities.Where(criteria).Skip(skip).Take(take).ToListAsync();
+        }
 
+        public async Task<IEnumerable<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> criteria, int? take, int? skip,
+            Expression<Func<TEntity, object>>? orderBy = null, string orderByDirection = OrderByEF.Ascending)
+        {
+            IQueryable<TEntity> query = Entities;
+            if (orderBy != null)
+            {
+                if (orderByDirection == OrderByEF.Ascending)
+                    query = query.OrderBy(orderBy);
+                else
+                    query = query.OrderByDescending(orderBy);
+            }
+            if (take.HasValue)
+                query = query.Take(take.Value);
+
+            if (skip.HasValue)
+                query = query.Skip(skip.Value);
+            return await query.Where(criteria).ToListAsync();
+        }
 
         public async Task<TEntity?> GetById(object id)
         {

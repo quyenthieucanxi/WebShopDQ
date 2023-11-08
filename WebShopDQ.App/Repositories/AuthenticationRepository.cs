@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.IdentityModel.Tokens.Jwt;
@@ -123,8 +124,8 @@ namespace WebShopDQ.App.Repositories
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Email, user?.Email ?? ""),
-                    new Claim("UserId", user?.Id.ToString() ?? ""),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim("UserId", user.Id.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
                 Expires = DateTime.UtcNow.AddSeconds(20),
@@ -138,7 +139,7 @@ namespace WebShopDQ.App.Repositories
             // add rf token
             var refreshTokenEntity = new RefreshToken
             {
-                //Id = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 JwtId = token.Id,
                 UserId = user!.Id ,
                 Token = refreshToken,
