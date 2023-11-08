@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebShopDQ.App.ViewModels
 {
-    public class TokenModel
+    public class TokenViewModel
     {
         public Guid UserId { get; set; }
         public object? CurrentUser { get; set; }

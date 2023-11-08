@@ -1,8 +1,8 @@
-﻿using InsternShip.Data;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Repositories;
 using WebShopDQ.App.Services.IServices;
+using WebShopDQ.App.Data;
 
 namespace WebShopDQ.App.Dependency
 {
@@ -16,6 +16,12 @@ namespace WebShopDQ.App.Dependency
             service.AddTransient<IGetHTMLBodyRepository, GetHTMLBodyRepository>();
             service.AddTransient<IEmailRepository, EmailRepository>();
             service.AddTransient<IDecodeRepository, DecodeRepository>();
+            service.AddTransient<IUserRepository, UserRepository>();
+            service.AddTransient<IPostRepository, PostRepository>();
+            service.AddTransient<ICategoryRepository, CategoryRepository>();
+            service.AddTransient<IFriendshipRepository, FriendshipRepository>();
+            service.AddTransient<IOrderRepository, OrderRepository>();
+            service.AddTransient<IFileRepository, FileRepository>();
             return service;
         }
     }

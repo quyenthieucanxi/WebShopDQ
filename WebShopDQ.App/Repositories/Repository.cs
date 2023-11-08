@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Linq.Expressions;
 using WebShopDQ.App.Data;
+using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Common.Constant;
 
@@ -96,7 +97,18 @@ namespace WebShopDQ.App.Repositories
             return a;
         }
 
-        public async Task Remove(int id)
+        public async Task<bool> Remove(Expression<Func<TEntity, bool>> criteria)
+        {
+            var entity = Entities.FirstOrDefault(criteria);
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            Entities.Remove(entity);
+            await _databaseContext.SaveChangesAsync();
+            return await Task.FromResult(true);
+        }
+
+        public async Task Remove(Guid id)
         {
             var entity = await GetById(id);
             if (entity == null)
@@ -131,9 +143,7 @@ namespace WebShopDQ.App.Repositories
 
         public async Task Update(TEntity entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
+            
             Entities.Update(entity);
             await _databaseContext.SaveChangesAsync();
         }
@@ -145,6 +155,23 @@ namespace WebShopDQ.App.Repositories
 
             Entities.UpdateRange(entities);
             await _databaseContext.SaveChangesAsync();
+        }
+
+        public async Task<int> Count(Expression<Func<TEntity, bool>> criteria)
+        {
+            var entity = Entities.CountAsync(criteria);
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            return await entity;
+        }
+
+        public async Task<TEntity> CheckExist(Expression<Func<TEntity, bool>> criteria)
+        {
+            var entity = await Entities.FirstOrDefaultAsync(criteria);
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            return entity;
         }
     }
 }

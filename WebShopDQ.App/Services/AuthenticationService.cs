@@ -19,9 +19,9 @@ namespace WebShopDQ.App.Services
             _authenticationRepository = authenticationRepository;
         }
 
-        public async Task<IdentityResult> Register(RegisterModel registerModel, string role)
+        public async Task<IdentityResult> Register(RegisterModel registerModel)
         {
-            return await _authenticationRepository.Register(registerModel, role);
+            return await _authenticationRepository.Register(registerModel);
         }
 
         public async Task<LoginViewModel> Login(LoginModel loginModel)

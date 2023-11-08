@@ -10,5 +10,6 @@ namespace WebShopDQ.App.Models
         [Required]
         public string? CategoryName { get; set; }
         public List<Post>? Posts { get; set; }
+        public bool IsDelete { get; set; } = false;
     }
 }

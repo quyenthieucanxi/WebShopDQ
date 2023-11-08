@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebShopDQ.App.Migrations
 {
-    public partial class init : Migration
+    public partial class Name : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,6 +15,7 @@ namespace WebShopDQ.App.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CategoryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -66,7 +67,9 @@ namespace WebShopDQ.App.Migrations
                     AvatarUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -123,15 +126,15 @@ namespace WebShopDQ.App.Migrations
                 name: "Friendships",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FollowerID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FollowingID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Friendships", x => new { x.FollowingID, x.FollowerID });
+                    table.PrimaryKey("PK_Friendships", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Friendships_Users_FollowerID",
                         column: x => x.FollowerID,
@@ -172,13 +175,16 @@ namespace WebShopDQ.App.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CategoryID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     UrlImage = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -346,6 +352,10 @@ namespace WebShopDQ.App.Migrations
                     ProductID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<float>(type: "real", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -424,11 +434,11 @@ namespace WebShopDQ.App.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("40f1685b-acf3-4bef-839b-39f50a3f0065"), "5", "Role", "User", "USER" },
-                    { new Guid("5cc47a8f-adb0-44b4-8035-d9e5be8dd7fa"), "4", "Role", "Seller", "SELLER" },
-                    { new Guid("77ae7db1-4585-4477-ba7a-ca1748edd0ba"), "2", "Role", "Manager", "MANAGER" },
-                    { new Guid("d1599dfd-0901-4be3-b39e-c2d7515f1edf"), "3", "Role", "Shiper", "SHIPER" },
-                    { new Guid("ed5a7bba-0c88-4ada-bbfc-51c14e723913"), "1", "Role", "Admin", "ADMIN" }
+                    { new Guid("03e769a3-a3fa-49b2-9594-7c4f548ce533"), "4", "Role", "Seller", "SELLER" },
+                    { new Guid("88df8b94-df09-4154-84d5-7c934900e224"), "3", "Role", "Shiper", "SHIPER" },
+                    { new Guid("97ecef3e-f964-4b65-9173-2274f0863352"), "2", "Role", "Manager", "MANAGER" },
+                    { new Guid("d38c60aa-ab43-438a-b739-0cbae99b6eb7"), "5", "Role", "User", "USER" },
+                    { new Guid("e53219ef-b101-41dd-b593-f28ff12901cd"), "1", "Role", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -445,6 +455,11 @@ namespace WebShopDQ.App.Migrations
                 name: "IX_Friendships_FollowerID",
                 table: "Friendships",
                 column: "FollowerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Friendships_FollowingID",
+                table: "Friendships",
+                column: "FollowingID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Message_ChatId",

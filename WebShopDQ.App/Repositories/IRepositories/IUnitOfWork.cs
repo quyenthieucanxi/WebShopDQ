@@ -1,4 +1,4 @@
-﻿namespace InsternShip.Data
+﻿namespace WebShopDQ.App.Data
 {
     public interface IUnitOfWork : IDisposable
     {
