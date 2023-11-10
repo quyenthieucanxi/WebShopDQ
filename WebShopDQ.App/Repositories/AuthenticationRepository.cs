@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.IdentityModel.Tokens.Jwt;
@@ -56,7 +57,7 @@ namespace WebShopDQ.App.Repositories
                 throw new DuplicateException("Username already exists!");
             }
         }
-        public async Task<IdentityResult> Register(RegisterModel registerModel, string role)
+        public async Task<IdentityResult> Register(RegisterModel registerModel)
         {
             //chekc user
             var userByEmail = await _userManager.FindByEmailAsync(registerModel.Email);
@@ -86,9 +87,9 @@ namespace WebShopDQ.App.Repositories
             {
                 Email = registerModel.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = registerModel.Email,
-                FullName = registerModel.UserName,
+                UserName = registerModel.UserName,
             };
+            string role = "User";
             if (await _roleManager.RoleExistsAsync(role))
             {
                 var result = await _userManager.CreateAsync(user, registerModel.Password);
@@ -104,14 +105,20 @@ namespace WebShopDQ.App.Repositories
 
         public async Task<LoginViewModel> Login(LoginModel loginModel)
         {
-            var login = await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, false, false);
-            var user = await _userManager.FindByEmailAsync(loginModel.Email);
-            if (!login.Succeeded)
-            {   
-                if (user != null && !user.EmailConfirmed)
-                    throw new UnauthorizedException("Email has not confirmed!");
-                throw new KeyNotFoundException("Wrong Email or password!");
+            var user = await _userManager.FindByNameAsync(loginModel.Username);
+            if (user == null)
+            {
+                throw new KeyNotFoundException("Wrong UserName!");
             }
+            var login = await _signInManager.CheckPasswordSignInAsync(user, loginModel.Password, false);
+            if (!login.Succeeded)
+            {
+                if (!user.EmailConfirmed)
+                    throw new UnauthorizedException("Email has not confirmed!");
+                throw new KeyNotFoundException("Wrong Password!");
+            }
+            if (!user!.IsActive)
+                throw new UnauthorizedException();
             var jwtToken = await GenerateToken(user);
             return jwtToken;
         }
@@ -123,14 +130,14 @@ namespace WebShopDQ.App.Repositories
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Email, user?.Email ?? ""),
-                    new Claim("UserId", user?.Id.ToString() ?? ""),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim("UserId", user.Id.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
                 Expires = DateTime.UtcNow.AddSeconds(20),
                 SigningCredentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha512Signature)
             };
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user!);
             foreach (var role in roles)
             {
                 tokenDescription.Subject.AddClaim(new Claim(ClaimTypes.Role, role));
@@ -143,9 +150,9 @@ namespace WebShopDQ.App.Repositories
             // add rf token
             var refreshTokenEntity = new RefreshToken
             {
-                //Id = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 JwtId = token.Id,
-                UserId = user!.Id ,
+                UserId = user!.Id,
                 Token = refreshToken,
                 IsUsed = false,
                 IsRevoked = false,
@@ -208,7 +215,7 @@ namespace WebShopDQ.App.Repositories
                 }
 
                 //check 3: Check accessToken expire?
-                var utcExpireDate = long.Parse(tokenInVerification.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp)!.Value) ;
+                var utcExpireDate = long.Parse(tokenInVerification.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp)!.Value);
 
                 var expireDate = ConvertUnixTimeToDateTime(utcExpireDate);
                 if (expireDate > DateTime.UtcNow)
@@ -234,7 +241,7 @@ namespace WebShopDQ.App.Repositories
                 }
 
                 //check 6: AccessToken id == JwtId in RefreshToken
-                var jti = tokenInVerification.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)!.Value ;
+                var jti = tokenInVerification.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)!.Value;
                 if (storedToken.JwtId != jti)
                 {
                     throw new ValidateException("Token not match");
@@ -247,9 +254,9 @@ namespace WebShopDQ.App.Repositories
                 await _databaseContext.SaveChangesAsync();
 
                 //create new token
-                //var user = await _databaseContext.User.SingleOrDefaultAsync(nd => nd.Id == storedToken.UserId);
-                var user = await _userManager.FindByEmailAsync(loginViewModel.AccessToken);
-                var token = await GenerateToken(user);
+                var user = await _databaseContext.User.SingleOrDefaultAsync(nd => nd.Id == storedToken.UserId);
+                //var user = await _userManager.FindByEmailAsync(loginViewModel.AccessToken);
+                var token = await GenerateToken(user!);
                 return token;
             }
             catch (Exception ex)
@@ -265,7 +272,7 @@ namespace WebShopDQ.App.Repositories
 
             return dateTimeInterval;
         }
-    
+
         public async Task<LinkedEmailModel> GetConfirmEmail(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -284,7 +291,17 @@ namespace WebShopDQ.App.Repositories
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
-
+        public async Task<LinkedEmailModel> GetConfirmEmailForgetPassword(string email, User user,string newPassword)
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var resetLink = _urlHelper.Action("ConfirmEmailForgetPassword", new { token, email, newPassword  });
+            LinkedEmailModel result = new()
+            {
+                Email = email,
+                Link = resetLink
+            };
+            return await Task.FromResult(result);
+        }
         public async Task<bool> ConfirmEmail(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -295,13 +312,29 @@ namespace WebShopDQ.App.Repositories
                 {
                     return await Task.FromResult(true);
                 }
+                throw new KeyNotFoundException("Token Invalid");
+            }
+            throw new KeyNotFoundException("Email not exits");
+        }
+        public async Task<bool> ConfirmEmailForgetPassword(string token, string email, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                var result = await _userManager.ResetPasswordAsync(user, token,newPassword);
+                if (result.Succeeded)
+                {
+                    return await Task.FromResult(true);
+                }
+                throw new KeyNotFoundException("Token Invalid");
             }
             throw new KeyNotFoundException("Email not exits");
         }
 
         public async Task<LinkedEmailModel> ForgetPassword(ForgetPasswordModel model)
         {
-            if (model.NewPassword != model.ConfirmPassword) throw new AppException("Confirm Password doesn't match Password.");
+            if (model.NewPassword != model.ConfirmPassword) 
+                throw new AppException("Confirm Password doesn't match Password.");
             var user = await _userManager.FindByEmailAsync(model.Email);
             var passwordValidator = new PasswordValidator<User>();
             var passwordValidate = await passwordValidator.ValidateAsync(_userManager, null!, model.NewPassword);
@@ -310,14 +343,7 @@ namespace WebShopDQ.App.Repositories
             {
                 if (passwordValidate.Succeeded)
                 {
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var resetLink = _urlHelper.Action("ResetPassword", new { token = token, email = model.Email, pass = model.NewPassword });
-                    LinkedEmailModel result = new()
-                    {
-                        Email = model.Email,
-                        Link = resetLink
-                    };
-                    return await Task.FromResult(result);
+                    return await GetConfirmEmailForgetPassword(model.Email, user,model.NewPassword);
                 }
                 else throw new PasswordException("Password must have 6 characters," +
                                 "one non alphanumeric character, one digit ('0'-'9'), one uppercase, one lowercase");

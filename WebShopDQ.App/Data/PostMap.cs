@@ -20,7 +20,7 @@ namespace WebShopDQ.App.Data
             builder.HasOne(p=> p.User)
                 .WithMany(q => q.Posts)
                 .HasForeignKey(p=> p.UserID)
-                .IsRequired(false)
+                .IsRequired(true)
                 .OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.Category)
                 .WithMany(q => q.Posts)

@@ -18,6 +18,8 @@ using WebShopDQ.App.Repositories;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Services;
 using WebShopDQ.App.Services.IServices;
+using CloudinaryDotNet;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -83,7 +85,11 @@ builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<IEmailService, EmailService>();*/
 
 // Add Cors\
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+builder.Services.AddCors(options => options.AddPolicy("corpolicy",policy =>
+{
+    policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}
+));
 
 // Add IUrlHelper
 builder.Services.AddScoped<IUrlHelper>(x =>
@@ -130,6 +136,23 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+
+
+// Cloundinary
+
+builder.Services.Configure<FormOptions>(o =>
+{
+    o.ValueLengthLimit = int.MaxValue;
+    o.MultipartBodyLengthLimit = int.MaxValue;
+    o.MemoryBufferThreshold = int.MaxValue;
+});
+
+Account account = new(
+    builder.Configuration["Cloudinary:CloudName"],
+    builder.Configuration["Cloudinary:ApiKey"],
+    builder.Configuration["Cloudinary:ApiSecret"]);
+Cloudinary cloudinary = new(account);
+
 // Login check
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -137,6 +160,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 var app = builder.Build();
+app.UseCors("corpolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 

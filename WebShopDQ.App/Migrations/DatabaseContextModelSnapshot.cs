@@ -245,6 +245,9 @@ namespace WebShopDQ.App.Migrations
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
 
@@ -282,24 +285,27 @@ namespace WebShopDQ.App.Migrations
 
             modelBuilder.Entity("WebShopDQ.App.Models.Friendship", b =>
                 {
-                    b.Property<Guid>("FollowingID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("FollowerID")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("FollowerID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FollowingID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("FollowingID", "FollowerID");
+                    b.HasKey("Id");
 
                     b.HasIndex("FollowerID");
+
+                    b.HasIndex("FollowingID");
 
                     b.ToTable("Friendships");
                 });
@@ -375,17 +381,31 @@ namespace WebShopDQ.App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("ProductID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("TotalPrice")
                         .HasColumnType("real");
@@ -425,11 +445,21 @@ namespace WebShopDQ.App.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -441,7 +471,7 @@ namespace WebShopDQ.App.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<Guid?>("UserID")
+                    b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -563,35 +593,35 @@ namespace WebShopDQ.App.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ed5a7bba-0c88-4ada-bbfc-51c14e723913"),
+                            Id = new Guid("e53219ef-b101-41dd-b593-f28ff12901cd"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("77ae7db1-4585-4477-ba7a-ca1748edd0ba"),
+                            Id = new Guid("97ecef3e-f964-4b65-9173-2274f0863352"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("d1599dfd-0901-4be3-b39e-c2d7515f1edf"),
+                            Id = new Guid("88df8b94-df09-4154-84d5-7c934900e224"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("5cc47a8f-adb0-44b4-8035-d9e5be8dd7fa"),
+                            Id = new Guid("03e769a3-a3fa-49b2-9594-7c4f548ce533"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("40f1685b-acf3-4bef-839b-39f50a3f0065"),
+                            Id = new Guid("d38c60aa-ab43-438a-b739-0cbae99b6eb7"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"
@@ -635,6 +665,12 @@ namespace WebShopDQ.App.Migrations
 
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("User");
                 });
@@ -788,7 +824,8 @@ namespace WebShopDQ.App.Migrations
                     b.HasOne("WebShopDQ.App.Models.User", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
 

@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using MailKit.Search;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using WebShopDQ.App.Common;
@@ -21,37 +24,63 @@ namespace WebShopDQ.App.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        private readonly DatabaseContext _dbContext;
+        private readonly IFriendshipRepository _friendshipRepository;
+        private readonly IFileRepository _fileUploadRepository;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, DatabaseContext dbContext)
+        public UserService(IUserRepository userRepository, IMapper mapper,
+            IFriendshipRepository friendshipRepository, IFileRepository fileUploadRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
-            _dbContext = dbContext;
+            _friendshipRepository = friendshipRepository;
+            _fileUploadRepository = fileUploadRepository;
         }
 
         public async Task<UserInfoViewModel> GetById(Guid userId)
         {
-            var data = await _userRepository.GetById(userId);
-            var user = _mapper.Map<UserInfoViewModel>(data);
-            return user;
+            try
+            {
+                var data = await _userRepository.GetById(userId);
+                var followingCount = await _friendshipRepository.Count(f => f.FollowerID == userId);
+                var followedCount = await _friendshipRepository.Count(f => f.FollowingID == userId);
+
+                var user = _mapper.Map<UserInfoViewModel>(data);
+                user.FollowedCount = followedCount;
+                user.FollowingCount = followingCount;
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public async Task<UserInfoViewModel> Update(Guid userId, UserInfoDTO model)
+        public async Task<bool> Update(Guid userId, UserInfoDTO model)
         {
-            var user = await _userRepository.GetById(userId);
-            //var user = _mapper.Map<User>(model);
-            //_dbContext.Entry(user).State = EntityState.Modified;
-            //user.PhoneNumber = model.PhoneNumber;
-            await _userRepository.Update(user);
-            var updatedUser = _mapper.Map<UserInfoViewModel>(user);
-            return updatedUser;
+            //var file = await _fileUploadRepository.UploadFile(formFile);
+            //var userInfo = _mapper.Map<UserDTO>(model);
+            //userInfo.UrlAvatar = file.Url;
+            //userInfo.PublicIdAvatar = file.PublicId;
+            var data = await _userRepository.Update(userId, model);
+            return data;
         }
 
         public async Task<UserListViewModel> GetAll(int page, int limit)
         {
             var data = await _userRepository.GetAll(page, limit);
             return data;
+        }
+
+        public async Task<bool> Delete(Guid userId)
+        {
+            var user = await _userRepository.GetById(userId);
+            if (user != null)
+            {
+                user!.IsActive = false;
+                await _userRepository.Update(user);
+                return await Task.FromResult(true);
+            }
+            throw new KeyNotFoundException(Messages.UserNotFound);
         }
     }
 }

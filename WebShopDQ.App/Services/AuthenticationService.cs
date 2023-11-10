@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper.Internal.Mappers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebShopDQ.App.Common;
 using WebShopDQ.App.Common.Exceptions;
+using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Services.IServices;
 using WebShopDQ.App.ViewModels;
@@ -19,9 +21,9 @@ namespace WebShopDQ.App.Services
             _authenticationRepository = authenticationRepository;
         }
 
-        public async Task<IdentityResult> Register(RegisterModel registerModel, string role)
+        public async Task<IdentityResult> Register(RegisterModel registerModel)
         {
-            return await _authenticationRepository.Register(registerModel, role);
+            return await _authenticationRepository.Register(registerModel);
         }
 
         public async Task<LoginViewModel> Login(LoginModel loginModel)
@@ -38,20 +40,29 @@ namespace WebShopDQ.App.Services
         {
             return await _authenticationRepository.GetConfirmEmail(email);
         }
+        public async Task<LinkedEmailModel> GetConfirmEmailForgetPassword(string email,User user,string newPassword)
+        {
+            return await _authenticationRepository.GetConfirmEmailForgetPassword(email,user,newPassword);
+        }
 
         public async Task<bool> ConfirmEmail(string token, string email)
         {
             return await _authenticationRepository.ConfirmEmail(token, email);
         }
-
+        public async Task<bool> ConfirmEmailForgetPassword(string token, string email, string newPassword)
+        { 
+            return await _authenticationRepository.ConfirmEmailForgetPassword(token,email,newPassword);
+        }
         public async Task<LinkedEmailModel> ForgetPassword(ForgetPasswordModel model)
         {
-            return await _authenticationRepository.ForgetPassword(model);
+            return  await _authenticationRepository.ForgetPassword(model);
         }
 
         public async Task<IdentityResult> ChangePassword(Guid userId, string oldPassword, string newPassword)
         {
             return await _authenticationRepository.ChangePassword(userId, oldPassword, newPassword);
         }
+
+        
     }
 }

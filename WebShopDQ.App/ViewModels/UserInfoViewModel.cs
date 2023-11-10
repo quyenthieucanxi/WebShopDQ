@@ -20,6 +20,8 @@ namespace WebShopDQ.App.ViewModels
         public string? AvatarUrl { get; set; }
         public bool IsActive { get; set; } = true;
         public string? Role { get; set; }
+        public int FollowedCount { get; set; }
+        public int FollowingCount { get; set; }
     }
 
     public class UserListViewModel
