@@ -39,7 +39,15 @@ namespace WebShopDQ.API.Controllers
         {
             var result = await _authenticationService.Login(loginModel);
             return StatusCode(StatusCodes.Status200OK,
-                        new Response { Status = "Success", Code = 200, Message = "Login successfully!", Data = result });
+                        new LoginViewModel { AccessToken = result.AccessToken , RefreshToken= result.RefreshToken  });
+        }
+        [HttpPost("ForgetPassword")]
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordModel model)
+        {
+            var mail = await _authenticationService.ForgetPassword(model);
+            await _emailService.SendEmailForgetPassword(mail.Email!, mail.Link!);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Message = "User forget password & Email sent to successfully!" });
         }
 
         [HttpGet("confirmEmail")]
@@ -57,7 +65,21 @@ namespace WebShopDQ.API.Controllers
                 new Response { Status = "Error", Message = "This user not exist!" });
             }
         }
-
+        [HttpGet("confirmEmailForgetPassword")]
+        public async Task<IActionResult> ConfirmEmailForgetPassword(string token, string email,string newPassword)
+        {
+            try
+            {
+                var result = await _authenticationService.ConfirmEmailForgetPassword(token, email,newPassword);
+                return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Message = "Email verified successfully!" });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status404NotFound,
+                new Response { Status = "Error", Message = "This user not exist!" });
+            }
+        }
         [HttpPost("newToken")]
         public async Task<IActionResult> NewToken(LoginViewModel loginViewModel)
         {
@@ -66,14 +88,6 @@ namespace WebShopDQ.API.Controllers
                         new Response { Status = "Success", Code = 200, Data = result });
         }
 
-        [HttpPost("ForgetPassword")]
-        public async Task<IActionResult> ForgetPassword(ForgetPasswordModel model)
-        {
-            var mail = await _authenticationService.ForgetPassword(model);
-            await _emailService.SendEmailForgetPassword(mail.Email!, mail.Link!);
-            return StatusCode(StatusCodes.Status200OK,
-                        new Response { Status = "Success", Message = "User forget password & Email sent to successfully!" });
-        }
 
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword)

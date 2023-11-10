@@ -85,7 +85,11 @@ builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<IEmailService, EmailService>();*/
 
 // Add Cors\
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+builder.Services.AddCors(options => options.AddPolicy("corpolicy",policy =>
+{
+    policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}
+));
 
 // Add IUrlHelper
 builder.Services.AddScoped<IUrlHelper>(x =>
@@ -156,6 +160,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 var app = builder.Build();
+app.UseCors("corpolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
