@@ -10,7 +10,7 @@ namespace WebShopDQ.App.Services.IServices
 {
     public interface IFileService
     {
-        Task<bool> UploadFile(IFormFile? file);
+        Task<bool> UploadFile(IFormFile? file, Guid userId);
         Task<bool> RemoveFile(string? publicId);
     }
 }

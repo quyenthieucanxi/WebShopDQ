@@ -26,7 +26,7 @@ namespace WebShopDQ.App.Repositories
             _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<bool> UploadFile(IFormFile? file)
+        public async Task<bool> UploadFile(IFormFile? file, Guid userId)
         {
 
             if (file != null || file!.Length > 0)

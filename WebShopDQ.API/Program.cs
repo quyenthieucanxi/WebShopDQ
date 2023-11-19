@@ -158,7 +158,9 @@ builder.Services.Configure<IdentityOptions>(options =>
 var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseCors(option => option.WithOrigins("http://localhost:3000")
+        .AllowAnyMethod()
+        .AllowAnyHeader());
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{

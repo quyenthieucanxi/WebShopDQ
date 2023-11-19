@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebShopDQ.App.DTO;
+using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Services.IServices;
 
@@ -18,9 +19,9 @@ namespace WebShopDQ.App.Services
             _fileUploadRepository = fileUploadRepository;
         }
 
-        public async Task<bool> UploadFile(IFormFile? file)
+        public async Task<bool> UploadFile(IFormFile? file, Guid userId)
         {
-            var data = await _fileUploadRepository.UploadFile(file);
+            var data = await _fileUploadRepository.UploadFile(file, userId);
             return data;
         }
 
