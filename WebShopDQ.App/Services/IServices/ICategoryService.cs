@@ -11,7 +11,8 @@ namespace WebShopDQ.App.Services.IServices
     public interface ICategoryService
     {
         Task<bool> Create(CategoryDTO categoryDTO);
-        Task<CategoryListViewModel> GetAll(int page, int limit);
+        Task<IEnumerable<CategoryViewModel>> GetAll();
+        Task<CategoryListViewModel> GetAllByPageNumber(int page, int limit);
         Task<bool> Update(Guid idCategory, CategoryDTO categoryDTO);
         Task<bool> Delete(Guid idCategory);
     }

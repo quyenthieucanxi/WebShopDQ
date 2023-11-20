@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using WebShopDQ.App.Common;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
+using WebShopDQ.App.Migrations;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories;
 using WebShopDQ.App.Repositories.IRepositories;
@@ -60,10 +62,29 @@ namespace WebShopDQ.App.Services
                 throw new Exception(ex.Message);
             }
         }
-
-        public async Task<PostListViewModel> GetAll(int page, int limit)
+        public async Task<IEnumerable<PostViewModel>> GetAll()
         {
-            return await _postRepository.GetAll(page, limit);
+            var postList = new List<PostViewModel>();
+            try
+            {
+                var data =  await _postRepository.GetAllAsync();
+                foreach (var item in data)
+                {
+                    var post = _mapper.Map<PostViewModel>(item);
+                    postList.Add(post);
+                }
+                return postList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }  
+                 
+        }
+
+        public async Task<PostListViewModel> GetAllByItemPage(int page, int limit)
+        {
+            return await _postRepository.GetAllByItemPage(page, limit);
         }
 
         public async Task<PostListViewModel> GetByStatus(int page, int limit, string status, Guid userId)
@@ -93,5 +114,7 @@ namespace WebShopDQ.App.Services
             await _postRepository.Update(post);
             return await Task.FromResult(true);
         }
+
+        
     }
 }

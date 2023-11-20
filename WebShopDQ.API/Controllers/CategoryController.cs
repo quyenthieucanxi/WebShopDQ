@@ -28,9 +28,16 @@ namespace WebShopDQ.API.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetAll(int page, int limit)
+        public async Task<IActionResult> GetAllByPageNumber(int page, int limit)
         {
-            var categoryList = await _categoryService.GetAll(page, limit);
+            var categoryList = await _categoryService.GetAllByPageNumber(page, limit);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get all category successfully.", Data = categoryList });
+        }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetAll()
+        {
+            var categoryList = await _categoryService.GetAll();
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get all category successfully.", Data = categoryList });
         }
