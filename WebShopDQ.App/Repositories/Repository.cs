@@ -169,7 +169,7 @@ namespace WebShopDQ.App.Repositories
         public async Task<TEntity> CheckExist(Expression<Func<TEntity, bool>> criteria)
         {
             var entity = await Entities.FirstOrDefaultAsync(criteria);
-            if (entity == null)
+                if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
             return entity;
         }

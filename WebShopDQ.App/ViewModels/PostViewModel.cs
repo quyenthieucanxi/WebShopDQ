@@ -17,8 +17,10 @@ namespace WebShopDQ.App.ViewModels
         public string? Title { get; set; }
         public string? UrlImage { get; set; }
         public double Price { get; set; }
+        public string? Address { get; set; }
         public string? Status { get; set; }
         public int Quantity { get; set; }
+        public DateTime CreatedTime { get; set; }
     }
 
     public class PostListViewModel

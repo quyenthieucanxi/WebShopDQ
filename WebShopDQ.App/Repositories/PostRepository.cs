@@ -19,7 +19,7 @@ namespace WebShopDQ.App.Repositories
             _mapper = mapper;
         }
 
-        public async Task<PostListViewModel> GetAll(int page, int limit)
+        public async Task<PostListViewModel> GetAllByItemPage(int page, int limit)
         {
             try
             {

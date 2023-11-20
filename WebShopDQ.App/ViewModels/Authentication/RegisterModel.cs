@@ -14,5 +14,9 @@ namespace WebShopDQ.App.ViewModels.Authentication
 
         [Required(ErrorMessage = "Password is required")]
         public string? Password { get; set; }
+
+        public string? FullName { get; set; }
+
+        public string? Image { get; set; }
     }
 }

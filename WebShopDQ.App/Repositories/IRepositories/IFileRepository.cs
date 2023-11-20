@@ -10,7 +10,7 @@ namespace WebShopDQ.App.Repositories.IRepositories
 {
     public interface IFileRepository
     {
-        Task<bool> UploadFile(IFormFile? file);
+        Task<FileDTO> UploadFile(IFormFile? file);
         Task<bool> RemoveFile(string? publicId);
     }
 }

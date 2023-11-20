@@ -35,7 +35,6 @@ namespace WebShopDQ.App.Services
             _friendshipRepository = friendshipRepository;
             _fileUploadRepository = fileUploadRepository;
         }
-
         public async Task<UserInfoViewModel> GetById(Guid userId)
         {
             try
@@ -78,6 +77,16 @@ namespace WebShopDQ.App.Services
             {
                 user!.IsActive = false;
                 await _userRepository.Update(user);
+                return await Task.FromResult(true);
+            }
+            throw new KeyNotFoundException(Messages.UserNotFound);
+        }
+
+        public async Task<bool> CheckUserByEmail(string email)
+        {
+            var user =  await _userRepository.CheckExist(p => p.Email == email);
+            if (user != null)
+            {
                 return await Task.FromResult(true);
             }
             throw new KeyNotFoundException(Messages.UserNotFound);

@@ -18,7 +18,7 @@ namespace WebShopDQ.App.Services
             _fileUploadRepository = fileUploadRepository;
         }
 
-        public async Task<bool> UploadFile(IFormFile? file)
+        public async Task<FileDTO> UploadFile(IFormFile? file)
         {
             var data = await _fileUploadRepository.UploadFile(file);
             return data;

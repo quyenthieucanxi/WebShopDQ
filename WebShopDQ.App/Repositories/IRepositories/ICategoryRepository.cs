@@ -10,6 +10,6 @@ namespace WebShopDQ.App.Repositories.IRepositories
 {
     public interface ICategoryRepository : IRepository<Category>
     {
-        Task<CategoryListViewModel> GetAll(int page, int limit);
+        Task<CategoryListViewModel> GetAllByPageNumber(int page, int limit);
     }
 }

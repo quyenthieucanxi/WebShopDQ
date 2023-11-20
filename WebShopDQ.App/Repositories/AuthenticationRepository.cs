@@ -78,7 +78,7 @@ namespace WebShopDQ.App.Repositories
                 if (!passwordValidationResult.Succeeded)
                 {
                     // Handle password validation errors here
-                    throw new PasswordException("Password must have over 6 characters," +
+                    throw new PasswordException("Password must have least 6 characters," +
                         "one non alphanumeric character, one digit ('0'-'9'), one uppercase, one lowercase");
                 }
             }
@@ -88,6 +88,9 @@ namespace WebShopDQ.App.Repositories
                 Email = registerModel.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = registerModel.UserName,
+                FullName = registerModel.FullName,
+                AvatarUrl = registerModel.Image,
+                EmailConfirmed = string.IsNullOrEmpty(registerModel.FullName) == false ? true : false,
             };
             string role = "User";
             if (await _roleManager.RoleExistsAsync(role))
@@ -294,7 +297,7 @@ namespace WebShopDQ.App.Repositories
         public async Task<LinkedEmailModel> GetConfirmEmailForgetPassword(string email, User user,string newPassword)
         {
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var resetLink = _urlHelper.Action("ConfirmEmailForgetPassword", new { token, email, newPassword  });
+            var resetLink = _urlHelper.Action("ConfirmEmailForgetPassword", new { token, email,  });
             LinkedEmailModel result = new()
             {
                 Email = email,

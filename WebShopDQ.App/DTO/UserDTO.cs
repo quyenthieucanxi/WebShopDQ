@@ -30,4 +30,10 @@ namespace WebShopDQ.App.DTO
         public string? Gender { get; set; }
         public DateTime Dob { get; set; }
     }
+    public class UserGoogleDTO
+    {
+        public string Email { get; set; } = null!;
+        public string FullName { get; set; } = null!;
+        public string Image { get; set; } = null!;
+    }
 }

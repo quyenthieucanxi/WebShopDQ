@@ -15,5 +15,6 @@ namespace WebShopDQ.App.Services.IServices
         Task<bool> Update(Guid userId, UserInfoDTO model);
         Task<UserListViewModel> GetAll(int page, int limit);
         Task<bool> Delete(Guid id);
+        Task<bool> CheckUserByEmail(string email);
     }
 }

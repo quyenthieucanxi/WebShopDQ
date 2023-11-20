@@ -26,10 +26,10 @@ namespace WebShopDQ.App.Repositories
             _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<bool> UploadFile(IFormFile? file)
+        public async Task<FileDTO> UploadFile(IFormFile? file)
         {
 
-            if (file != null || file!.Length > 0)
+            if (file != null && file!.Length > 0)
             {
                 try
                 {
@@ -45,13 +45,13 @@ namespace WebShopDQ.App.Repositories
                     var uploadResult = await _cloudinary.UploadAsync(uploadParams);
                     var publicUrl = _cloudinary.Api.UrlImgUp.Transform(new Transformation()).BuildUrl(uploadResult.PublicId + "." + uploadResult.Format);
                     var publicId = uploadResult.PublicId;
-                    /*var infoFile = new FileDTO
+                     var infoFile = new FileDTO
                     {
                         Url = publicUrl,
                         PublicId = publicId
                     };
-                    return infoFile;*/
-                    return await Task.FromResult(true);
+                    return infoFile;
+                    //return await Task.FromResult(true);
                 }
                 catch (Exception ex)
                 {

@@ -15,29 +15,40 @@ namespace WebShopDQ.API.Controllers
     {
         private readonly IPostService _postService;
         private readonly ITokenInfoService _tokenInfoService;
+        private readonly IFileService _fileService;
 
-        public PostController(IPostService postService, ITokenInfoService tokenInfoService)
+        public PostController(IPostService postService, ITokenInfoService tokenInfoService, IFileService fileService)
         {
             _postService = postService;
             _tokenInfoService = tokenInfoService;
+            _fileService = fileService;
         }
 
         [HttpPost("[action]")]
         //[Authorize(Roles = "User, Seller")]
         public async Task<IActionResult> Create(PostDTO postDTO)
         {
+
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
             await _postService.Create(postDTO, userId);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Create post successfully." });
         }
+        [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Seller")]
+        public async Task<IActionResult> GetAll()
+        {
+            var postList = await _postService.GetAll();
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get all post successfully.", Data = postList });
+        }
 
         [HttpGet("[action]")]
         //[Authorize(Roles = "User, Seller")]
-        public async Task<IActionResult> GetAll(int page, int limit)
+        public async Task<IActionResult> GetAllByItemPage(int page, int limit)
         {
-            var postList = await _postService.GetAll(page, limit);
+            var postList = await _postService.GetAllByItemPage(page, limit);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get all post successfully.",Data = postList });
         }

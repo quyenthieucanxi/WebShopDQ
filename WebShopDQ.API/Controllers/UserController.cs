@@ -33,6 +33,13 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get my info user successfully.", Data = user });
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> CheckUserByEmail(string email)
+        {
+            await _userService.CheckUserByEmail(email);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "User Exist." });
+        }
 
         [HttpPut("[action]")]
         //[Authorize(Roles = "User, Manager, Shipper")]
