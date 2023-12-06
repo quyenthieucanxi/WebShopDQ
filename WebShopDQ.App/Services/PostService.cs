@@ -67,8 +67,8 @@ namespace WebShopDQ.App.Services
             var postList = new List<PostViewModel>();
             try
             {
-                var data =  await _postRepository.GetAllAsync();
-                foreach (var item in data)
+                var data =  await _postRepository.FindAllAsync(p => p.Status == "Chờ duyệt");
+                foreach (var item in data.OrderByDescending(p=> p.CreatedTime))
                 {
                     var post = _mapper.Map<PostViewModel>(item);
                     postList.Add(post);
@@ -82,12 +82,12 @@ namespace WebShopDQ.App.Services
                  
         }
 
-        public async Task<PostListViewModel> GetAllByItemPage(int page, int limit)
+        public async Task<PostListViewModel> GetAllByItemPage(int page, int limit,string? catName,string? search,string? orderByDirection)
         {
-            return await _postRepository.GetAllByItemPage(page, limit);
+            return await _postRepository.GetAllByItemPage(page, limit,catName,search, orderByDirection);
         }
 
-        public async Task<PostListViewModel> GetByStatus(int page, int limit, string status, Guid userId)
+        public async Task<PostListViewModel> GetByStatus(int? page, int? limit, string status, Guid userId)
         {
             return await _postRepository.GetByStatus(page, limit, status, userId);
         }
@@ -96,8 +96,8 @@ namespace WebShopDQ.App.Services
         {
             try
             {
-                var data = await _postRepository.GetById(postId);
-
+                var data = await _postRepository.FindAsync(p => p.Id == postId,new string []{"User"});
+   
                 var post = _mapper.Map<PostViewModel>(data);
                 return post;
             }
@@ -107,10 +107,10 @@ namespace WebShopDQ.App.Services
             }
         }
 
-        public async Task<bool> UpdateStatus(Guid postId)
+        public async Task<bool> UpdateStatus(Guid postId,string status)
         {
             var post = await _postRepository.GetById(postId) ?? throw new KeyNotFoundException(Messages.PostNotFound);
-            post.Status = "Đang hiển thị";
+            post.Status = status;
             await _postRepository.Update(post);
             return await Task.FromResult(true);
         }

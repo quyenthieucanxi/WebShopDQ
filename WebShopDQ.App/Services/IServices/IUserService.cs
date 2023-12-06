@@ -16,5 +16,9 @@ namespace WebShopDQ.App.Services.IServices
         Task<UserListViewModel> GetAll(int page, int limit);
         Task<bool> Delete(Guid id);
         Task<bool> CheckUserByEmail(string email);
+        Task<bool> AddLikePost(Guid userId, Guid postId);
+        Task<PostListViewModel> GetSavesPost(Guid userId);
+        Task<bool> RemoveSavesPost(Guid userId, Guid postId);
+        Task<bool> CheckSavesPost(Guid userId, Guid postId);
     }
 }

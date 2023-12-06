@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata;
 using WebShopDQ.App.Common;
 using WebShopDQ.App.DTO;
 using WebShopDQ.App.Models;
@@ -46,16 +47,16 @@ namespace WebShopDQ.API.Controllers
 
         [HttpGet("[action]")]
         //[Authorize(Roles = "User, Seller")]
-        public async Task<IActionResult> GetAllByItemPage(int page, int limit)
+        public async Task<IActionResult> GetAllByItemPage(int page, int limit,string? catName,string? search,string? orderByDirection= null)
         {
-            var postList = await _postService.GetAllByItemPage(page, limit);
+            var postList = await _postService.GetAllByItemPage(page, limit,catName,search, orderByDirection);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get all post successfully.",Data = postList });
         }
 
         [HttpGet("[action]")]
         //[Authorize(Roles = "User, Seller")]
-        public async Task<IActionResult> GetByStatus(int page, int limit, string status)
+        public async Task<IActionResult> GetByStatus(int? page, int? limit, string status)
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
@@ -66,9 +67,9 @@ namespace WebShopDQ.API.Controllers
 
         [HttpPut("[action]/{idPost}")]
         //[Authorize(Roles = "Manager")]
-        public async Task<IActionResult> UpdateStatus(Guid idPost)
+        public async Task<IActionResult> UpdateStatus(Guid idPost,string status)
         {
-            await _postService.UpdateStatus(idPost);
+            await _postService.UpdateStatus(idPost, status);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Update post successfully." });
         }

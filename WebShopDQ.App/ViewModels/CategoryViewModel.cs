@@ -11,6 +11,7 @@ namespace WebShopDQ.App.ViewModels
     {
         public Guid Id { get; set; }
         public string? CategoryName { get; set; }
+        public string? CategoryPath { get; set; }
     }
 
     public class CategoryListViewModel

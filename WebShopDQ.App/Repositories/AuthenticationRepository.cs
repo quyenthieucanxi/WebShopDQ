@@ -348,7 +348,7 @@ namespace WebShopDQ.App.Repositories
                 {
                     return await GetConfirmEmailForgetPassword(model.Email, user,model.NewPassword);
                 }
-                else throw new PasswordException("Password must have 6 characters," +
+                else throw new PasswordException("Password must have least 6 characters," +
                                 "one non alphanumeric character, one digit ('0'-'9'), one uppercase, one lowercase");
             }
             else throw new KeyNotFoundException(Messages.EmailNotFound);
@@ -357,6 +357,19 @@ namespace WebShopDQ.App.Repositories
         public async Task<IdentityResult> ChangePassword(Guid userId, string oldPassword, string newPassword)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
+            var checkOldPassword = await _userManager.CheckPasswordAsync(user,oldPassword) ;
+            if ( !checkOldPassword)
+            {
+                throw new KeyNotFoundException("Old Password not found");
+            }
+            var passwordValidator = new PasswordValidator<User>();
+            var passwordValidate = await passwordValidator.ValidateAsync(_userManager, null!, newPassword);
+            if (!passwordValidate.Succeeded)
+            {
+                throw new PasswordException("Password must have least 6 characters," +
+                                "one non alphanumeric character, one digit ('0'-'9'), one uppercase, one lowercase");
+            }
+      
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
             return result;
         }

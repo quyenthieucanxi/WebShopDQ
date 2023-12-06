@@ -10,7 +10,7 @@ namespace WebShopDQ.App.Repositories.IRepositories
 {
     public interface IPostRepository : IRepository<Post>
     {
-        Task<PostListViewModel> GetAllByItemPage(int page, int limit);
-        Task<PostListViewModel> GetByStatus(int page, int limit, string status, Guid userId);
+        Task<PostListViewModel> GetAllByItemPage(int page, int limit,string? catName,string? search, string? orderByDirectionion);
+        Task<PostListViewModel> GetByStatus(int? page, int? limit, string status, Guid userId);
     }
 }
