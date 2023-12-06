@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
+using WebShopDQ.App.Utils;
 using WebShopDQ.App.ViewModels;
 
 namespace WebShopDQ.App.Repositories
@@ -19,16 +21,33 @@ namespace WebShopDQ.App.Repositories
             _mapper = mapper;
         }
 
-        public async Task<PostListViewModel> GetAllByItemPage(int page, int limit)
-        {
+        public async Task<PostListViewModel> GetAllByItemPage(int page, int limit,string? catName,string? search, string? orderByDirection)
+            {
             try
             {
-                var query = Entities.Include(p => p.Category)
-                                    .Include(p => p.User);
+                var query = String.IsNullOrEmpty(catName)  ?
+                            Entities.Include(p => p.Category)
+                                    .Include(p => p.User).Where(post => post.Status == "Đang hiển thị") : 
+                            Entities.Include(p => p.Category)
+                                    .Include(p => p.User).Where(p => p.Category!.CategoryPath == catName 
+                                                                && p.Status == "Đang hiển thị" );
+                query = !string.IsNullOrEmpty(search) ? query.Where(p => p.Title!.ToLower().Contains(search.ToLower())) : query;
                 page = page != 0 ? page : 1;
                 limit = limit != 0 ? limit : 10;
                 var listData = new List<PostViewModel>();
-                var data = await query.OrderByDescending(post => post.CreatedTime).Where(post => post.Status == "Đang hiển thị").ToListAsync();
+                //var data = await query.OrderByDescending(post => post.CreatedTime).Where(post => post.Status == "Đang hiển thị").ToListAsync();
+                var data = new List<Post> ();
+                if (orderByDirection == "ASC")
+                {
+                    data = await query.OrderBy(p => p.Price).ThenByDescending(post => post.CreatedTime).ToListAsync();
+                }   
+                else if (orderByDirection == "DESC") {
+                    data = await query.OrderByDescending(p => p.Price).ThenByDescending(post => post.CreatedTime).ToListAsync();
+                }
+                else
+                {
+                    data = await query.OrderByDescending(post => post.CreatedTime).ToListAsync();
+                }
                 var totalCount = data.Count;
                 data = data.Skip((page - 1) * limit).Take(limit).ToList();
                 foreach (var item in data)
@@ -48,19 +67,25 @@ namespace WebShopDQ.App.Repositories
             }
         }
 
-        public async Task<PostListViewModel> GetByStatus(int page, int limit, string status, Guid userId)
+        public async Task<PostListViewModel> GetByStatus(int? page, int? limit, string status, Guid userId)
         {
             try
             {
                 var query = Entities.Include(p => p.Category)
                                     .Include(p => p.User);
-                page = page != 0 ? page : 1;
-                limit = limit != 0 ? limit : 4;
+                //page = page != 0 ? page : 1;
+                //limit = limit != 0 ? limit : 4;
                 var listData = new List<PostViewModel>();
                 var data = await query.OrderByDescending(post => post.CreatedTime)
-                    .Where(p => p.Status == status && p.UserID == userId).ToListAsync();
+                    .Where(p => p.Status.ToLower() == status.ToLower() && p.UserID == userId).ToListAsync();
                 var totalCount = data.Count;
-                data = data.Skip((page - 1) * limit).Take(limit).ToList();
+                if (page != null && limit != null)
+                {
+                    page = page > 0 ? page : 1;
+                    limit = limit > 0 ? limit : 4;
+                    data = data.Skip((int)((page - 1) * limit)).Take((int)(limit)).ToList();
+                }
+                
                 foreach (var item in data)
                 {
                     var post = _mapper.Map<PostViewModel>(item);

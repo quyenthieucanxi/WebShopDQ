@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebShopDQ.App.Data;
 
@@ -11,9 +12,10 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20231121122229_addCategory")]
+    partial class addCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,9 +243,6 @@ namespace WebShopDQ.App.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("CategoryPath")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
@@ -565,24 +564,27 @@ namespace WebShopDQ.App.Migrations
 
             modelBuilder.Entity("WebShopDQ.App.Models.SavePosts", b =>
                 {
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PostID")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("UserID", "PostID");
+                    b.Property<Guid>("PostID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("PostID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("SavePosts");
                 });
@@ -596,35 +598,35 @@ namespace WebShopDQ.App.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d5db9ce0-fd8f-45cc-b4e3-27b3cd5f23bf"),
+                            Id = new Guid("7b63ef13-5041-4c32-8f63-9da210bfa6aa"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("241df9fa-6f5a-483a-9876-418794b6ab42"),
+                            Id = new Guid("036d36df-1d5b-42ef-83c7-2857795d7820"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("0537e971-dcb1-476e-8eeb-f2d5d6923332"),
+                            Id = new Guid("53f28353-e12d-4528-9095-35ebd749a68c"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("94234755-86b8-4cab-890a-e2b63f98162e"),
+                            Id = new Guid("50c10619-d623-4417-95fc-04bf20ce7acf"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("860cc4f3-ae71-450e-af02-70c9262222d7"),
+                            Id = new Guid("69f79838-add5-46eb-a44a-9c5859fbb1e9"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"

@@ -12,9 +12,11 @@ namespace WebShopDQ.App.Data
     public class SavePostsMap : IEntityTypeConfiguration<SavePosts>
     {
         public void Configure(EntityTypeBuilder<SavePosts> builder)
+
         {
+            builder.HasKey(sp => new { sp.UserID, sp.PostID });
             builder.HasOne(p => p.User)
-                    .WithMany(q=> q.SavePosts)
+                    .WithMany(q => q.SavePosts)
                     .HasForeignKey(p => p.UserID)
                     .OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(p => p.Post)

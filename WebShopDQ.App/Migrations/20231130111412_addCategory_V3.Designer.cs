@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebShopDQ.App.Data;
 
@@ -11,9 +12,10 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20231130111412_addCategory_V3")]
+    partial class addCategory_V3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -565,24 +567,27 @@ namespace WebShopDQ.App.Migrations
 
             modelBuilder.Entity("WebShopDQ.App.Models.SavePosts", b =>
                 {
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PostID")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("UserID", "PostID");
+                    b.Property<Guid>("PostID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("PostID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("SavePosts");
                 });
@@ -596,35 +601,35 @@ namespace WebShopDQ.App.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d5db9ce0-fd8f-45cc-b4e3-27b3cd5f23bf"),
+                            Id = new Guid("607eaa40-662c-4046-933d-4332b67b652f"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("241df9fa-6f5a-483a-9876-418794b6ab42"),
+                            Id = new Guid("f2f2d177-a565-468f-a93f-e49715842e51"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("0537e971-dcb1-476e-8eeb-f2d5d6923332"),
+                            Id = new Guid("efbb88dd-9d8e-4642-9a53-50c2f6db508e"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("94234755-86b8-4cab-890a-e2b63f98162e"),
+                            Id = new Guid("87d69548-9c02-4516-8291-8b5edc00adea"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("860cc4f3-ae71-450e-af02-70c9262222d7"),
+                            Id = new Guid("bbc50b02-7121-4bfe-8212-f420bf7deffc"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"

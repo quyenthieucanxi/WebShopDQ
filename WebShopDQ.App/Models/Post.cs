@@ -1,4 +1,4 @@
-﻿    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebShopDQ.App.Models
@@ -21,8 +21,8 @@ namespace WebShopDQ.App.Models
         [Required]
         public int Quantity { get; set; }
         [NotMapped]
-        public User? User { get; set; }
+        public  User? User { get; set; }
         [NotMapped]
-        public virtual Category? Category { get; set; }
+        public  virtual Category? Category { get; set; }
     }
 }

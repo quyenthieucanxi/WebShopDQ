@@ -69,5 +69,46 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Delete user successfully." });
         }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> AddLikePost(Guid postId)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            await _userService.AddLikePost(userId,postId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Add Post successfully" });
+        }
+        [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Manager, Shipper")]
+        public async Task<IActionResult> GetSavesPost()
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            var listSavePosts = await _userService.GetSavesPost(userId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get list save posts successfully.", Data = listSavePosts });
+        }
+        [HttpDelete("[action]")]
+        //[Authorize(Roles = "User, Manager, Shipper")]
+        public async Task<IActionResult> RemoveSavesPost(Guid postId)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            await _userService.RemoveSavesPost(userId,postId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Remove save posts successfully." });
+        }
+        [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Manager, Shipper")]
+        public async Task<IActionResult> CheckSavesPost(Guid postId)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            await _userService.CheckSavesPost(userId,postId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Post exists" });
+        }
+
     }
 }
