@@ -23,16 +23,18 @@ namespace WebShopDQ.App.Services
     {
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
+        private readonly UserManager<User> _userManager;
         private readonly IUnitOfWork _uow;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
         
 
-        public PostService(IPostRepository postRepository, IUserRepository userRepository,
-            ICategoryRepository categoryRepository, IUnitOfWork uow, IMapper mapper)
+        public PostService(IPostRepository postRepository, IUserRepository userRepository, UserManager<User> userManager,
+        ICategoryRepository categoryRepository, IUnitOfWork uow, IMapper mapper)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
+            _userManager = userManager;
             _categoryRepository = categoryRepository;
             _uow = uow;
             _mapper = mapper;
@@ -124,8 +126,11 @@ namespace WebShopDQ.App.Services
         {
             try
             {
-                var data = await _postRepository.FindAsync(p => p.PostPath == pathPost , new string[] { "User" });
+                var data = await _postRepository.FindAsync(p => p.PostPath == pathPost, new string[] { "User" })
+                        ?? throw new KeyNotFoundException(Messages.PostNotFound);
+                var role = await _userManager.GetRolesAsync(data.User!);
                 var post = _mapper.Map<PostViewModel>(data);
+                post.User!.Role = role![0]; 
                 return post;
             }
             catch (Exception ex)
