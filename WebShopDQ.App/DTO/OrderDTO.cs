@@ -9,10 +9,10 @@ namespace WebShopDQ.App.DTO
     public class OrderDTO
     {
         public Guid ProductId { get; set; }
+        public Guid AddressShippingID { get; set; }
         public int Quantity { get; set; }
         public float TotalPrice { get; set; }
-        public string? Address { get; set; }
-        public string? PhoneNumber { get; set; }
+        public string Payment { get; set; } = null!;
         public string? Note { get; set; }
     }
 }

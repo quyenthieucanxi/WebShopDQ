@@ -8,12 +8,12 @@ using WebShopDQ.App.Models;
 
 namespace WebShopDQ.App.ViewModels
 {
-    public class PostViewModel
+    public class PostViewModel : BaseVM
     {
-        public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string? AvatarUrl { get; set; }
         public string? CategoryName { get; set; }
+        public string? PostPath { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string? UrlImage { get; set; }
@@ -21,7 +21,6 @@ namespace WebShopDQ.App.ViewModels
         public string? Address { get; set; }
         public string? Status { get; set; }
         public int Quantity { get; set; }
-        public DateTime CreatedTime { get; set; }
         public UserInfoViewModel? User { get; set; }
     }
 

@@ -13,7 +13,7 @@ namespace WebShopDQ.App.Repositories.IRepositories
 
         IQueryable<TEntity> GetAll();
 
-        Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<IEnumerable<TEntity>> GetAllAsync(string[]? includes = null);
 
         Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> criteria, string[]? includes = null);
 

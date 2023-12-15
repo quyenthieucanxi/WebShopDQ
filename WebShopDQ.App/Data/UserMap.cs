@@ -18,6 +18,7 @@ namespace WebShopDQ.App.Data
             builder.Property(p => p.Address).HasMaxLength(150);
             builder.Property(p => p.Introduce).HasMaxLength(256);
             builder.Property(p => p.AvatarUrl).HasMaxLength(1000);
+
         }
     }
 }

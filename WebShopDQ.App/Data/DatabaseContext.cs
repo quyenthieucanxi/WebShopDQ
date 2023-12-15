@@ -23,6 +23,7 @@ namespace WebShopDQ.App.Data
         public DbSet<Role> Role { get; set; } = null!;
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<Chats> Chats { get; set; } = null!;
+        public DbSet<AddressShipping> AddressShippings { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
         public DbSet<Post> Posts { get; set; } = null!;
         public DbSet<PostReviews> PostReviews { get; set; } = null!;
@@ -47,6 +48,7 @@ namespace WebShopDQ.App.Data
             builder.ApplyConfiguration(new RefreshTokenMap());
             builder.ApplyConfiguration(new PostMap());
             builder.ApplyConfiguration(new CategoryMap());
+            builder.ApplyConfiguration(new AddressShippingMap());
             builder.ApplyConfiguration(new OrderMap());
             builder.ApplyConfiguration(new MessageMap());
             builder.ApplyConfiguration(new FriendShipMap());

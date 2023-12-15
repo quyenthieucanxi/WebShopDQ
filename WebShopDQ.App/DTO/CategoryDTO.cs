@@ -11,5 +11,9 @@ namespace WebShopDQ.App.DTO
     {
         [Required(ErrorMessage = "Category Name is required")]
         public string? CategoryName { get; set; }
+        [Required(ErrorMessage = "CategoryPath is required")]
+        public string? CategoryPath { get; set; }
+        
+        public string? urlImg { get; set; }
     }
 }

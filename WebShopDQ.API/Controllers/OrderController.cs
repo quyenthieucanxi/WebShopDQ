@@ -33,11 +33,30 @@ namespace WebShopDQ.API.Controllers
 
         [HttpGet("[action]")]
         //[Authorize(Roles = "User, Seller")]
-        public async Task<IActionResult> GetByStatus(int page, int limit, string status)
+        public async Task<IActionResult> GetByStatusByPage(int page, int limit, string status)
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
             var orderList = await _orderService.GetByStatus(page, limit, status, userId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get orders successfully.", Data = orderList });
+        }
+        [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Seller")]
+        public async Task<IActionResult> GetByStatus(string status)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            var orderList = await _orderService.GetByStatus(status, userId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get orders successfully.", Data = orderList });
+        }
+        [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Seller")]
+        public async Task<IActionResult> GetAll()
+        {
+            await _tokenInfoService.GetTokenInfo();
+            var orderList = await _orderService.GetAll();
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get orders successfully.", Data = orderList });
         }

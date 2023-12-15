@@ -17,5 +17,6 @@ namespace WebShopDQ.App.Services.IServices
         Task<bool> UpdateStatus(Guid postId, string status);
         Task<PostViewModel> GetById(Guid postId);
         Task<IEnumerable<PostViewModel>> GetAll();
+        Task<PostViewModel> GetByPath(string pathPost);
     }
 }

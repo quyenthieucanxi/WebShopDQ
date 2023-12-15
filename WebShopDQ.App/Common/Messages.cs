@@ -9,6 +9,7 @@ namespace WebShopDQ.App.Common
         public const string PostNotFound = "Post not found!";
         public const string CategoryNotFound = "Category not found!";
         public const string ConfirmEmail = "Your account has been confirmed.";
+        public const string AddressShippingNotFound = "AddressShippingser not found!";
     }
 
     public static class SuccessMessages
