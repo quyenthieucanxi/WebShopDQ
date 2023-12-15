@@ -8,9 +8,9 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using WebShopDQ.App.Common;
+using WebShopDQ.App.Common.Exceptions;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
-using WebShopDQ.App.Migrations;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories;
 using WebShopDQ.App.Repositories.IRepositories;
@@ -40,14 +40,19 @@ namespace WebShopDQ.App.Services
 
         public async Task<bool> Create(PostDTO postDTO, Guid userId)
         {
-            var user = await _userRepository.GetById(userId);
+            var postExist = await _postRepository.FindAsync(p => p.PostPath == postDTO.PostPath);
+            if (postExist != null)
+            {
+                throw new DuplicateException("Tên đã tồn tại");
+            }
             try
             {
                 var post = new Post
                 {
-                    UserID = user!.Id,
+                    UserID = userId,
                     CategoryID = postDTO.CategoryId,
-                    Title = postDTO.Title,
+                    Title = postDTO.Title!,
+                    PostPath =  postDTO.PostPath!,
                     Description = postDTO.Description,
                     UrlImage = postDTO.UrlImage,
                     Price = postDTO.Price,
@@ -115,6 +120,18 @@ namespace WebShopDQ.App.Services
             return await Task.FromResult(true);
         }
 
-        
+        public async Task<PostViewModel> GetByPath(string pathPost)
+        {
+            try
+            {
+                var data = await _postRepository.FindAsync(p => p.PostPath == pathPost , new string[] { "User" });
+                var post = _mapper.Map<PostViewModel>(data);
+                return post;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

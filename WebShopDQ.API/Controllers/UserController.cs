@@ -80,7 +80,6 @@ namespace WebShopDQ.API.Controllers
                         new Response { Status = "Success", Code = 200, Message = "Add Post successfully" });
         }
         [HttpGet("[action]")]
-        //[Authorize(Roles = "User, Manager, Shipper")]
         public async Task<IActionResult> GetSavesPost()
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
@@ -101,14 +100,69 @@ namespace WebShopDQ.API.Controllers
         }
         [HttpGet("[action]")]
         //[Authorize(Roles = "User, Manager, Shipper")]
-        public async Task<IActionResult> CheckSavesPost(Guid postId)
+        public async Task<IActionResult> CheckSavesPost(String pathPost)
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
-            await _userService.CheckSavesPost(userId,postId);
+            await _userService.CheckSavesPost(userId, pathPost);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Post exists" });
         }
-
+        [HttpPost("[action]")]
+        public async Task<IActionResult> AddAddressShipping(AddressShippingDTO addressShippingDTO)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            await _userService.CreateAddRessShipping(userId, addressShippingDTO);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Add AddressShipping successfully" });
+        }
+        [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Manager, Shipper")]
+        public async Task<IActionResult> GetAddressShopping()
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            var listAddressShopping = await _userService.GetAddressShopping(userId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get list AddressShopping successfully.", Data = listAddressShopping });
+        }
+        [HttpDelete("[action]")]
+        public async Task<IActionResult> RemoveAddressShopping(Guid addressShippingId)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            await _userService.RemoveAddressShopping(userId, addressShippingId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Remove AddressShipping successfully." });
+        }
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateAddressShopping(Guid addressShippingId,AddressShippingDTO addressShippingDTO)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            await _userService.UpdateAddressShopping(userId,addressShippingId, addressShippingDTO);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Update AddressShipping successfully." });
+        }
+        [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Manager, Shipper")]
+        public async Task<IActionResult> GetAddressShoppingDeFault()
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            var address = await _userService.GetAddressShoppingDeFault(userId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get AddressShopping Default successfully.", Data = address });
+        }
+        [HttpPut("[action]")]
+        public async Task<IActionResult> SetAddressShopping(Guid addressShippingId)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            await _userService.SetAddressShopping(userId,addressShippingId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Update AddressShipping Default successfully." });
+        }
     }
 }

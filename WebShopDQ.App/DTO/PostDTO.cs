@@ -13,6 +13,8 @@ namespace WebShopDQ.App.DTO
         [Required]
         public string? Title { get; set; }
         [Required]
+        public string? PostPath { get; set; }
+        [Required]
         public string? Description { get; set; }
         [Required]
         public string? UrlImage { get; set; }

@@ -81,5 +81,12 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get detail post successfully.", Data = post });
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetByPath(string pathPost)
+        {
+            var post = await _postService.GetByPath(pathPost);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get detail post successfully.", Data = post });
+        }
     }
 }

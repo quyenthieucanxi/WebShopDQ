@@ -17,6 +17,7 @@ namespace WebShopDQ.App.Dependency
             service.AddTransient<IFriendshipService, FriendshipService>();
             service.AddTransient<IOrderService, OrderService>();
             service.AddTransient<IFileService, FileService>();
+            service.AddTransient<IAddressShippingService, AddressShippingService>();
             return service;
         }
     }

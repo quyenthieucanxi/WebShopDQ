@@ -14,18 +14,19 @@ namespace WebShopDQ.App.Data
         public void Configure(EntityTypeBuilder<Post> builder)
         {
             builder.Property(p => p.Title).HasMaxLength(50);
+            builder.Property(p => p.PostPath).HasMaxLength(50);
             builder.Property(p => p.Description).HasMaxLength(1000);
             builder.Property(p => p.UrlImage).HasMaxLength(1000);
             builder.Property(p => p.Address).HasMaxLength(150);
             builder.HasOne(p=> p.User)
-                .WithMany(q => q.Posts)
+                .WithMany(q => q.ListPost)
                 .HasForeignKey(p=> p.UserID)
                 .IsRequired(true)
                 .OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.Category)
                 .WithMany(q => q.Posts)
                 .HasForeignKey(p => p.CategoryID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
         }
     }

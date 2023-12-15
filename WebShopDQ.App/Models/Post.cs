@@ -8,7 +8,9 @@ namespace WebShopDQ.App.Models
         public Guid UserID { get; set; }
         public Guid CategoryID { get; set; }
         [Required]
-        public string? Title { get; set; }
+        public string Title { get; set; } = null!;
+        [Required]
+        public string PostPath { get; set; } = null!;
         [Required]
         public string? Description { get; set; }
         [Required]

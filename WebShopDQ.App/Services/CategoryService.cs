@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using WebShopDQ.App.Common;
 using WebShopDQ.App.DTO;
-using WebShopDQ.App.Migrations;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories;
 using WebShopDQ.App.Repositories.IRepositories;
@@ -33,7 +32,9 @@ namespace WebShopDQ.App.Services
             {
                 var category = new Category
                 {
-                    CategoryName = categoryDTO.CategoryName
+                    CategoryName = categoryDTO.CategoryName,
+                    CategoryPath = categoryDTO.CategoryPath,
+                    urlImg = categoryDTO.urlImg,
                 };
                 await _categoryRepository.Add(category);
                 return await Task.FromResult(true);

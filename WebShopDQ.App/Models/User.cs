@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace WebShopDQ.App.Models
 {
@@ -20,9 +21,11 @@ namespace WebShopDQ.App.Models
         public DateTime ModifiedTime { get; set; } = DateTime.Now;
         public string? Url { get; set; }
         public string? PublicId {  get; set; } 
-        public virtual List<Post>? Posts { get; set; }
-        public virtual List<SavePosts>? SavePosts { get; set; }
-        public virtual List<Message>? Messages { get; set; }
-        public virtual List<Notify>? Notifies { get; set; }
+        public  List<Post>? ListPost { get; set; }
+        public  List<Order>? Orders { get; set; }
+        public  List<AddressShipping>? AddressShippings { get; set; }
+        public  List<SavePosts>? SavePosts { get; set; }
+        public  List<Message>? Messages { get; set; }
+        public  List<Notify>? Notifies { get; set; }
     }
 }

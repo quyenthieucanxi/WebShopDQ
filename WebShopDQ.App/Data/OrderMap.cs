@@ -13,14 +13,14 @@ namespace WebShopDQ.App.Data
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.HasOne(p => p.User)
-                    .WithMany()
+            builder.HasOne(p => p.UserOrder)
+                    .WithMany(q => q.Orders)
                     .HasForeignKey(p => p.UserID)
                     .OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(p => p.Product)
                     .WithOne()
                     .HasForeignKey<Order>(p => p.ProductID)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

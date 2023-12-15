@@ -7,11 +7,11 @@ using WebShopDQ.App.Models;
 
 namespace WebShopDQ.App.ViewModels
 {
-    public class CategoryViewModel
+    public class CategoryViewModel : BaseVM
     {
-        public Guid Id { get; set; }
         public string? CategoryName { get; set; }
         public string? CategoryPath { get; set; }
+        public string? urlImg { get; set; }
     }
 
     public class CategoryListViewModel

@@ -14,7 +14,6 @@ using WebShopDQ.App.Common;
 using WebShopDQ.App.Common.Exceptions;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
-using WebShopDQ.App.Migrations;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Services.IServices;
@@ -31,10 +30,13 @@ namespace WebShopDQ.App.Services
         private readonly ISavePostRepository _savePostRepository;
         private readonly IPostRepository _postRepository;
         private readonly IFileRepository _fileUploadRepository;
+        private readonly IAddressShippingRepository _addressShippingRepository;
+        private readonly IOrderRepository _orderRepository;
 
         public UserService(IUserRepository userRepository, IMapper mapper,
             IFriendshipRepository friendshipRepository, ISavePostRepository savePostRepository,
-            IPostRepository postRepository, IFileRepository fileUploadRepository,UserManager<User> userManager)
+            IPostRepository postRepository, IFileRepository fileUploadRepository,IAddressShippingRepository addressShippingRepository,
+            IOrderRepository orderRepository,UserManager<User> userManager)
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -43,18 +45,24 @@ namespace WebShopDQ.App.Services
             _postRepository = postRepository;
             _fileUploadRepository = fileUploadRepository;
             _userManager = userManager;
+           _addressShippingRepository = addressShippingRepository;
+            _orderRepository = orderRepository;
         }
         public async Task<UserInfoViewModel> GetById(Guid userId)
         {
             try
             {
                 var data = await _userRepository.GetById(userId);
-                var role = data != null ?  await _userManager.GetRolesAsync(data) : null;
+                if (data == null)
+                {
+                    throw new KeyNotFoundException(Messages.UserNotFound);
+                }
+                var role =  await _userManager.GetRolesAsync(data);
                 var followingCount = await _friendshipRepository.Count(f => f.FollowerID == userId);
                 var followedCount = await _friendshipRepository.Count(f => f.FollowingID == userId);
 
                 var user = _mapper.Map<UserInfoViewModel>(data);
-                user.Role = role?.Count > 0 ? role![0] : null;
+                user.Role =  role![0];
                 user.FollowedCount = followedCount;
                 user.FollowingCount = followingCount;
                 return user;
@@ -140,14 +148,61 @@ namespace WebShopDQ.App.Services
             return await Task.FromResult(true);
         }
 
-        public async Task<bool> CheckSavesPost(Guid userId, Guid postId)
+        public async Task<bool> CheckSavesPost(Guid userId, string pathPost)
         {
-            var savePost = await _savePostRepository.FindAsync(p => p.UserID == userId && p.PostID == postId);
-            if (savePost == null)
-            {
-                throw new KeyNotFoundException("Post in not found");
-            }
+            var post = await _postRepository.FindAsync(p => p.PostPath == pathPost) ?? throw new KeyNotFoundException("Post in not found");
+            var savePost = await _savePostRepository.FindAsync(p => p.UserID == userId && p.PostID == post.Id);
             return await Task.FromResult(true);  
+        }
+
+        public async Task<bool> CreateAddRessShipping(Guid userId, AddressShippingDTO addressShippingDTO)
+        {
+            var res = await  _addressShippingRepository.CreateAddress(userId, addressShippingDTO);
+            return res ;
+        }
+
+        public async Task<AddressShippngListViewModel> GetAddressShopping(Guid userId)
+        {
+            var data = await _addressShippingRepository.FindAllAsync(p => p.UserId == userId);
+            var totalCount = data.Count();
+            var listAddressShipping = _mapper.Map<ICollection<AddressShippngViewModel>>(data);
+            return new AddressShippngListViewModel
+            {
+                TotalPost = totalCount,
+                listAddressShipping = listAddressShipping,
+            };
+        }
+
+        public async Task<bool> RemoveAddressShopping(Guid userId, Guid addressShippingId)
+        {
+            try
+            {
+                await _addressShippingRepository.Remove(p => p.Id == addressShippingId && p.UserId == userId);
+                return await Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);    
+            }
+        }
+
+        public async Task<bool> UpdateAddressShopping(Guid userId, Guid addressShippingId, AddressShippingDTO addressShippingDTO)
+        {
+            var res = await _addressShippingRepository.UpdateAddress(userId,addressShippingId, addressShippingDTO);
+            return res;
+        }
+
+        public async Task<AddressShippngViewModel> GetAddressShoppingDeFault(Guid userId)
+        {
+            var address = await _addressShippingRepository.GetDefault(userId);
+            var addressVM = _mapper.Map<AddressShippngViewModel>(address);
+            return addressVM;
+        }
+
+        public async Task<bool> SetAddressShopping(Guid userId, Guid addressShippingId)
+        {
+            var res = await _addressShippingRepository.SetDefault(userId, addressShippingId);
+            return res;
         }
     }
 }

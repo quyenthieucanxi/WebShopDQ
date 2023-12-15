@@ -7,6 +7,7 @@ using WebShopDQ.App.Data;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Common.Constant;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebShopDQ.App.Repositories
 {
@@ -43,9 +44,13 @@ namespace WebShopDQ.App.Repositories
             return  Entities;
              
         }
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        public async Task<IEnumerable<TEntity>> GetAllAsync(string[]? includes = null)
         {
-            return await Entities.ToListAsync();
+            IQueryable<TEntity> query = _databaseContext.Set<TEntity>();
+            if (includes != null)
+                foreach (var incluse in includes)
+                    query = query.Include(incluse);
+            return await query.ToListAsync();
         }
         public async Task<TEntity?> FindAsync(Expression<Func<TEntity,bool>> criteria, string[]? includes = null )
         {
@@ -93,8 +98,8 @@ namespace WebShopDQ.App.Repositories
 
         public async Task<TEntity?> GetById(object id)
         {
-            var a = await Entities.FindAsync(id);
-            return a;
+ 
+            return await Entities.FindAsync(id);
         }
 
         public async Task<bool> Remove(Expression<Func<TEntity, bool>> criteria)

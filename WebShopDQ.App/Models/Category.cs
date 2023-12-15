@@ -9,6 +9,7 @@ namespace WebShopDQ.App.Models
     {
         [Required]
         public string? CategoryName { get; set; }
+        [Required]
         public string? CategoryPath { get; set; }
         public string? urlImg  { get; set; }
         public virtual List<Post>? Posts { get; set; }

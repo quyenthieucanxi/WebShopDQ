@@ -22,10 +22,10 @@ namespace WebShopDQ.App.Repositories
         }
 
         public async Task<PostListViewModel> GetAllByItemPage(int page, int limit,string? catName,string? search, string? orderByDirection)
-            {
+         {
             try
             {
-                var query = String.IsNullOrEmpty(catName)  ?
+                var query = string.IsNullOrEmpty(catName)  ?
                             Entities.Include(p => p.Category)
                                     .Include(p => p.User).Where(post => post.Status == "Đang hiển thị") : 
                             Entities.Include(p => p.Category)

@@ -1,8 +1,13 @@
-﻿using System;
+﻿using AutoMapper;
+using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShopDQ.App.Common.Exceptions;
+using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories;
@@ -24,32 +29,19 @@ namespace WebShopDQ.App.Services
         }
         public async Task<bool> Create(OrderDTO orderDTO, Guid userId)
         {
-            var user = await _userRepository.GetById(userId);
-            try
-            {
-                var order = new Order
-                {
-                    //UserId = userId,
-                    UserID = user!.Id,
-                    ProductID = orderDTO.ProductId,
-                    Address = orderDTO.Address,
-                    PhoneNumber = orderDTO.PhoneNumber,
-                    Note = orderDTO.Note,
-                    Quantity = orderDTO.Quantity,
-                    TotalPrice = orderDTO.TotalPrice
-                };
-                await _orderRepository.Add(order);
-                return await Task.FromResult(true);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return await _orderRepository.Create(orderDTO, userId);
         }
+
+        public async Task<OrderListViewModel> GetAll() => await _orderRepository.GetAllVM();
 
         public async Task<OrderListViewModel> GetByStatus(int page, int limit, string status, Guid userId)
         {
             return await _orderRepository.GetByStatus(page, limit, status, userId);
+        }
+
+        public async Task<OrderListViewModel> GetByStatus(string status, Guid userId)
+        {
+            return await _orderRepository.GetByStatus(status, userId);
         }
     }
 }
