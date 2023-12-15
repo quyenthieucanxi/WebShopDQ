@@ -11,10 +11,9 @@ namespace WebShopDQ.App.AutoMapper
         public AutoMapperProfile()
         {
             CreateMap<RegisterModel, User>().ReverseMap();
-            CreateMap<UserInfoViewModel, User>().ReverseMap();
             CreateMap<User, UserInfoViewModel>().ReverseMap();
-                //.ForMember(destination => destination.Role
-               // options => options.MapFrom(source => source.Address))
+                //.ForMember(destination => destination.Role,
+                //options => options.MapFrom(source => source))
                 
             CreateMap<User, UserInfoDTO>().ReverseMap();
             CreateMap<Post, PostViewModel>()

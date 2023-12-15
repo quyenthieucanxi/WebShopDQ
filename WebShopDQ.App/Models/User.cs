@@ -16,7 +16,7 @@ namespace WebShopDQ.App.Models
         public string? Gender { get; set; }
         public DateTime Dob { get; set; }
         public string? AvatarUrl { get; set; }
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; } = false;
         public DateTime CreatedTime { get; set; } = DateTime.Now;
         public DateTime ModifiedTime { get; set; } = DateTime.Now;
         public string? Url { get; set; }

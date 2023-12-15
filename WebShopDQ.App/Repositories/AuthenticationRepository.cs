@@ -89,7 +89,7 @@ namespace WebShopDQ.App.Repositories
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = registerModel.UserName,
                 FullName = registerModel.FullName,
-                AvatarUrl = registerModel.Image,
+                AvatarUrl = registerModel.Image ?? "https://i.pinimg.com/736x/e0/7a/22/e07a22eafdb803f1f26bf60de2143f7b.jpg",
                 EmailConfirmed = string.IsNullOrEmpty(registerModel.FullName) == false ? true : false,
             };
             string role = "User";

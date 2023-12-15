@@ -125,7 +125,7 @@ namespace WebShopDQ.App.Services
 
         public async Task<PostListViewModel> GetSavesPost(Guid userId)
         {
-            var data =  await _userRepository.FindAsync(p=> p.Id == userId,new string[] { "SavePosts.Post.Category" }) 
+            var data =  await _userRepository.FindAsync(p=> p.Id == userId,new string[] { "SavePosts.Post.Category", "SavePosts.Post.User" }) 
                                         ?? throw new KeyNotFoundException(Messages.UserNotFound);
             var savePosts = data.SavePosts ?? new List<SavePosts>();
             var totalCount = savePosts.Count ;
@@ -152,9 +152,12 @@ namespace WebShopDQ.App.Services
         {
             var post = await _postRepository.FindAsync(p => p.PostPath == pathPost) ?? throw new KeyNotFoundException("Post in not found");
             var savePost = await _savePostRepository.FindAsync(p => p.UserID == userId && p.PostID == post.Id);
+            if (savePost == null)
+            {
+                return await Task.FromResult(false);
+            }
             return await Task.FromResult(true);  
         }
-
         public async Task<bool> CreateAddRessShipping(Guid userId, AddressShippingDTO addressShippingDTO)
         {
             var res = await  _addressShippingRepository.CreateAddress(userId, addressShippingDTO);
@@ -194,7 +197,7 @@ namespace WebShopDQ.App.Services
 
         public async Task<AddressShippngViewModel> GetAddressShoppingDeFault(Guid userId)
         {
-            var address = await _addressShippingRepository.GetDefault(userId);
+            var address = await _addressShippingRepository.GetDefault(userId) ?? throw new KeyNotFoundException(Messages.AddressShippingNotFound);
             var addressVM = _mapper.Map<AddressShippngViewModel>(address);
             return addressVM;
         }

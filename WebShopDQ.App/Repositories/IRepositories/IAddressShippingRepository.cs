@@ -13,7 +13,7 @@ namespace WebShopDQ.App.Repositories.IRepositories
     {
         Task<bool> CreateAddress(Guid UserId, AddressShippingDTO addressShippingDTO);
         Task<bool> UpdateAddress(Guid userId,Guid addressId, AddressShippingDTO addressShippingDTO);
-        Task<AddressShipping> GetDefault(Guid UserId);
+        Task<AddressShipping?> GetDefault(Guid UserId);
         Task<bool> SetDefault(Guid userId,Guid addressShipping);
     }
 }
