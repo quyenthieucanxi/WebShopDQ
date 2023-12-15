@@ -100,13 +100,13 @@ namespace WebShopDQ.API.Controllers
         }
         [HttpGet("[action]")]
         //[Authorize(Roles = "User, Manager, Shipper")]
-        public async Task<IActionResult> CheckSavesPost(String pathPost)
+        public async Task<IActionResult> CheckSavesPost(string pathPost)
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
-            await _userService.CheckSavesPost(userId, pathPost);
+            var isCheck = await _userService.CheckSavesPost(userId, pathPost);
             return StatusCode(StatusCodes.Status200OK,
-                        new Response { Status = "Success", Code = 200, Message = "Post exists" });
+                        new Response { Status = "Success", Code = 200, Message = isCheck ? "Post exists" : "Post not exists" , Data=isCheck});
         }
         [HttpPost("[action]")]
         public async Task<IActionResult> AddAddressShipping(AddressShippingDTO addressShippingDTO)

@@ -30,12 +30,11 @@ namespace WebShopDQ.App.Repositories
             try
             {
                 _uow.BeginTransaction();
-                if (addressShippingDTO.IsDefault)
-                {
-                    var addressDefaultExist = await GetDefault(UserId);
+                var addressDefaultExist = await GetDefault(UserId);
+                if (addressShippingDTO.IsDefault && addressDefaultExist != null)
+                {              
                     addressDefaultExist!.IsDefault = false;
                     await Update(addressDefaultExist);
-
                 }
                 var addRessShipping = _mapper.Map<AddressShipping>(addressShippingDTO);
                 addRessShipping.UserId = UserId;
@@ -51,22 +50,24 @@ namespace WebShopDQ.App.Repositories
             }
         }
 
-        public async Task<AddressShipping> GetDefault(Guid UserId)
+        public async Task<AddressShipping?> GetDefault(Guid UserId)
         {
-            var address = await FindAsync(p => p.UserId == UserId && p.IsDefault)
-                                ?? throw new KeyNotFoundException(Messages.AddressShippingNotFound);
+            var address = await FindAsync(p => p.UserId == UserId && p.IsDefault);
             return address;
         }
 
-        public async Task<bool> SetDefault(Guid userId, Guid addressShipping)
+        public async Task<bool> SetDefault(Guid userId, Guid addressShippingId)
         {
             try
             {
                 _uow.BeginTransaction();
                 var addressDefault = await GetDefault(userId);
-                addressDefault.IsDefault = false;
-                await Update(addressDefault);
-                var addressExist = await GetById(addressShipping) ?? throw new KeyNotFoundException(Messages.AddressShippingNotFound);
+                if (addressDefault != null)
+                {
+                    addressDefault.IsDefault = false;
+                    await Update(addressDefault);
+                }
+                var addressExist = await GetById(addressShippingId) ?? throw new KeyNotFoundException(Messages.AddressShippingNotFound);
                 addressExist.IsDefault = true;
                 await Update(addressExist);
                 _uow.SaveChanges();
