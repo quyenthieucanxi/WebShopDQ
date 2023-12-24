@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using WebShopDQ.App.Common;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
 using WebShopDQ.App.Models;
@@ -15,10 +16,14 @@ namespace WebShopDQ.App.Repositories
     public class PostRepository : Repository<Post>, IPostRepository
     {
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _uow;
+        private readonly DatabaseContext _databaseContext;
 
-        public PostRepository(IMapper mapper, DatabaseContext databaseContext) : base(databaseContext)
+        public PostRepository(IMapper mapper,IUnitOfWork uow, DatabaseContext databaseContext) : base(databaseContext)
         {
             _mapper = mapper;
+            _uow = uow;
+            _databaseContext = databaseContext;
         }
 
         public async Task<PostListViewModel> GetAllByItemPage(int page, int limit,string? catName,string? search, string? orderByDirection)
@@ -99,6 +104,25 @@ namespace WebShopDQ.App.Repositories
             }
             catch (Exception ex)
             {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> Update(UpdatePostDTO postDTO)
+        {
+            var data = await GetById(postDTO.Id) ?? throw new KeyNotFoundException(Messages.PostNotFound);
+            try
+            {
+                _uow.BeginTransaction();
+                var entry = _databaseContext.Entry(data);
+                entry.CurrentValues.SetValues(postDTO);
+                _uow.SaveChanges();
+                _uow.CommitTransaction();
+                return await Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                _uow.RollbackTransaction();
                 throw new Exception(ex.Message);
             }
         }

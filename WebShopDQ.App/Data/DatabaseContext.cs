@@ -31,6 +31,7 @@ namespace WebShopDQ.App.Data
         public DbSet<Message> Message { get; set; } = null!;
         public DbSet<SavePosts> SavePosts { get; set; } = null!;
         public DbSet<Friendship> Friendships { get; set; } = null!;
+        public DbSet<Shop> Shops { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -56,6 +57,7 @@ namespace WebShopDQ.App.Data
             builder.ApplyConfiguration(new PostReviewsMap());
             builder.ApplyConfiguration(new SavePostsMap());
             builder.ApplyConfiguration(new ChatsMap());
+            builder.ApplyConfiguration(new ShopMap());
 
             Seeding.SeedRoles(builder);
         }

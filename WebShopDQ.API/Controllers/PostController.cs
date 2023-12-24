@@ -73,6 +73,14 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Update post successfully." });
         }
+        [HttpPut("[action]")]
+        //[Authorize(Roles = "Manager")]
+        public async Task<IActionResult> Update(UpdatePostDTO postDTO)
+        {
+            await _postService.Update(postDTO);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Update post successfully." });
+        }
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetById(Guid postId)

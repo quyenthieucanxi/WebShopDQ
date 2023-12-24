@@ -26,14 +26,16 @@ namespace WebShopDQ.App.DTO
 
     public class UpdatePostDTO
     {
+        public Guid Id { get; set; }
         [Required]
         public string? Title { get; set; }
+        [Required]
+        public string? PostPath { get; set; }
         [Required]
         public string? Description { get; set; }
         [Required]
         public string? UrlImage { get; set; }
         public double Price { get; set; }
-        [Required]
-        public string? Address { get; set; }
+        public int Quantity { get; set; }
     }
 }

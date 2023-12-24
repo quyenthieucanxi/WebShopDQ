@@ -12,8 +12,8 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20231121122229_addCategory")]
-    partial class addCategory
+    [Migration("20231224054245_addShop")]
+    partial class addShop
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -233,6 +233,51 @@ namespace WebShopDQ.App.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("WebShopDQ.App.Models.AddressShipping", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AddressDetail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Distrist")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RecipientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AddressShippings");
+                });
+
             modelBuilder.Entity("WebShopDQ.App.Models.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -240,6 +285,11 @@ namespace WebShopDQ.App.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CategoryPath")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -386,9 +436,8 @@ namespace WebShopDQ.App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("AddressShippingID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
@@ -399,7 +448,7 @@ namespace WebShopDQ.App.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("Payment")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -419,6 +468,8 @@ namespace WebShopDQ.App.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressShippingID");
 
                     b.HasIndex("ProductID")
                         .IsUnique();
@@ -447,14 +498,19 @@ namespace WebShopDQ.App.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasMaxLength(1500)
+                        .HasColumnType("nvarchar(1500)");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("PostPath")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -564,29 +620,69 @@ namespace WebShopDQ.App.Migrations
 
             modelBuilder.Entity("WebShopDQ.App.Models.SavePosts", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PostID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("ModifiedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("PostID")
+                    b.HasKey("UserID", "PostID");
+
+                    b.HasIndex("PostID");
+
+                    b.ToTable("SavePosts");
+                });
+
+            modelBuilder.Entity("WebShopDQ.App.Models.Shop", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserID")
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1500)
+                        .HasColumnType("nvarchar(1500)");
+
+                    b.Property<DateTime>("ModifiedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PostID");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
-                    b.HasIndex("UserID");
-
-                    b.ToTable("SavePosts");
+                    b.ToTable("Shops");
                 });
 
             modelBuilder.Entity("WebShopDQ.App.Models.Role", b =>
@@ -598,35 +694,35 @@ namespace WebShopDQ.App.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7b63ef13-5041-4c32-8f63-9da210bfa6aa"),
+                            Id = new Guid("d44679ec-514d-4f5f-aea1-7748cd6ed8ce"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("036d36df-1d5b-42ef-83c7-2857795d7820"),
+                            Id = new Guid("b4a3cb5c-da9c-4186-81b7-28eb410972c2"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("53f28353-e12d-4528-9095-35ebd749a68c"),
+                            Id = new Guid("809fa679-63d3-481b-9792-39507dbbb494"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("50c10619-d623-4417-95fc-04bf20ce7acf"),
+                            Id = new Guid("da13220a-3ac6-4276-a919-2e69ae2820c4"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("69f79838-add5-46eb-a44a-9c5859fbb1e9"),
+                            Id = new Guid("99bb2def-5ed9-438e-a171-018045c9ae30"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"
@@ -731,6 +827,17 @@ namespace WebShopDQ.App.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WebShopDQ.App.Models.AddressShipping", b =>
+                {
+                    b.HasOne("WebShopDQ.App.Models.User", "User")
+                        .WithMany("AddressShippings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("WebShopDQ.App.Models.Chats", b =>
                 {
                     b.HasOne("WebShopDQ.App.Models.User", "Receiver")
@@ -801,21 +908,29 @@ namespace WebShopDQ.App.Migrations
 
             modelBuilder.Entity("WebShopDQ.App.Models.Order", b =>
                 {
+                    b.HasOne("WebShopDQ.App.Models.AddressShipping", "AddressShipping")
+                        .WithMany("Orders")
+                        .HasForeignKey("AddressShippingID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("WebShopDQ.App.Models.Post", "Product")
                         .WithOne()
                         .HasForeignKey("WebShopDQ.App.Models.Order", "ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("WebShopDQ.App.Models.User", "User")
-                        .WithMany()
+                    b.HasOne("WebShopDQ.App.Models.User", "UserOrder")
+                        .WithMany("Orders")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.Navigation("AddressShipping");
+
                     b.Navigation("Product");
 
-                    b.Navigation("User");
+                    b.Navigation("UserOrder");
                 });
 
             modelBuilder.Entity("WebShopDQ.App.Models.Post", b =>
@@ -823,11 +938,11 @@ namespace WebShopDQ.App.Migrations
                     b.HasOne("WebShopDQ.App.Models.Category", "Category")
                         .WithMany("Posts")
                         .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("WebShopDQ.App.Models.User", "User")
-                        .WithMany("Posts")
+                        .WithMany("ListPost")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -886,6 +1001,21 @@ namespace WebShopDQ.App.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("WebShopDQ.App.Models.Shop", b =>
+                {
+                    b.HasOne("WebShopDQ.App.Models.User", "User")
+                        .WithOne("Shop")
+                        .HasForeignKey("WebShopDQ.App.Models.Shop", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WebShopDQ.App.Models.AddressShipping", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("WebShopDQ.App.Models.Category", b =>
                 {
                     b.Navigation("Posts");
@@ -893,13 +1023,19 @@ namespace WebShopDQ.App.Migrations
 
             modelBuilder.Entity("WebShopDQ.App.Models.User", b =>
                 {
+                    b.Navigation("AddressShippings");
+
+                    b.Navigation("ListPost");
+
                     b.Navigation("Messages");
 
                     b.Navigation("Notifies");
 
-                    b.Navigation("Posts");
+                    b.Navigation("Orders");
 
                     b.Navigation("SavePosts");
+
+                    b.Navigation("Shop");
                 });
 #pragma warning restore 612, 618
         }

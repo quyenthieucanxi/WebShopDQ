@@ -13,7 +13,7 @@ namespace WebShopDQ.App.Services.IServices
     {
         Task<UserInfoViewModel> GetById(Guid userId);
         Task<bool> Update(Guid userId, UserInfoDTO model);
-        Task<UserListViewModel> GetAll(int page, int limit);
+        Task<UserListViewModel> GetAll();
         Task<bool> Delete(Guid id);
         Task<bool> CheckUserByEmail(string email);
         Task<bool> AddLikePost(Guid userId, Guid postId);
@@ -26,5 +26,6 @@ namespace WebShopDQ.App.Services.IServices
         Task<bool> UpdateAddressShopping(Guid userId, Guid addressShippingId, AddressShippingDTO addressShippingDTO);
         Task<AddressShippngViewModel> GetAddressShoppingDeFault(Guid userId);
         Task<bool> SetAddressShopping(Guid userId,Guid addressShippingId);
+        Task<bool> CreateShop(Guid userId, ShopDTO shopDTO);
     }
 }
