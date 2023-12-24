@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShopDQ.App.Common;
 using WebShopDQ.App.Common.Exceptions;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
@@ -32,7 +33,7 @@ namespace WebShopDQ.App.Services
             return await _orderRepository.Create(orderDTO, userId);
         }
 
-        public async Task<OrderListViewModel> GetAll() => await _orderRepository.GetAllVM();
+        public async Task<OrderListViewModel> GetAll(Guid userId) => await _orderRepository.GetAllVM(userId);
 
         public async Task<OrderListViewModel> GetByStatus(int page, int limit, string status, Guid userId)
         {
@@ -42,6 +43,14 @@ namespace WebShopDQ.App.Services
         public async Task<OrderListViewModel> GetByStatus(string status, Guid userId)
         {
             return await _orderRepository.GetByStatus(status, userId);
+        }
+
+        public async Task<bool> UpdateStatus(Guid orderId, string status)
+        {
+            var order = await _orderRepository.GetById(orderId) ?? throw new KeyNotFoundException("Order not found");
+            order.Status = status;
+            await _orderRepository.Update(order);
+            return await Task.FromResult(true);
         }
     }
 }

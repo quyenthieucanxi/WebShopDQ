@@ -54,9 +54,10 @@ namespace WebShopDQ.API.Controllers
 
         [HttpGet("[action]")]
         //[Authorize(Roles = "Manager")]
-        public async Task<IActionResult> GetAll(int page, int limit)
+        public async Task<IActionResult> GetAll()
         {
-            var userList = await _userService.GetAll(page, limit);
+            await _tokenInfoService.GetTokenInfo();
+            var userList = await _userService.GetAll();
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get all user successfully.", Data = userList });
         }
@@ -163,6 +164,15 @@ namespace WebShopDQ.API.Controllers
             await _userService.SetAddressShopping(userId,addressShippingId);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Update AddressShipping Default successfully." });
+        }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> CreateShop(ShopDTO shopDTO)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            await _userService.CreateShop(userId,shopDTO);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Create Shop successfully" });
         }
     }
 }

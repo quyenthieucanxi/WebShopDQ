@@ -14,6 +14,6 @@ namespace WebShopDQ.App.Repositories.IRepositories
         Task<bool> Create(OrderDTO orderDTO, Guid userId);
         Task<OrderListViewModel> GetByStatus(int page, int limit, string status, Guid userId);
         Task<OrderListViewModel> GetByStatus(string status, Guid userId);
-        Task<OrderListViewModel> GetAllVM();
+        Task<OrderListViewModel> GetAllVM(Guid userId);
     }
 }

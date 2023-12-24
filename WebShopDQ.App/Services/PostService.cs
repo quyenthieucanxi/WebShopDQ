@@ -24,7 +24,6 @@ namespace WebShopDQ.App.Services
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
         private readonly UserManager<User> _userManager;
-        private readonly IUnitOfWork _uow;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
         
@@ -36,7 +35,6 @@ namespace WebShopDQ.App.Services
             _userRepository = userRepository;
             _userManager = userManager;
             _categoryRepository = categoryRepository;
-            _uow = uow;
             _mapper = mapper;
         }
 
@@ -137,6 +135,11 @@ namespace WebShopDQ.App.Services
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public Task<bool> Update(UpdatePostDTO postDTO)
+        {
+            return _postRepository.Update(postDTO);
         }
     }
 }

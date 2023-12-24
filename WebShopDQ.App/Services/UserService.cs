@@ -32,11 +32,11 @@ namespace WebShopDQ.App.Services
         private readonly IFileRepository _fileUploadRepository;
         private readonly IAddressShippingRepository _addressShippingRepository;
         private readonly IOrderRepository _orderRepository;
-
+        private readonly IShopRepository _shopRepository;
         public UserService(IUserRepository userRepository, IMapper mapper,
             IFriendshipRepository friendshipRepository, ISavePostRepository savePostRepository,
             IPostRepository postRepository, IFileRepository fileUploadRepository,IAddressShippingRepository addressShippingRepository,
-            IOrderRepository orderRepository,UserManager<User> userManager)
+            IOrderRepository orderRepository,IShopRepository shopRepository ,UserManager<User> userManager)
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -47,6 +47,7 @@ namespace WebShopDQ.App.Services
             _userManager = userManager;
            _addressShippingRepository = addressShippingRepository;
             _orderRepository = orderRepository;
+            _shopRepository = shopRepository;
         }
         public async Task<UserInfoViewModel> GetById(Guid userId)
         {
@@ -83,10 +84,23 @@ namespace WebShopDQ.App.Services
             return data;
         }
 
-        public async Task<UserListViewModel> GetAll(int page, int limit)
+        public async Task<UserListViewModel> GetAll()
         {
-            var data = await _userRepository.GetAll(page, limit);
-            return data;
+            var data = await _userRepository.GetAllAsync();
+            var totalCount = data.Count();
+            var listData = _mapper.Map<ICollection<UserInfoViewModel>>(data);
+            //var listData = new List<UserInfoViewModel>();
+            //foreach (var item in data)
+            //{
+            //    var userVM = _mapper.Map<UserInfoViewModel>(item);
+            //    userVM.Role = item.role;
+            //    listData.Add(userVM);
+            //}
+            return new UserListViewModel
+            {
+                TotalUser = totalCount,
+                UserList = listData
+            };
         }
 
         public async Task<bool> Delete(Guid userId)
@@ -205,6 +219,13 @@ namespace WebShopDQ.App.Services
         public async Task<bool> SetAddressShopping(Guid userId, Guid addressShippingId)
         {
             var res = await _addressShippingRepository.SetDefault(userId, addressShippingId);
+            return res;
+        }
+
+        public async Task<bool> CreateShop(Guid userId, ShopDTO shopDTO)
+        {
+            var user = await _userRepository.GetById(userId);
+            var res = await _shopRepository.Create(user!, shopDTO);
             return res;
         }
     }

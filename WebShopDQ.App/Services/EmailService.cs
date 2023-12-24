@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.Configuration;
 using Org.BouncyCastle.Asn1.Ocsp;
 using WebShopDQ.App.Repositories.IRepositories;
 using WebShopDQ.App.Services.IServices;
@@ -12,15 +13,17 @@ namespace WebShopDQ.App.Services
         private readonly IAuthenticationRepository _authenticationRepository;
         private readonly IEmailRepository _emailRepository;
         private readonly IGetHTMLBodyRepository _htmlBodyRepository;
+        private readonly IConfiguration _configuration;
 
         public EmailService(IEmailRepository emailRepository,
             IGetHTMLBodyRepository htmlBodyRepository,
-            IAuthenticationRepository authenticationRepository)
+            IAuthenticationRepository authenticationRepository,
+            IConfiguration configuration)
         {
             _emailRepository = emailRepository;
             _htmlBodyRepository = htmlBodyRepository;
             _authenticationRepository = authenticationRepository;
-
+            _configuration = configuration;
         }
 
         public async Task<bool> SendEmail(EmailMessageModel emailMessageModel)
@@ -32,7 +35,7 @@ namespace WebShopDQ.App.Services
         {
             //var emailModel = await _authenticationRepository.GetConfirmEmail(email);
            
-            var verifLink =  "http://192.168.1.176:5000" + token;
+            var verifLink = _configuration["Url"] + token;
             var body = await _htmlBodyRepository.GetBody("Verify.html");
             body = body.Replace("[[verilink]]", verifLink);
             var confirmationMail = new EmailMessageModel
@@ -48,7 +51,7 @@ namespace WebShopDQ.App.Services
         {
             //var emailModel = await _authenticationRepository.GetConfirmEmail(email);
 
-            var verifLink = "http://192.168.1.176:5000" + token;
+            var verifLink = _configuration["Url"] + token;
             var body = await _htmlBodyRepository.GetBody("ForgetPassword.html");
             body = body.Replace("[[verilink]]", verifLink);
             var confirmationMail = new EmailMessageModel

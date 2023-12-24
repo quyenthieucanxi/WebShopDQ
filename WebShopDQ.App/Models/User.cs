@@ -21,6 +21,7 @@ namespace WebShopDQ.App.Models
         public DateTime ModifiedTime { get; set; } = DateTime.Now;
         public string? Url { get; set; }
         public string? PublicId {  get; set; } 
+        public Shop? Shop { get; set; }
         public  List<Post>? ListPost { get; set; }
         public  List<Order>? Orders { get; set; }
         public  List<AddressShipping>? AddressShippings { get; set; }

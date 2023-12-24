@@ -55,10 +55,20 @@ namespace WebShopDQ.API.Controllers
         //[Authorize(Roles = "User, Seller")]
         public async Task<IActionResult> GetAll()
         {
-            await _tokenInfoService.GetTokenInfo();
-            var orderList = await _orderService.GetAll();
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            var orderList = await _orderService.GetAll(userId);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get orders successfully.", Data = orderList });
+        }
+        [HttpPut("[action]")]
+        //[Authorize(Roles = "User, Seller")]
+        public async Task<IActionResult> UpdateStatus(string status,Guid orderId)
+        {
+            await _tokenInfoService.GetTokenInfo();
+            await _orderService.UpdateStatus(orderId,status);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Update orders successfully." });
         }
     }
 }

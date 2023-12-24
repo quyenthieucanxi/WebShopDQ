@@ -57,9 +57,9 @@ namespace WebShopDQ.App.Repositories
             }
         }
 
-        public async Task<OrderListViewModel> GetAllVM()
+        public async Task<OrderListViewModel> GetAllVM(Guid userId)
         {
-            var data = await GetAllAsync(new string[] { "UserOrder", "AddressShipping", "Product", "Product.Category" });
+            var data = await FindAllAsync(p => p.UserID == userId,new string[] { "UserOrder", "AddressShipping", "Product", "Product.Category" });
             //var data = await  Entities
             //                     .Include(order => order.UserOrder)
             //                     .Include(order => order.Product)

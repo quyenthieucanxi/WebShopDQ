@@ -11,8 +11,9 @@ namespace WebShopDQ.App.Services.IServices
     public interface IOrderService
     {
         Task<bool> Create(OrderDTO orderDTO, Guid userId);
-        Task<OrderListViewModel> GetAll();
+        Task<OrderListViewModel> GetAll(Guid userId);
         Task<OrderListViewModel> GetByStatus(int page, int limit, string status, Guid userId);
         Task<OrderListViewModel> GetByStatus(string status, Guid userId);
+        Task<bool> UpdateStatus(Guid orderId, string status);
     }
 }
