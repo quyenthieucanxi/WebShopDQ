@@ -297,7 +297,7 @@ namespace WebShopDQ.App.Repositories
         public async Task<LinkedEmailModel> GetConfirmEmailForgetPassword(string email, User user,string newPassword)
         {
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var resetLink = _urlHelper.Action("ConfirmEmailForgetPassword", new { token, email,  });
+            var resetLink = _urlHelper.Action("ConfirmEmailForgetPassword", new { token, email,newPassword  });
             LinkedEmailModel result = new()
             {
                 Email = email,

@@ -85,12 +85,16 @@ builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<IEmailService, EmailService>();*/
 
 // Add Cors\
-builder.Services.AddCors(options => options.AddPolicy("corpolicy",policy =>
+builder.Services.AddCors(options => options.AddPolicy("corpolicyHttp",policy =>
 {
     policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }
 ));
-
+builder.Services.AddCors(options => options.AddPolicy("corpolicyHttps", policy =>
+{
+    policy.WithOrigins("https://fe-web-shop-dq.vercel.app").AllowAnyMethod().AllowAnyHeader();
+}
+));
 // Add IUrlHelper
 builder.Services.AddScoped<IUrlHelper>(x =>
 {
@@ -160,7 +164,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 var app = builder.Build();
-app.UseCors("corpolicy");
+app.UseCors("corpolicyHttp");
+app.UseCors("corpolicyHttps");
 app.UseAuthentication();
 app.UseAuthorization();
 

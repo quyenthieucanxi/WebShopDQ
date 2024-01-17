@@ -47,6 +47,8 @@ namespace WebShopDQ.App.Services
             }
             try
             {
+                var data = await _userRepository.GetById(userId);
+                var role = await _userManager.GetRolesAsync(data!);
                 var post = new Post
                 {
                     UserID = userId,
@@ -59,6 +61,10 @@ namespace WebShopDQ.App.Services
                     Address = postDTO.Address,
                     Quantity = postDTO.Quantity
                 };
+                if (role[0] == "Seller")
+                {
+                    post.Status = "Đang hiển thị";
+                }
                 await _postRepository.Add(post);
                 return await Task.FromResult(true);
             }
