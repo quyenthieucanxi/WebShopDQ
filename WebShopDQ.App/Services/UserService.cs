@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.Ocsp;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,12 +77,23 @@ namespace WebShopDQ.App.Services
 
         public async Task<bool> Update(Guid userId, UserInfoDTO model)
         {
-            //var file = await _fileUploadRepository.UploadFile(formFile);
-            //var userInfo = _mapper.Map<UserDTO>(model);
-            //userInfo.UrlAvatar = file.Url;
-            //userInfo.PublicIdAvatar = file.PublicId;
             var data = await _userRepository.Update(userId, model);
             return data;
+        }
+        public async Task<bool> UpdateAvatar(Guid userId, string urlAvt)
+        {
+            try
+            {
+                var user = await _userRepository.GetById(userId);
+                user!.AvatarUrl = urlAvt;
+                await _userRepository.Update(user);
+                return await Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<UserListViewModel> GetAll()
@@ -132,7 +144,7 @@ namespace WebShopDQ.App.Services
             {
                 throw new DuplicateException("Post is exist in List");
             }
-            SavePosts savePosts = new SavePosts () { Id = Guid.NewGuid(), UserID = userId, PostID = postId };
+            SavePosts savePosts = new SavePosts (Guid.NewGuid(),userId,postId) ;
             await _savePostRepository.Add(savePosts);
             return await Task.FromResult(true);
         }
@@ -228,5 +240,15 @@ namespace WebShopDQ.App.Services
             var res = await _shopRepository.Create(user!, shopDTO);
             return res;
         }
+
+        public async Task<UserInfoViewModel> GetProfile(string url)
+        {
+            var user = await _userRepository.FindAsync(u => u.Url == url) 
+                ?? throw new KeyNotFoundException(Messages.UserNotFound);
+            var userVM = _mapper.Map<UserInfoViewModel>(user);
+            return userVM;
+        }
+
+        
     }
 }

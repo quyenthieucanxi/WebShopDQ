@@ -34,6 +34,13 @@ namespace WebShopDQ.API.Controllers
                         new Response { Status = "Success", Code = 200, Message = "Get my info user successfully.", Data = user });
         }
         [HttpGet("[action]")]
+        public async Task<IActionResult> GetProfile(string url)
+        {
+            var user = await _userService.GetProfile(url);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get profile user successfully.", Data = user });
+        }
+        [HttpGet("[action]")]
         public async Task<IActionResult> CheckUserByEmail(string email)
         {
             await _userService.CheckUserByEmail(email);
@@ -42,7 +49,6 @@ namespace WebShopDQ.API.Controllers
         }
 
         [HttpPut("[action]")]
-        //[Authorize(Roles = "User, Manager, Shipper")]
         public async Task<IActionResult> UpdateInfo(UserInfoDTO model)
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
@@ -50,6 +56,15 @@ namespace WebShopDQ.API.Controllers
             await _userService.Update(userId, model);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Update info user successfully." });
+        }
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateAvatar(UserAvatarDTO userAvatarDTO)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            await _userService.UpdateAvatar(userId, userAvatarDTO.AvatarUrl!);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Update avatar user successfully." });
         }
 
         [HttpGet("[action]")]

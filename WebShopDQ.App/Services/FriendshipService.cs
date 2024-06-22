@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,33 +23,47 @@ namespace WebShopDQ.App.Services
             _userRepository = userRepository;
         }
 
-        public async Task<bool> Follow(Guid followerId, Guid followingId)
+        public async Task<bool> CheckFollow(Guid userId, string url)
         {
-            if (followerId == followingId) throw new DuplicateException("Can not follow!");
-            var existingFriendship = await _friendshipRepository.CheckExist(f => f.FollowerID == followerId);
+            var userFollower = await _userRepository.FindAsync(u => u.Url == url) ?? throw new KeyNotFoundException(Messages.UserNotFound);
+            var existingFriendship = await _friendshipRepository.FindAsync(f => f.FollowingID == userFollower.Id && f.FollowerID == userId );
+            return existingFriendship != null;
+        }
+
+        public async Task<int> CountFollower(string url)
+        {
+            var user = await _userRepository.FindAsync(u => u.Url == url) ?? throw new KeyNotFoundException(Messages.UserNotFound);
+            var listFollower = await _friendshipRepository.FindAllAsync(f => f.FollowingID == user.Id);
+            return listFollower.Count() ;
+        }
+
+        public async Task<int> CountFollowing( string url)
+        {
+            var user = await _userRepository.FindAsync(u => u.Url == url) ?? throw new KeyNotFoundException(Messages.UserNotFound);
+            var listFollowing = await _friendshipRepository.FindAllAsync(f => f.FollowerID == user.Id);
+            return listFollowing.Count();
+        }
+
+        public async Task<bool> Follow(Guid followerId, string url)
+        {
+            var following = await _userRepository.FindAsync(u => u.Url == url) ?? throw new KeyNotFoundException(Messages.UserNotFound);
+            if (followerId == following.Id) throw new DuplicateException("Can not follow!");
+            var existingFriendship = await _friendshipRepository.FindAsync(f => f.FollowerID == followerId && f.FollowingID == following.Id);
             if (existingFriendship != null)
             {
                 throw new DuplicateException("Friendship already exists!");
             }
 
-            var follower = await _userRepository.GetById(followerId);
-            var following = await _userRepository.GetById(followingId) ?? throw new KeyNotFoundException(Messages.UserNotFound);
-            
-            var friendship = new Friendship
-            {
-                FollowerID = follower!.Id,
-                FollowingID = following!.Id,
-            };
+            var friendship = new Friendship(Guid.NewGuid(),followerId, following.Id);
             await _friendshipRepository.Add(friendship);
             return await Task.FromResult(true);
         }
 
-        public async Task<bool> UnFollow(Guid followerId ,Guid followingId)
+        public async Task<bool> UnFollow(Guid followerId ,string url)
         {
-            var user = await _friendshipRepository.GetById(followingId) ?? throw new KeyNotFoundException(Messages.UserNotFound);
-            var result = await _friendshipRepository
-                .Remove(f => f.FollowerID == followerId && f.FollowingID == followingId);
-            return result;
+            var following = await _userRepository.FindAsync(u => u.Url == url) ?? throw new KeyNotFoundException(Messages.UserNotFound);
+            return await _friendshipRepository
+                .Remove(f => f.FollowerID == followerId && f.FollowingID == following.Id);
         }
     }
 }

@@ -24,7 +24,11 @@ namespace WebShopDQ.App.Repositories
         private readonly IPostRepository _postRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public OrderRepository(DatabaseContext databaseContext, IMapper mapper, IPostRepository postRepository, IUnitOfWork unitOfWork) : base(databaseContext)
+        public OrderRepository(
+            DatabaseContext databaseContext,
+            IMapper mapper, 
+            IPostRepository postRepository, 
+            IUnitOfWork unitOfWork) : base(databaseContext)
         {
             _mapper = mapper;
             _postRepository = postRepository;
@@ -36,7 +40,7 @@ namespace WebShopDQ.App.Repositories
             var post = await _postRepository.GetById(orderDTO.ProductId) ?? throw new KeyNotFoundException(Messages.PostNotFound);
             if (orderDTO.Quantity > post.Quantity)
             {
-                throw new ValidateException("Số lượng không hợp lệ");
+                throw new ValidateException(Messages.QuantityInvalid);
             }
             try
             {    
@@ -44,9 +48,9 @@ namespace WebShopDQ.App.Repositories
                 var order = _mapper.Map<Order>(orderDTO);
                 order.UserID = userId;
                 await Add(order);
-                post.Quantity = (post.Quantity - orderDTO.Quantity);
+                post.Quantity = post.Quantity - orderDTO.Quantity;
                 await _postRepository.Update(post);
-                _unitOfWork.SaveChanges();
+                await _unitOfWork.SaveChanges();
                 _unitOfWork.CommitTransaction();
                 return await Task.FromResult(true);
             }
@@ -59,21 +63,17 @@ namespace WebShopDQ.App.Repositories
 
         public async Task<OrderListViewModel> GetAllVM(Guid userId)
         {
-            var data = await FindAllAsync(p => p.UserID == userId,new string[] { "UserOrder", "AddressShipping", "Product", "Product.Category" });
-            //var data = await  Entities
-            //                     .Include(order => order.UserOrder)
-            //                     .Include(order => order.Product)
-            //                     .Include(order => order.AddressShipping)
-            //                     .Select(order => new Order { Id = order.Id, Quantity = order.Quantity, TotalPrice = order.TotalPrice, Status = order.Status!, Payment = order.Payment, Note = order.Note, 
-            //                         UserOrder = new User { Id = order.UserOrder!.Id, FullName = order.UserOrder.FullName, }, 
-            //                         Product = new Post { Id = order.Product!.Id, Title = order.Product.Title, UrlImage = order.Product.UrlImage, Quantity = order.Product.Quantity,Price = order.Product.Price,Category = order.Product.Category }, 
-            //                         AddressShipping = new AddressShipping { Id = order.AddressShipping.Id, RecipientName = order.AddressShipping.RecipientName, Phone = order.AddressShipping.Phone, Province = order.AddressShipping.Province, Distrist = order.AddressShipping.Distrist, AddressDetail = order.AddressShipping.AddressDetail, } })
-            //                     .ToListAsync();    
-            var total = data.Count();
-            var OrderList = _mapper.Map<List<OrderViewModel>>(data);
+            var data = await FindAllAsync(p => p.UserID == userId,new string[] { "UserOrder", "AddressShipping", "Products" });  
+            var orders = data.OrderByDescending(p => p.CreatedTime);
+            foreach (var order in orders)
+            {
+                var product = await _postRepository.GetById(order.ProductID);
+                order.Products?.Add(product!);
+            }   
+            var OrderList = _mapper.Map<List<OrderViewModel>>(orders);
             return new OrderListViewModel
             {
-                TotalOrder = total,
+                TotalOrder = OrderList.Count,
                 OrderList = OrderList,
             };
         }
@@ -83,24 +83,23 @@ namespace WebShopDQ.App.Repositories
             try
             {
                 var query = Entities.Include(order => order.UserOrder)
-                                 .Include(order => order.Product)
+                                 .Include(order => order.Products)
                                  .Include(order => order.AddressShipping);
-                page = page != 0 ? page : 1;
-                limit = limit != 0 ? limit : 4;
-                var listData = new List<OrderViewModel>();
+                
                 var data = await query.OrderByDescending(post => post.CreatedTime)
                     .Where(p => p.Status == status && p.UserID == userId).ToListAsync();
                 var totalCount = data.Count;
                 data = data.Skip((page - 1) * limit).Take(limit).ToList();
-                foreach (var item in data)
+                foreach (var order in data)
                 {
-                    var order = _mapper.Map<OrderViewModel>(item);
-                    listData.Add(order);
+                    var product = await _postRepository.GetById(order.ProductID);
+                    order.Products?.Add(product!);
                 }
+                var OrderList = _mapper.Map<ICollection<OrderViewModel>>(data);
                 return new OrderListViewModel
                 {
                     TotalOrder = totalCount,
-                    OrderList = listData
+                    OrderList = OrderList
                 };
             }
             catch (Exception ex)
@@ -108,13 +107,19 @@ namespace WebShopDQ.App.Repositories
                 throw new Exception(ex.Message);
             }
         }
-
         public async Task<OrderListViewModel> GetByStatus(string status, Guid userId)
         {
-            string[] includes = { "UserOrder", "AddressShipping", "Product", "Product.Category" };
-            var data = await FindAllAsync(p => p.Status!.ToLower() == status.ToLower()  && p.UserID == userId, includes);
-            var total = data.Count();
-            var OrderList = _mapper.Map<ICollection<OrderViewModel>>(data);
+            var query = Entities.Include(order => order.UserOrder)
+                                 .Include(order => order.Products)
+                                 .Include(order => order.AddressShipping);
+            var data = await query.Where(p => p.Status!.ToLower() == status.ToLower()  && p.UserID == userId).ToListAsync();
+            var total = data.Count;
+            foreach (var order in data)
+            {
+                var product = await _postRepository.GetById(order.ProductID);
+                order.Products?.Add(product!);
+            }
+            var OrderList = _mapper.Map<ICollection<OrderViewModel>>(data.OrderByDescending(p => p.CreatedTime));
             return new OrderListViewModel
             {
                 TotalOrder = total,

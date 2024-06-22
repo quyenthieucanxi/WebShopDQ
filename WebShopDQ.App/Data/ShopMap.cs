@@ -19,9 +19,9 @@ namespace WebShopDQ.App.Data
             builder.Property(p => p.Address).HasMaxLength(150);
             builder.HasOne(p => p.User)
                 .WithOne(q => q.Shop)
-                .HasForeignKey<Shop>(p => p.UserId )
+                .HasForeignKey<Shop>(p => p.UserId)
                 .IsRequired(false)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
         }
     }

@@ -27,5 +27,7 @@ namespace WebShopDQ.App.Services.IServices
         Task<AddressShippngViewModel> GetAddressShoppingDeFault(Guid userId);
         Task<bool> SetAddressShopping(Guid userId,Guid addressShippingId);
         Task<bool> CreateShop(Guid userId, ShopDTO shopDTO);
+        Task<UserInfoViewModel> GetProfile(string url);
+        Task<bool> UpdateAvatar(Guid userId, string urlAvt);
     }
 }

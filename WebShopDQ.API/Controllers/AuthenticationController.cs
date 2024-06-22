@@ -41,14 +41,7 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new LoginViewModel { AccessToken = result.AccessToken , RefreshToken= result.RefreshToken  });
         }
-        [HttpPost("ForgetPassword")]
-        public async Task<IActionResult> ForgetPassword(ForgetPasswordModel model)
-        {
-            var mail = await _authenticationService.ForgetPassword(model);
-            await _emailService.SendEmailForgetPassword(mail.Email!, mail.Link!);
-            return StatusCode(StatusCodes.Status200OK,
-                        new Response { Status = "Success", Message = "User forget password & Email sent to successfully!" });
-        }
+        
 
         [HttpGet("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
@@ -64,6 +57,14 @@ namespace WebShopDQ.API.Controllers
                 return StatusCode(StatusCodes.Status404NotFound,
                 new Response { Status = "Error", Message = "This user not exist!" });
             }
+        }
+        [HttpPost("ForgetPassword")]
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordModel model)
+        {
+            var mail = await _authenticationService.ForgetPassword(model);
+            await _emailService.SendEmailForgetPassword(mail.Email!, mail.Link!);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Message = "User forget password & Email sent to successfully!" });
         }
         [HttpGet("confirmEmailForgetPassword")]
         public async Task<IActionResult> ConfirmEmailForgetPassword(string token, string email,string newPassword)

@@ -13,6 +13,7 @@ namespace WebShopDQ.App.ViewModels
         public Guid UserId { get; set; }
         public string? AvatarUrl { get; set; }
         public string? CategoryName { get; set; }
+        public string? CategoryPath { get; set; }
         public string? PostPath { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }

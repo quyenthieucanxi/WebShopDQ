@@ -18,6 +18,7 @@ namespace WebShopDQ.App.Data
             builder.Property(p => p.Description).HasMaxLength(1500);
             builder.Property(p => p.UrlImage).HasMaxLength(1000);
             builder.Property(p => p.Address).HasMaxLength(150);
+            builder.Property(p => p.OrderId).IsRequired(false);
             builder.HasOne(p=> p.User)
                 .WithMany(q => q.ListPost)
                 .HasForeignKey(p=> p.UserID)
@@ -27,7 +28,12 @@ namespace WebShopDQ.App.Data
                 .WithMany(q => q.Posts)
                 .HasForeignKey(p => p.CategoryID)
                 .OnDelete(DeleteBehavior.NoAction);
-
+            builder.HasOne(p => p.Order)
+                  .WithMany(q => q.Products)
+                  .HasForeignKey(q => q.OrderId)
+                  .IsRequired(false)
+                  .OnDelete(DeleteBehavior.NoAction);
+            
         }
     }
 }

@@ -20,6 +20,9 @@ using WebShopDQ.App.Services;
 using WebShopDQ.App.Services.IServices;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Http.Features;
+using WebShopDQ.App.Interceptor;
+using WebShopDQ.App.Hubs;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -35,8 +38,13 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 
 // Entity Framework
-builder.Services.AddDbContext<DatabaseContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? ""));
+builder.Services.AddDbContext<DatabaseContext>(
+    (sp,options) =>
+    {
+        var auditableInterceptor = sp.GetService<UpdateAuditableEntitiesInterceptor>()!;
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? "")
+                .AddInterceptors(auditableInterceptor);
+    });
 
 // Identity
 builder.Services.AddIdentity<User, Role>(options =>
@@ -69,13 +77,29 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = false,
         ValidateAudience = false,
-        //        ValidAudience = builder.Configuration["JWT:ValidAudience"],
-        //        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
 
         ClockSkew = TimeSpan.Zero
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+
+            // If the request is for our hub...
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) &&
+                (path.StartsWithSegments("/chat")))
+            {
+                // Read the token out of the query string
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -87,29 +111,37 @@ builder.Services.AddScoped<IEmailService, EmailService>();*/
 // Add Cors\
 builder.Services.AddCors(options => options.AddPolicy("corpolicyHttp",policy =>
 {
-    policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 }
 ));
 builder.Services.AddCors(options => options.AddPolicy("corpolicyHttps", policy =>
 {
-    policy.WithOrigins("https://fe-web-shop-dq.vercel.app").AllowAnyMethod().AllowAnyHeader();
+    policy.WithOrigins("https://fe-web-shop-dq.vercel.app").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 }
 ));
 // Add IUrlHelper
-builder.Services.AddScoped<IUrlHelper>(x =>
+builder.Services.AddScoped<IUrlHelper>(options =>
 {
-    var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
-    var factory = x.GetRequiredService<IUrlHelperFactory>();
+    var actionContext = options.GetRequiredService<IActionContextAccessor>().ActionContext;
+    var factory = options.GetRequiredService<IUrlHelperFactory>();
     return factory.GetUrlHelper(actionContext!);
 });
+builder.Services.AddHangfire((sp, config) =>
+{
+    var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection");
+    config.UseSqlServerStorage(connectionString);
+});
+builder.Services.AddHangfireServer();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
 // Add Log Global
 var _loggrer = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration)
                                         .Enrich.FromLogContext().CreateLogger();
 builder.Logging.AddSerilog(_loggrer);
+//Add SingalIR
+builder.Services.AddSignalR();
 // Add services to the container.
-
+builder.Services.AddSingleton<UpdateAuditableEntitiesInterceptor>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -139,9 +171,7 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
-
-
-
+builder.Services.AddHttpContextAccessor();
 // Cloundinary
 
 builder.Services.Configure<FormOptions>(o =>
@@ -164,17 +194,11 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 var app = builder.Build();
-app.UseCors("corpolicyHttp");
-app.UseCors("corpolicyHttps");
+
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseHangfireDashboard();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
@@ -182,5 +206,8 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();
+app.MapHub<ChatHub>("/chat");
 
+app.UseCors("corpolicyHttp");
+app.UseCors("corpolicyHttps");
 app.Run();

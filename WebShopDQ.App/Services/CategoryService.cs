@@ -30,12 +30,9 @@ namespace WebShopDQ.App.Services
         {
             try
             {
-                var category = new Category
-                {
-                    CategoryName = categoryDTO.CategoryName,
-                    CategoryPath = categoryDTO.CategoryPath,
-                    urlImg = categoryDTO.urlImg,
-                };
+                var category = new Category(Guid.NewGuid(), categoryDTO.CategoryName,
+                                            categoryDTO.CategoryPath, categoryDTO.urlImg);
+              
                 await _categoryRepository.Add(category);
                 return await Task.FromResult(true);
             }

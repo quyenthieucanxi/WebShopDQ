@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -21,21 +23,30 @@ namespace WebShopDQ.App.Services
 {
     public class PostService : IPostService
     {
+        private readonly IBackgroundJobClient _backgroundJobClient ;
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
         private readonly UserManager<User> _userManager;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
-        
 
-        public PostService(IPostRepository postRepository, IUserRepository userRepository, UserManager<User> userManager,
-        ICategoryRepository categoryRepository, IUnitOfWork uow, IMapper mapper)
+
+        public PostService(
+            IPostRepository postRepository, 
+            IUserRepository userRepository, 
+            UserManager<User> userManager,
+            ICategoryRepository categoryRepository, 
+            IUnitOfWork uow, 
+            IMapper mapper, 
+            IBackgroundJobClient backgroundJobClient
+        )
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
             _userManager = userManager;
             _categoryRepository = categoryRepository;
             _mapper = mapper;
+            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task<bool> Create(PostDTO postDTO, Guid userId)
@@ -49,23 +60,15 @@ namespace WebShopDQ.App.Services
             {
                 var data = await _userRepository.GetById(userId);
                 var role = await _userManager.GetRolesAsync(data!);
-                var post = new Post
-                {
-                    UserID = userId,
-                    CategoryID = postDTO.CategoryId,
-                    Title = postDTO.Title!,
-                    PostPath =  postDTO.PostPath!,
-                    Description = postDTO.Description,
-                    UrlImage = postDTO.UrlImage,
-                    Price = postDTO.Price,
-                    Address = postDTO.Address,
-                    Quantity = postDTO.Quantity
-                };
+                var post = new Post (Guid.NewGuid(),userId,postDTO.CategoryId,postDTO.Title!,
+                    postDTO.PostPath!,postDTO.Description,postDTO.UrlImage,postDTO.Price,
+                    postDTO.Address,postDTO.Quantity);
                 if (role[0] == "Seller")
                 {
                     post.Status = "Đang hiển thị";
                 }
                 await _postRepository.Add(post);
+                _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyFollowersAsync(data,post.Title));
                 return await Task.FromResult(true);
             }
             catch (Exception ex)
@@ -146,6 +149,12 @@ namespace WebShopDQ.App.Services
         public Task<bool> Update(UpdatePostDTO postDTO)
         {
             return _postRepository.Update(postDTO);
+        }
+
+        public async Task<PostListViewModel> GetByStatusByUrl(int? page, int? limit, string status, string url)
+        {
+            var user = await  _userRepository.FindAsync(u => u.Url == url) ?? throw new KeyNotFoundException(Messages.UserNotFound);
+            return await _postRepository.GetByStatus(page, limit, status, user.Id);
         }
     }
 }

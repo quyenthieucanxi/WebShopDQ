@@ -11,10 +11,12 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using WebShopDQ.App.Common;
+using WebShopDQ.App.Common.Constant;
 using WebShopDQ.App.Common.Exceptions;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.Models;
 using WebShopDQ.App.Repositories.IRepositories;
+using WebShopDQ.App.Utils;
 using WebShopDQ.App.ViewModels;
 using WebShopDQ.App.ViewModels.Authentication;
 
@@ -28,11 +30,12 @@ namespace WebShopDQ.App.Repositories
         private readonly IConfiguration _configuration;
         private readonly SignInManager<User> _signInManager;
         private readonly IUrlHelper _urlHelper;
+        private readonly IUnitOfWork _unitOfWork;
         //private readonly IMapper _mapper;
 
         public AuthenticationRepository(DatabaseContext databaseContext, UserManager<User> userManager,
             RoleManager<Role> roleManager, IConfiguration configuration, SignInManager<User> signInManager,
-            IUrlHelper urlHelper) : base(databaseContext)
+            IUrlHelper urlHelper, IUnitOfWork unitOfWork) : base(databaseContext)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -40,6 +43,7 @@ namespace WebShopDQ.App.Repositories
             _signInManager = signInManager;
             _databaseContext = databaseContext;
             _urlHelper = urlHelper;
+            _unitOfWork = unitOfWork;
         }
         public async Task CheckUserByEmail(string Email)
         {
@@ -78,8 +82,7 @@ namespace WebShopDQ.App.Repositories
                 if (!passwordValidationResult.Succeeded)
                 {
                     // Handle password validation errors here
-                    throw new PasswordException("Password must have least 6 characters," +
-                        "one non alphanumeric character, one digit ('0'-'9'), one uppercase, one lowercase");
+                    throw new PasswordException(Messages.PasswordInValid);
                 }
             }
             // add user
@@ -88,11 +91,13 @@ namespace WebShopDQ.App.Repositories
                 Email = registerModel.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = registerModel.UserName,
-                FullName = registerModel.FullName,
+                FullName = registerModel.UserName,
                 AvatarUrl = registerModel.Image ?? "https://i.pinimg.com/736x/e0/7a/22/e07a22eafdb803f1f26bf60de2143f7b.jpg",
                 EmailConfirmed = string.IsNullOrEmpty(registerModel.FullName) == false ? true : false,
+                Url = registerModel.UserName,
+                IsActive = true,
             };
-            string role = "User";
+            string role = RoleConstant.User;
             if (await _roleManager.RoleExistsAsync(role))
             {
                 var result = await _userManager.CreateAsync(user, registerModel.Password);
@@ -148,22 +153,23 @@ namespace WebShopDQ.App.Repositories
 
             var token = jwtTokenHandler.CreateToken(tokenDescription);
             var accessToken = jwtTokenHandler.WriteToken(token);
-            var refreshToken = GenerateRefreshToken();
+            var refreshToken = JwtHepler.GenerateRefreshToken();
 
             // add rf token
             var refreshTokenEntity = new RefreshToken
-            {
-                Id = Guid.NewGuid(),
-                JwtId = token.Id,
-                UserId = user!.Id,
-                Token = refreshToken,
-                IsUsed = false,
-                IsRevoked = false,
-                IssuedAt = DateTime.UtcNow,
-                ExpiredAt = DateTime.UtcNow.AddHours(1)
-            };
+            (
+                Guid.NewGuid(),
+                user!.Id,
+                user,
+                refreshToken,
+                token.Id,
+                false,
+                false,
+                DateTime.UtcNow,
+                DateTime.UtcNow.AddHours(1)
+            );
             await _databaseContext.AddAsync(refreshTokenEntity);
-            await _databaseContext.SaveChangesAsync();
+            await _unitOfWork.SaveChanges();
 
             return new LoginViewModel
             {
@@ -171,17 +177,6 @@ namespace WebShopDQ.App.Repositories
                 RefreshToken = refreshToken
             };
         }
-
-        private string GenerateRefreshToken()
-        {
-            var random = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(random);
-                return Convert.ToBase64String(random);
-            }
-        }
-
         public async Task<LoginViewModel> NewToken(LoginViewModel loginViewModel)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
@@ -220,7 +215,7 @@ namespace WebShopDQ.App.Repositories
                 //check 3: Check accessToken expire?
                 var utcExpireDate = long.Parse(tokenInVerification.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp)!.Value);
 
-                var expireDate = ConvertUnixTimeToDateTime(utcExpireDate);
+                var expireDate = JwtHepler.ConvertUnixTimeToDateTime(utcExpireDate);
                 if (expireDate > DateTime.UtcNow)
                 {
                     throw new ValidateException("Invalidate token");
@@ -268,13 +263,7 @@ namespace WebShopDQ.App.Repositories
             }
         }
 
-        private DateTime ConvertUnixTimeToDateTime(long utcExpireDate)
-        {
-            var dateTimeInterval = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTimeInterval.AddSeconds(utcExpireDate).ToUniversalTime();
-
-            return dateTimeInterval;
-        }
+       
 
         public async Task<LinkedEmailModel> GetConfirmEmail(string email)
         {

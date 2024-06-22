@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using WebShopDQ.App.Repositories.IRepositories;
+using WebShopDQ.App.Repositories;
 using WebShopDQ.App.Services;
 using WebShopDQ.App.Services.IServices;
 
@@ -15,9 +17,14 @@ namespace WebShopDQ.App.Dependency
             service.AddTransient<IPostService, PostService>();
             service.AddTransient<ICategoryService, CategoryService>();
             service.AddTransient<IFriendshipService, FriendshipService>();
+            service.AddTransient<INotifyService, NotifyService>();
             service.AddTransient<IOrderService, OrderService>();
+            service.AddTransient<IOrderReviewService, OrderReviewService>();
             service.AddTransient<IFileService, FileService>();
             service.AddTransient<IAddressShippingService, AddressShippingService>();
+            service.AddTransient<IPaymentService, PaymentService>();
+            service.AddTransient<IChatService, ChatService>();
+
             return service;
         }
     }

@@ -2,14 +2,18 @@
 
 namespace WebShopDQ.App.Common
 {
-    public class Messages
+    public static class Messages
     {
         public const string UserNotFound = "User not found!";
+        public const string UserNameExist = "Tên người dùng đã tồn tại";
         public const string EmailNotFound = "Email not found!";
         public const string PostNotFound = "Post not found!";
+        public const string OrderNotFound = "Order not found!";
         public const string CategoryNotFound = "Category not found!";
         public const string ConfirmEmail = "Your account has been confirmed.";
         public const string AddressShippingNotFound = "AddressShipping not found!";
+        public const string QuantityInvalid = "Số lượng không hợp lệ ";
+        public const string PasswordInValid = "Password must have least 6 characters,one non alphanumeric character, one digit ('0'-'9'), one uppercase, one lowercase";
     }
 
     public static class SuccessMessages

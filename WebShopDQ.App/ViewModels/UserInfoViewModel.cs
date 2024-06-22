@@ -16,6 +16,7 @@ namespace WebShopDQ.App.ViewModels
         public string? Introduce { get; set; }
         public string? Gender { get; set; }
         public DateTime Dob { get; set; }
+        public string? Url { get; set; }
         public string? AvatarUrl { get; set; }
         public bool IsActive { get; set; } = true;
         public string? Role { get; set; }

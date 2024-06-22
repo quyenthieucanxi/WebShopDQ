@@ -7,6 +7,7 @@ namespace WebShopDQ.App.Models
 {
     public class User : IdentityUser<Guid>
     {
+        public User() { }
         [Required]
         public string? FullName { get; set; }
         [Required]
@@ -22,11 +23,13 @@ namespace WebShopDQ.App.Models
         public string? Url { get; set; }
         public string? PublicId {  get; set; } 
         public Shop? Shop { get; set; }
-        public  List<Post>? ListPost { get; set; }
-        public  List<Order>? Orders { get; set; }
-        public  List<AddressShipping>? AddressShippings { get; set; }
-        public  List<SavePosts>? SavePosts { get; set; }
-        public  List<Message>? Messages { get; set; }
-        public  List<Notify>? Notifies { get; set; }
+        public List<Post>? ListPost { get; set; }
+        public List<Order>? Orders { get; set; }
+        public List<AddressShipping>? AddressShippings { get; set; }
+        public List<SavePosts>? SavePosts { get; set; }
+        public List<Message>? Messages { get; set; }
+        public List<Notify>? Notifies { get; set; }
+        public List<Friendship>? Followers { get; set; }
+        public List<Friendship>? Followings { get; set; }
     }
 }

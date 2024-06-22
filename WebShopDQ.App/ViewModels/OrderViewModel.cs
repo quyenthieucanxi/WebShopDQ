@@ -18,7 +18,7 @@ namespace WebShopDQ.App.ViewModels
         public string Phone { get; set; } = null!;
         public string AddressShipping { get; set; } = null!;
         public UserInfoViewModel? User { get; set; }
-        public PostViewModel? Product { get; set; }
+        public ICollection<PostViewModel>? Products { get; set; } = null!;
     }
 
     public class OrderListViewModel
