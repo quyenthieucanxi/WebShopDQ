@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShopDQ.App.Models;
 
-namespace WebShopDQ.App.DTO
+namespace WebShopDQ.App.ViewModels
 {
-    public class NotifyDTO
+    public class NotifyViewModel : BaseVM
     {
-        public Guid UserIdReceiver { get; set; }
-        public Guid UserIdSender { get; set; }
         public string? NotifyText { get; set; }
         public bool IsRead { get; set; }
         public string? TypeNotify { get; set; }
+        public UserInfoViewModel? UserSender { get; set; }
     }
 }

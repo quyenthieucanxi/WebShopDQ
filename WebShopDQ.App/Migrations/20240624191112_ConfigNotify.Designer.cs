@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebShopDQ.App.Data;
 
@@ -11,9 +12,10 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240624191112_ConfigNotify")]
+    partial class ConfigNotify
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -707,35 +709,35 @@ namespace WebShopDQ.App.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3dfb2bc9-5441-46b9-8d97-5c435fb9c3fc"),
+                            Id = new Guid("74d52502-0889-4a23-9ac7-51acae9e62f1"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("3d0f4ebe-a247-4681-864e-3de3ae5940c6"),
+                            Id = new Guid("836fc6f2-20ee-431e-90b5-144fddb03d99"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("a0a4e032-708c-4458-b01a-8840e5b535b6"),
+                            Id = new Guid("4c8bf438-04e7-43c2-b0b8-8c234b9f5356"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("76b452dc-c631-490d-ab2d-f39202df1cb6"),
+                            Id = new Guid("3c0a0abe-1e17-45f4-b4d7-a33e8b005774"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("87561672-750b-4f03-a28f-b7869b5ecfd5"),
+                            Id = new Guid("e22df771-f606-48e9-a506-fc2934f27e0e"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"
@@ -913,13 +915,13 @@ namespace WebShopDQ.App.Migrations
                     b.HasOne("WebShopDQ.App.Models.User", "UserReceiver")
                         .WithMany()
                         .HasForeignKey("UserIdReceiver")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WebShopDQ.App.Models.User", "UserSender")
                         .WithMany("Notifies")
                         .HasForeignKey("UserIdSender")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("UserReceiver");

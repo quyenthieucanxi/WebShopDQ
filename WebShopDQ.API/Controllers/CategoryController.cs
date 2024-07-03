@@ -26,7 +26,13 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Create category successfully." });
         }
-
+        [HttpGet("{catId}")]
+        public async Task<IActionResult> GetById(Guid catId)
+        {
+            var category = await _categoryService.GetById(catId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get detail category successfully.", Data = category });
+        }
         [HttpGet("[action]")]
         public async Task<IActionResult> GetAllByPageNumber(int page, int limit)
         {
@@ -42,11 +48,11 @@ namespace WebShopDQ.API.Controllers
                         new Response { Status = "Success", Code = 200, Message = "Get all category successfully.", Data = categoryList });
         }
 
-        [HttpPut("[action]/{idCategory}")]
+        [HttpPut("[action]/{catId}")]
         //[Authorize(Roles = "Manager")]
-        public async Task<IActionResult> Update(Guid idCategory, CategoryDTO model)
+        public async Task<IActionResult> Update(Guid catId, CategoryDTO model)
         {
-            var categoryUpdate = await _categoryService.Update(idCategory, model);
+            var categoryUpdate = await _categoryService.Update(catId, model);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Update category successfully." });
         }

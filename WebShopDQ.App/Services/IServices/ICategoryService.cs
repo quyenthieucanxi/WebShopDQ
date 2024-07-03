@@ -13,7 +13,8 @@ namespace WebShopDQ.App.Services.IServices
         Task<bool> Create(CategoryDTO categoryDTO);
         Task<IEnumerable<CategoryViewModel>> GetAll();
         Task<CategoryListViewModel> GetAllByPageNumber(int page, int limit);
-        Task<bool> Update(Guid idCategory, CategoryDTO categoryDTO);
-        Task<bool> Delete(Guid idCategory);
+        Task<bool> Update(Guid catId, CategoryDTO categoryDTO);
+        Task<bool> Delete(Guid catId);
+        Task<CategoryViewModel> GetById(Guid catId);
     }
 }

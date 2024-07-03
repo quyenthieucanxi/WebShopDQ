@@ -68,7 +68,7 @@ namespace WebShopDQ.App.Services
                     post.Status = "Đang hiển thị";
                 }
                 await _postRepository.Add(post);
-                _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyFollowersAsync(data,post.Title));
+                 _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyFollowersAsync(data!.Id,data!.FullName,data!.AvatarUrl,post.Title));
                 return await Task.FromResult(true);
             }
             catch (Exception ex)
