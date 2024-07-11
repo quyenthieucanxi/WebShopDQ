@@ -13,18 +13,19 @@ namespace WebShopDQ.App.Dependency
             service.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
             service.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             service.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
-            service.AddTransient<IGetHTMLBodyRepository, GetHTMLBodyRepository>();
-            service.AddTransient<IEmailRepository, EmailRepository>();
             service.AddTransient<IDecodeRepository, DecodeRepository>();
             service.AddTransient<IUserRepository, UserRepository>();
             service.AddTransient<IPostRepository, PostRepository>();
             service.AddTransient<ICategoryRepository, CategoryRepository>();
             service.AddTransient<IFriendshipRepository, FriendshipRepository>();
+            service.AddTransient<INotifyRepository, NotifyRepository>();
             service.AddTransient<IOrderRepository, OrderRepository>();
+            service.AddTransient<IOrderReviewRepository, OrderReviewRepository>();
             service.AddTransient<IFileRepository, FileRepository>();
             service.AddTransient<ISavePostRepository, SavePostRepository>();
             service.AddTransient<IAddressShippingRepository, AddressShippingRepository>();
             service.AddTransient<IShopRepository, ShopRepository>();
+            service.AddTransient<IChatRepository,ChatRepository>();
             return service;
         }
     }

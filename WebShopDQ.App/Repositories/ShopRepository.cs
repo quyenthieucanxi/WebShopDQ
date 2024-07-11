@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShopDQ.App.Common.Constant;
 using WebShopDQ.App.Common.Exceptions;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
@@ -40,12 +41,11 @@ namespace WebShopDQ.App.Repositories
             try
             {
                 _uow.BeginTransaction();
-                string role = "Seller";
-                await _userManager.AddToRoleAsync(user, role);
+                await _userManager.AddToRoleAsync(user, RoleConstant.Seller);
                 var shop = _mapper.Map<Shop>(shopDTO);
                 shop.UserId = user.Id;
                 await Add(shop);
-                _uow.SaveChanges();
+                await _uow.SaveChanges();
                 _uow.CommitTransaction();
                 return await Task.FromResult(true);
             }

@@ -2,11 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.Ocsp;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShopDQ.App.Common;
+using WebShopDQ.App.Common.Exceptions;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
 using WebShopDQ.App.Models;
@@ -33,19 +36,30 @@ namespace WebShopDQ.App.Repositories
 
         public async Task<bool> Update(Guid id, UserInfoDTO model)
         {
-            var data = await _userManager.FindByIdAsync(id.ToString());
+            var user = await FindAsync(u => u.Url == model.Url);
+            var IsUrlNullOrEmpty = string.IsNullOrEmpty(model.Url);
+            if (!IsUrlNullOrEmpty && user is not null)
+            {
+                throw new DuplicateException(Messages.UserNameExist);
+            }
+            var data = await _userManager.FindByIdAsync(id.ToString()); 
+            if (IsUrlNullOrEmpty)
+            {
+                model.Url = data.UserName;
+            }
             try
             {
                 _uow.BeginTransaction();
                 var entry = _databaseContext.Entry(data);
                 entry.CurrentValues.SetValues(model);
-                _uow.SaveChanges();
+                await _uow.SaveChanges();
                 _uow.CommitTransaction();
                 return await Task.FromResult(true);
             }
             catch (Exception ex)
             {
                 _uow.RollbackTransaction();
+                Log.Error(ex.Message);
                 throw new Exception(ex.Message);
             }
         }

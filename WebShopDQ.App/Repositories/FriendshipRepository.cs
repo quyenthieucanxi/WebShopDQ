@@ -15,5 +15,11 @@ namespace WebShopDQ.App.Repositories
         {
             
         }
+
+        public async Task<ICollection<Friendship>> GetFollowers(Guid userId)
+        {
+            var followers = await FindAllAsync(f => f.FollowingID == userId);
+            return followers.ToList();
+        }
     }
 }

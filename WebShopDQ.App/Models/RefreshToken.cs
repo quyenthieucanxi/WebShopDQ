@@ -11,6 +11,24 @@ namespace WebShopDQ.App.Models
 {
     public class RefreshToken : BaseModel
     {
+        public RefreshToken(Guid id) : base (id)
+        {
+        }
+
+        public RefreshToken(Guid Id, Guid userId, User? user, string? token, 
+            string? jwtId, bool isUsed, bool isRevoked, 
+            DateTime issuedAt, DateTime expiredAt) : base(Id)
+        {
+            UserId = userId;
+            User = user;
+            Token = token;
+            JwtId = jwtId;
+            IsUsed = isUsed;
+            IsRevoked = isRevoked;
+            IssuedAt = issuedAt;
+            ExpiredAt = expiredAt;
+        }
+
         public Guid UserId { get; set; }
         public User? User { get; set; }
         public string? Token { get; set; }

@@ -39,7 +39,7 @@ namespace WebShopDQ.App.Repositories
                 var addRessShipping = _mapper.Map<AddressShipping>(addressShippingDTO);
                 addRessShipping.UserId = UserId;
                 await Add(addRessShipping);
-                _uow.SaveChanges();
+                await _uow.SaveChanges();
                 _uow.CommitTransaction();
                 return await Task.FromResult(true);
             }
@@ -70,7 +70,7 @@ namespace WebShopDQ.App.Repositories
                 var addressExist = await GetById(addressShippingId) ?? throw new KeyNotFoundException(Messages.AddressShippingNotFound);
                 addressExist.IsDefault = true;
                 await Update(addressExist);
-                _uow.SaveChanges();
+                await _uow.SaveChanges();
                 _uow.CommitTransaction();
                 return await Task.FromResult(true);
             }
@@ -95,7 +95,7 @@ namespace WebShopDQ.App.Repositories
                 }
                 var entry = _databaseContext.Entry(addressExist);
                 entry.CurrentValues.SetValues(addressShippingDTO);
-                _uow.SaveChanges();
+                await   _uow.SaveChanges();
                 _uow.CommitTransaction();
                 return await Task.FromResult(true);
             }

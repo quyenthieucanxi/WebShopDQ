@@ -9,5 +9,6 @@ namespace WebShopDQ.App.Repositories.IRepositories
 {
     public interface IFriendshipRepository : IRepository<Friendship>
     {
+        Task<ICollection<Friendship>> GetFollowers(Guid userId);
     }
 }

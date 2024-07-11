@@ -7,6 +7,18 @@ namespace WebShopDQ.App.Models
 {
     public class Category : BaseModel
     {
+        public Category() { }
+        public Category(Guid id) : base(id)
+        {
+        }
+
+        public Category(Guid id, string? categoryName, string? categoryPath, string? urlImg) : base(id)
+        {
+            CategoryName = categoryName;
+            CategoryPath = categoryPath;
+            this.urlImg = urlImg;
+        }
+
         [Required]
         public string? CategoryName { get; set; }
         [Required]

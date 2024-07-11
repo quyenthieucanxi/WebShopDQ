@@ -26,7 +26,7 @@ namespace WebShopDQ.App.Data
         public DbSet<AddressShipping> AddressShippings { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
         public DbSet<Post> Posts { get; set; } = null!;
-        public DbSet<PostReviews> PostReviews { get; set; } = null!;
+        public DbSet<OrderReviews> OrderReviews { get; set; } = null!;
         public DbSet<Notify> Notifies { get; set; } = null!; 
         public DbSet<Message> Message { get; set; } = null!;
         public DbSet<SavePosts> SavePosts { get; set; } = null!;
@@ -54,7 +54,7 @@ namespace WebShopDQ.App.Data
             builder.ApplyConfiguration(new MessageMap());
             builder.ApplyConfiguration(new FriendShipMap());
             builder.ApplyConfiguration(new NotifyMap());
-            builder.ApplyConfiguration(new PostReviewsMap());
+            builder.ApplyConfiguration(new OrderReviewsMap());
             builder.ApplyConfiguration(new SavePostsMap());
             builder.ApplyConfiguration(new ChatsMap());
             builder.ApplyConfiguration(new ShopMap());

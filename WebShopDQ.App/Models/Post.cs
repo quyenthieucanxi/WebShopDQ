@@ -4,9 +4,30 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace WebShopDQ.App.Models
 {
     public class Post : BaseModel
-    { 
+    {
+        public Post() { }
+        public Post(Guid id) : base(id)
+        {
+        }
+
+        public Post(Guid id, Guid userID, Guid categoryID, string title,
+                    string postPath, string? description, string? urlImage, 
+                    double price, string? address, int quantity) : base(id)
+        {
+            UserID = userID;
+            CategoryID = categoryID;
+            Title = title;
+            PostPath = postPath;
+            Description = description;
+            UrlImage = urlImage;
+            Price = price;
+            Address = address;
+            Quantity = quantity;
+        }
+
         public Guid UserID { get; set; }
         public Guid CategoryID { get; set; }
+        public Guid? OrderId { get; set; }
         [Required]
         public string Title { get; set; } = null!;
         [Required]
@@ -25,6 +46,8 @@ namespace WebShopDQ.App.Models
         [NotMapped]
         public  User? User { get; set; }
         [NotMapped]
-        public  virtual Category? Category { get; set; }
+        public  Category? Category { get; set; }
+        [NotMapped]
+        public Order? Order { get; set; }
     }
 }

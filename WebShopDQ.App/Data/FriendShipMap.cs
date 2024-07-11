@@ -13,15 +13,15 @@ namespace WebShopDQ.App.Data
     {
         public void Configure(EntityTypeBuilder<Friendship> builder)
         {
-            //builder.HasKey(p => new { p.FollowingID, p.FollowerID });
+            builder.HasKey(p => new { p.FollowingID, p.FollowerID });
             builder.HasOne(p => p.Follower)
-                    .WithMany()
+                    .WithMany(u => u.Followings)
                     .HasForeignKey(p => p.FollowerID)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(p => p.Following)
-                    .WithMany()
+                    .WithMany(u => u.Followers)
                     .HasForeignKey(p => p.FollowingID)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

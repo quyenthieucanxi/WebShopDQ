@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,12 @@ namespace WebShopDQ.App.Models
 {
     public class AddressShipping : BaseModel
     {
+        public AddressShipping() { }
+
+        public AddressShipping(Guid id) : base(id)
+        {
+        }
+
         public Guid UserId { get; set; }
 
         public string RecipientName { get; set; } = null!;

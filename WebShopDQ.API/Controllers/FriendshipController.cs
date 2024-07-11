@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebShopDQ.App.Common;
+using WebShopDQ.App.Models;
 using WebShopDQ.App.Services;
 using WebShopDQ.App.Services.IServices;
 
@@ -18,25 +19,45 @@ namespace WebShopDQ.API.Controllers
             _friendshipService = friendshipService;
             _tokenInfoService = tokenInfoService;
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> CheckFollow(string url)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var isFollow = await _friendshipService.CheckFollow(infoToken.UserId, url);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "CheckFollow success", Data = isFollow });
+        }
+        [HttpGet("[action]/{url}")]
+        public async Task<IActionResult> CountFollower(string url)
+        {
+            var countFollower = await _friendshipService.CountFollower(url);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Count Follower success", Data = countFollower });
+            }
+        [HttpGet("[action]/{url}")]
+        public async Task<IActionResult> CountFollowing(string url)
+        {
+            var countFollowing = await _friendshipService.CountFollowing(url);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Count Following success", Data = countFollowing });
+        }
 
-        [HttpPost("[action]/{followingId}")]
-        //[Authorize(Roles = "User, Seller")]
-        public async Task<IActionResult> Follow(Guid followingId)
+        [HttpPost("[action]/{url}")]
+        public async Task<IActionResult> Follow(string url)
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
-            await _friendshipService.Follow(userId, followingId);
+            await _friendshipService.Follow(userId, url);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Follow successfully." });
         }
 
-        [HttpDelete("[action]/{followingId}")]
-        //[Authorize(Roles = "User, Seller")]
-        public async Task<IActionResult> UnFollow(Guid followingId)
+        [HttpDelete("[action]/{url}")]
+        public async Task<IActionResult> UnFollow(string url)
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
-            await _friendshipService.UnFollow(userId, followingId);
+            await _friendshipService.UnFollow(userId, url);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Unfollow successfully." });
         }

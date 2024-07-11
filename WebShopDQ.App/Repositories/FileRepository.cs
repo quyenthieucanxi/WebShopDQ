@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using WebShopDQ.App.Common;
@@ -33,18 +34,19 @@ namespace WebShopDQ.App.Repositories
             {
                 try
                 {
+                    var encodedFileName = WebUtility.UrlEncode(file.FileName);
                     var uploadParams = new RawUploadParams
                     {
                         //File = new FileDescription(uniqueId + "." + file.FileName.Split('.').Last(), file.OpenReadStream()),
-                        File = new FileDescription(file.FileName, file.OpenReadStream()),
+                        File = new FileDescription(encodedFileName, file.OpenReadStream()),
                         AccessMode = "public",
                         UseFilename = true,
                         UniqueFilename = true,
                         Folder = "File"
                     };
                     var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-                    var publicUrl = _cloudinary.Api.UrlImgUp.Transform(new Transformation()).BuildUrl(uploadResult.PublicId + "." + uploadResult.Format);
                     var publicId = uploadResult.PublicId;
+                    var publicUrl = _cloudinary.Api.UrlImgUp.Transform(new Transformation()).Version(uploadResult.Version).BuildUrl(publicId + "." + uploadResult.Format);
                      var infoFile = new FileDTO
                     {
                         Url = publicUrl,

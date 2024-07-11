@@ -17,12 +17,14 @@ namespace WebShopDQ.App.Repositories
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _uow;
+        private readonly UserManager<User> _userManager;
         private readonly DatabaseContext _databaseContext;
 
-        public PostRepository(IMapper mapper,IUnitOfWork uow, DatabaseContext databaseContext) : base(databaseContext)
+        public PostRepository(IMapper mapper,IUnitOfWork uow, UserManager<User> userManager, DatabaseContext databaseContext) : base(databaseContext)
         {
             _mapper = mapper;
             _uow = uow;
+            _userManager = userManager;
             _databaseContext = databaseContext;
         }
 
@@ -36,7 +38,7 @@ namespace WebShopDQ.App.Repositories
                             Entities.Include(p => p.Category)
                                     .Include(p => p.User).Where(p => p.Category!.CategoryPath == catName 
                                                                 && p.Status == "Đang hiển thị" );
-                query = !string.IsNullOrEmpty(search) ? query.Where(p => p.Title!.ToLower().Contains(search.ToLower())) : query;
+                query = !string.IsNullOrEmpty(search) ? query.Where(p => p.PostPath!.ToLower().Contains(search.ToLower()) || p.Title.ToLower().Contains(search.ToLower()) ) : query;
                 page = page != 0 ? page : 1;
                 limit = limit != 0 ? limit : 10;
                 var listData = new List<PostViewModel>();
@@ -116,7 +118,7 @@ namespace WebShopDQ.App.Repositories
                 _uow.BeginTransaction();
                 var entry = _databaseContext.Entry(data);
                 entry.CurrentValues.SetValues(postDTO);
-                _uow.SaveChanges();
+                await _uow.SaveChanges();
                 _uow.CommitTransaction();
                 return await Task.FromResult(true);
             }

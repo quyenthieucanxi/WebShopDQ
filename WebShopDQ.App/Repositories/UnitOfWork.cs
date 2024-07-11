@@ -13,9 +13,9 @@ namespace WebShopDQ.App.Data
             _databaseContext = databaseContext;
         }
 
-        public int SaveChanges()
+        public Task SaveChanges(CancellationToken cancellationToken = default)
         {
-            return _databaseContext.SaveChanges();
+            return  _databaseContext.SaveChangesAsync(cancellationToken);
         }
 
         public void Dispose()

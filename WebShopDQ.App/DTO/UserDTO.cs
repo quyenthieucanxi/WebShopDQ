@@ -29,6 +29,11 @@ namespace WebShopDQ.App.DTO
         public string? Introduce { get; set; }
         public string? Gender { get; set; }
         public DateTime Dob { get; set; }
+        public string? Url { get; set; }
+    }
+    public class UserAvatarDTO 
+    {
+        public string? AvatarUrl { get; set; }
     }
     public class UserGoogleDTO
     {

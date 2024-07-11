@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebShopDQ.App.Common;
+using WebShopDQ.App.Common.Constant;
 using WebShopDQ.App.DTO;
 using WebShopDQ.App.Services;
 using WebShopDQ.App.Services.IServices;
@@ -12,16 +14,18 @@ namespace WebShopDQ.API.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IPaymentService _paymentService;
         private readonly ITokenInfoService _tokenInfoService;
 
-        public OrderController(IOrderService orderService, ITokenInfoService tokenInfoService)
+
+        public OrderController(IOrderService orderService, ITokenInfoService tokenInfoService, IPaymentService paymentService)
         {
             _orderService = orderService;
             _tokenInfoService = tokenInfoService;
+            _paymentService = paymentService;
         }
 
         [HttpPost("[action]")]
-        //[Authorize(Roles = "User, Seller")]
         public async Task<IActionResult> Create(OrderDTO orderDTO)
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
@@ -30,9 +34,32 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Create order successfully." });
         }
-
+        [HttpPost("[action]")]
+        public async Task<IActionResult> CreateUrlPayment(OrderDTO orderDTO)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId; 
+            var urlPayment = await _paymentService.CreateUrlPayment(orderDTO, userId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Create UrlPayment successfully.", Data = urlPayment });
+        }
         [HttpGet("[action]")]
-        //[Authorize(Roles = "User, Seller")]
+        public async Task<IActionResult> CallBackPayment([FromQuery] VNPayDTO vNPayDTO)
+        {
+            await _tokenInfoService.GetTokenInfo();
+            var paymentViewModel = await _paymentService.CallbackPayment(vNPayDTO);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Payment Success" ,Data = paymentViewModel });
+        }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetById(Guid OrderId)
+        {
+            await _tokenInfoService.GetTokenInfo();
+            var order = await _orderService.GetById(OrderId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get order successfully.", Data = order });
+        }
+        [HttpGet("[action]")]
         public async Task<IActionResult> GetByStatusByPage(int page, int limit, string status)
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();

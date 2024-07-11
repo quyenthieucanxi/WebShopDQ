@@ -4,7 +4,7 @@
     {
         void CommitTransaction();
         void RollbackTransaction();
-        int SaveChanges();
+        Task SaveChanges(CancellationToken cancellation = default);
         void BeginTransaction();
     }
 }

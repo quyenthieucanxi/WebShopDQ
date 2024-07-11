@@ -8,6 +8,14 @@ namespace WebShopDQ.App.Models
 {
     public class BaseModel
     {
+        public BaseModel ()
+        {
+
+        }
+        public BaseModel(Guid id)
+        {
+            Id = id;
+        }
         public Guid Id { get; set; }
         public DateTime CreatedTime { get; set; } = DateTime.Now;
         public DateTime ModifiedTime { get; set; } = DateTime.Now;

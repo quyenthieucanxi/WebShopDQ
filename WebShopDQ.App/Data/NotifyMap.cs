@@ -15,10 +15,14 @@ namespace WebShopDQ.App.Data
         {
             builder.Property(p => p.NotifyText).HasMaxLength(256);
             builder.Property(p => p.TypeNotify).HasMaxLength(50);
-            builder.HasOne(p => p.User)
+            builder.HasOne(p => p.UserSender)
                     .WithMany(q => q.Notifies)
-                    .HasForeignKey(p => p.UserID)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .HasForeignKey(p => p.UserIdSender)
+                    .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(p => p.UserReceiver)
+                    .WithMany()
+                    .HasForeignKey(p => p.UserIdReceiver)
+                    .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -9,18 +9,18 @@ using WebShopDQ.App.Models;
 
 namespace WebShopDQ.App.Data
 {
-    public class PostReviewsMap : IEntityTypeConfiguration<PostReviews>
+    public class OrderReviewsMap : IEntityTypeConfiguration<OrderReviews>
     {
-        public void Configure(EntityTypeBuilder<PostReviews> builder)
+        public void Configure(EntityTypeBuilder<OrderReviews> builder)
         {
             builder.Property(p => p.ReviewText).HasMaxLength(256);
             builder.HasOne(p => p.User)
                     .WithMany()
                     .HasForeignKey(p => p.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
-            builder.HasOne(p => p.Post)
+            builder.HasOne(p => p.Order)
                     .WithMany()
-                    .HasForeignKey(p => p.PostId)
+                    .HasForeignKey(p => p.OrderId)
                     .OnDelete(DeleteBehavior.Cascade);
         }
     }
