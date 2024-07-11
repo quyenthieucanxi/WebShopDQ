@@ -27,7 +27,13 @@ namespace WebShopDQ.App.Data
                 .WithMany(q => q.Posts)
                 .HasForeignKey(p => p.CategoryID)
                 .OnDelete(DeleteBehavior.NoAction);
-
+            builder.HasOne(p => p.Order)
+                  .WithMany(q => q.Products)
+                  .HasForeignKey(q => q.OrderId)
+                  .IsRequired(false)
+                  .OnDelete(DeleteBehavior.NoAction);
+            builder.HasQueryFilter(p => !p.IsDelete);
+            
         }
     }
 }

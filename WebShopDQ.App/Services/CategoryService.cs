@@ -30,19 +30,11 @@ namespace WebShopDQ.App.Services
         {
             try
             {
-                var category = new Category
-                {
-                    CategoryName = categoryDTO.CategoryName,
-                    CategoryPath = categoryDTO.CategoryPath,
-                    urlImg = categoryDTO.urlImg,
-                };
-                await _categoryRepository.Add(category);
-                return await Task.FromResult(true);
+                throw new DuplicateException("Tên đã tồn tại");
             }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var category = _mapper.Map<Category>(categoryDTO);
+            await _categoryRepository.Add(category);
+            return await Task.FromResult(true);
         }
 
         public async Task<CategoryListViewModel> GetAllByPageNumber(int page, int limit)
@@ -82,14 +74,11 @@ namespace WebShopDQ.App.Services
 
         public async Task<bool> Delete(Guid idCategory)
         {
-            var category = await _categoryRepository.GetById(idCategory);
-            if (category != null)
-            {
-                category!.IsDelete = true;
-                await _categoryRepository.Update(category);
-                return await Task.FromResult(true);
-            }
-            throw new KeyNotFoundException(Messages.CategoryNotFound);
+            var category = await _categoryRepository.GetById(catId) ??
+                throw new KeyNotFoundException(Messages.CategoryNotFound);
+            category!.IsDelete = true;
+            await _categoryRepository.Update(category);
+            return await Task.FromResult(true);
         }
 
         

@@ -51,7 +51,7 @@ namespace WebShopDQ.API.Controllers
                         new Response { Status = "Success", Code = 200, Message = "Update category successfully." });
         }
 
-        [HttpDelete("[action]/{idCategory}")]
+        [HttpPut("[action]/{idCategory}")]
         //[Authorize(Roles = "Manager")]
         public async Task<IActionResult> Delete(Guid idCategory)
         {

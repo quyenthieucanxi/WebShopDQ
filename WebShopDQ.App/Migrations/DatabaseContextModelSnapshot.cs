@@ -692,35 +692,35 @@ namespace WebShopDQ.App.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d44679ec-514d-4f5f-aea1-7748cd6ed8ce"),
+                            Id = new Guid("b419c547-c536-41a9-948d-b74bc9cac026"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("b4a3cb5c-da9c-4186-81b7-28eb410972c2"),
+                            Id = new Guid("b72a30de-5e6d-4b5c-acf4-a289c3be7113"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("809fa679-63d3-481b-9792-39507dbbb494"),
+                            Id = new Guid("44f1e467-16d7-416a-8880-6f03b51fe044"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("da13220a-3ac6-4276-a919-2e69ae2820c4"),
+                            Id = new Guid("eda95256-7003-4cbc-934a-5b27d0aadc2d"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("99bb2def-5ed9-438e-a171-018045c9ae30"),
+                            Id = new Guid("5c020fcc-223f-46ca-b2d9-26359a346db1"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"

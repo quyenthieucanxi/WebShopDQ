@@ -15,6 +15,8 @@ namespace WebShopDQ.App.Data
         {
             builder.Property(p => p.CategoryName).HasMaxLength(50);
             builder.Property(p => p.CategoryPath).HasMaxLength(50);
+            builder.HasQueryFilter(p => !p.IsDelete);
+            
         }
     }
 }
