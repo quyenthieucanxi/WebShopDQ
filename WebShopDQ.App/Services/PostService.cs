@@ -63,18 +63,7 @@ namespace WebShopDQ.App.Services
                 var post = new Post (Guid.NewGuid(),userId,postDTO.CategoryId,postDTO.Title!,
                     postDTO.PostPath!,postDTO.Description,postDTO.UrlImage,postDTO.Price,
                     postDTO.Address,postDTO.Quantity);
-                if (role[0] == "Seller")
-                {
-                    UserID = userId,
-                    CategoryID = postDTO.CategoryId,
-                    Title = postDTO.Title!,
-                    PostPath =  postDTO.PostPath!,
-                    Description = postDTO.Description,
-                    UrlImage = postDTO.UrlImage,
-                    Price = postDTO.Price,
-                    Address = postDTO.Address,
-                    Quantity = postDTO.Quantity
-                };
+                
                 if (role[0] == "Seller")
                 {
                     post.Status = "Đang hiển thị";
