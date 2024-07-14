@@ -88,6 +88,16 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get orders successfully.", Data = orderList });
         }
+        [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Seller")]
+        public async Task<IActionResult> GetAllBySeller()
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            var orderList = await _orderService.GetAllBySeller(userId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get orders successfully.", Data = orderList });
+        }
         [HttpPut("[action]")]
         //[Authorize(Roles = "User, Seller")]
         public async Task<IActionResult> UpdateStatus(string status,Guid orderId)
