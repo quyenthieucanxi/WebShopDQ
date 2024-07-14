@@ -42,6 +42,9 @@ namespace WebShopDQ.App.Services
 
         public async Task<OrderListViewModel> GetAll(Guid userId) => await _orderRepository.GetAllVM(userId);
 
+        public async Task<OrderListViewModel> GetAllBySeller(Guid userId) => await _orderRepository.GetAllVMBySeller(userId);
+
+
         public async Task<OrderViewModel> GetById(Guid orderId)
         {
             string[] orderInclude = { "AddressShipping", "Products" };

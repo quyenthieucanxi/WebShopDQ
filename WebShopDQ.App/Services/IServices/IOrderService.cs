@@ -12,6 +12,7 @@ namespace WebShopDQ.App.Services.IServices
     {
         Task<bool> Create(OrderDTO orderDTO, Guid userId);
         Task<OrderListViewModel> GetAll(Guid userId);
+        Task<OrderListViewModel> GetAllBySeller(Guid userId);
         Task<OrderViewModel> GetById(Guid orderId);
         Task<OrderListViewModel> GetByStatus(int page, int limit, string status, Guid userId);
         Task<OrderListViewModel> GetByStatus(string status, Guid userId);
