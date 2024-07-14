@@ -53,7 +53,7 @@ namespace WebShopDQ.App.Repositories
                 throw new ValidateException(Messages.QuantityInvalid);
             }
             try
-            {    
+            {
                 _unitOfWork.BeginTransaction();
                 var order = _mapper.Map<Order>(orderDTO);
                 order.UserID = userId;
@@ -73,13 +73,13 @@ namespace WebShopDQ.App.Repositories
 
         public async Task<OrderListViewModel> GetAllVM(Guid userId)
         {
-            var data = await FindAllAsync(p => p.UserID == userId,new string[] { "UserOrder", "AddressShipping", "Products" });  
+            var data = await FindAllAsync(p => p.UserID == userId, new string[] { "UserOrder", "AddressShipping", "Products" });
             var orders = data.OrderByDescending(p => p.CreatedTime);
             foreach (var order in orders)
             {
-                var product = await _postRepository.GetById(order.ProductID);
+                var product = await _postRepository.FindAsync(p=> p.Id == order.ProductID,new string[] {nameof(Post.User)});
                 order.Products?.Add(product!);
-            }   
+            }
             var OrderList = _mapper.Map<List<OrderViewModel>>(orders);
             return new OrderListViewModel
             {
@@ -90,16 +90,19 @@ namespace WebShopDQ.App.Repositories
 
         public async Task<OrderListViewModel> GetAllVMBySeller(Guid userId)
         {
-            var data = await Entities.Include(o => o.Products.Where(p => p.UserID == userId))
+            var data = await Entities.Include(o => o.Products!)
                                      .Include(o => o.UserOrder)
                                      .Include(o => o.AddressShipping).ToListAsync();
             var orders = data.OrderByDescending(p => p.CreatedTime);
             foreach (var order in orders)
             {
                 var product = await _postRepository.GetById(order.ProductID);
-                order.Products?.Add(product!);
+                if (product!.UserID == userId)
+                {
+                    order.Products?.Add(product!);
+                }
             }
-            var OrderList = _mapper.Map<List<OrderViewModel>>(orders);
+            var OrderList = _mapper.Map<List<OrderViewModel>>(orders.Where(o => o.Products!.Count > 0));
             return new OrderListViewModel
             {
                 TotalOrder = OrderList.Count,
@@ -114,7 +117,7 @@ namespace WebShopDQ.App.Repositories
                 var query = Entities.Include(order => order.UserOrder)
                                  .Include(order => order.Products)
                                  .Include(order => order.AddressShipping);
-                
+
                 var data = await query.OrderByDescending(post => post.CreatedTime)
                     .Where(p => p.Status == status && p.UserID == userId).ToListAsync();
                 var totalCount = data.Count;
@@ -138,10 +141,10 @@ namespace WebShopDQ.App.Repositories
         }
         public async Task<OrderListViewModel> GetByStatus(string status, Guid userId)
         {
-            var query = Entities.Include(order => order.UserOrder)
-                                 .Include(order => order.Products)
-                                 .Include(order => order.AddressShipping);
-            var data = await query.Where(p => p.Status!.ToLower() == status.ToLower()  && p.UserID == userId).ToListAsync();
+            var query =  Entities.Include(order => order.UserOrder)
+                                         .Include(order => order.Products)
+                                         .Include(order => order.AddressShipping);
+            var data = await query.Where(p => p.Status!.ToLower() == status.ToLower() && p.UserID == userId).ToListAsync();
             var total = data.Count;
             foreach (var order in data)
             {
