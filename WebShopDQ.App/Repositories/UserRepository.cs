@@ -34,15 +34,15 @@ namespace WebShopDQ.App.Repositories
             _databaseContext = databaseContext;
         }
 
-        public async Task<bool> Update(Guid id, UserInfoDTO model)
+        public async Task<bool> Update(Guid userID, UserInfoDTO model)
         {
             var user = await FindAsync(u => u.Url == model.Url);
             var IsUrlNullOrEmpty = string.IsNullOrEmpty(model.Url);
-            if (!IsUrlNullOrEmpty && user is not null)
+            if (!IsUrlNullOrEmpty && user is not null && user.Id != userID)
             {
                 throw new DuplicateException(Messages.UserNameExist);
             }
-            var data = await _userManager.FindByIdAsync(id.ToString()); 
+            var data = await _userManager.FindByIdAsync(userID.ToString()); 
             if (IsUrlNullOrEmpty)
             {
                 model.Url = data.UserName;

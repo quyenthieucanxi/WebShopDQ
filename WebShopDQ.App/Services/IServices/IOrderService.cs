@@ -16,6 +16,6 @@ namespace WebShopDQ.App.Services.IServices
         Task<OrderViewModel> GetById(Guid orderId);
         Task<OrderListViewModel> GetByStatus(int page, int limit, string status, Guid userId);
         Task<OrderListViewModel> GetByStatus(string status, Guid userId);
-        Task<bool> UpdateStatus(Guid orderId, string status);
+        Task<bool> UpdateStatus(Guid orderId, string status, Guid userId);
     }
 }
