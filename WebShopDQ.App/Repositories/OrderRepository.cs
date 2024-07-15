@@ -17,6 +17,8 @@ using WebShopDQ.App.ViewModels;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Identity;
+using Hangfire;
+using WebShopDQ.App.Services;
 
 namespace WebShopDQ.App.Repositories
 {
@@ -28,14 +30,15 @@ namespace WebShopDQ.App.Repositories
         private readonly IUserRepository _userRepository;
         private readonly UserManager<User> _userManager;
         private readonly DatabaseContext _databaseContext;
-
+        private readonly IBackgroundJobClient _backgroundJobClient;
         public OrderRepository(
             DatabaseContext databaseContext,
             IMapper mapper,
             IPostRepository postRepository,
             IUnitOfWork unitOfWork,
             IUserRepository userRepository,
-            UserManager<User> userManager) : base(databaseContext)
+            UserManager<User> userManager,
+            IBackgroundJobClient backgroundJobClient) : base(databaseContext)
         {
             _mapper = mapper;
             _postRepository = postRepository;
@@ -43,11 +46,13 @@ namespace WebShopDQ.App.Repositories
             _userRepository = userRepository;
             _userManager = userManager;
             _databaseContext = databaseContext;
+            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task<bool> Create(OrderDTO orderDTO, Guid userId)
         {
-            var post = await _postRepository.GetById(orderDTO.ProductId) ?? throw new KeyNotFoundException(Messages.PostNotFound);
+            var post = await _postRepository.GetById(orderDTO.ProductId) 
+                ?? throw new KeyNotFoundException(Messages.PostNotFound);
             if (orderDTO.Quantity > post.Quantity)
             {
                 throw new ValidateException(Messages.QuantityInvalid);
@@ -62,6 +67,7 @@ namespace WebShopDQ.App.Repositories
                 await _postRepository.Update(post);
                 await _unitOfWork.SaveChanges();
                 _unitOfWork.CommitTransaction();
+                _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyWhenUserCreateOrder(userId,post.UserID,post.Title));
                 return await Task.FromResult(true);
             }
             catch (Exception ex)

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebShopDQ.App.Common;
@@ -16,9 +17,12 @@ namespace WebShopDQ.API.Controllers
         private readonly IOrderService _orderService;
         private readonly IPaymentService _paymentService;
         private readonly ITokenInfoService _tokenInfoService;
+  
 
-
-        public OrderController(IOrderService orderService, ITokenInfoService tokenInfoService, IPaymentService paymentService)
+        public OrderController(IOrderService orderService
+            , ITokenInfoService tokenInfoService, 
+            IPaymentService paymentService 
+            )
         {
             _orderService = orderService;
             _tokenInfoService = tokenInfoService;
@@ -31,6 +35,7 @@ namespace WebShopDQ.API.Controllers
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
             await _orderService.Create(orderDTO, userId);
+
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Create order successfully." });
         }
@@ -102,8 +107,8 @@ namespace WebShopDQ.API.Controllers
         //[Authorize(Roles = "User, Seller")]
         public async Task<IActionResult> UpdateStatus(string status,Guid orderId)
         {
-            await _tokenInfoService.GetTokenInfo();
-            await _orderService.UpdateStatus(orderId,status);
+            var info = await _tokenInfoService.GetTokenInfo();
+            await _orderService.UpdateStatus(orderId,status,info.UserId);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Update orders successfully." });
         }

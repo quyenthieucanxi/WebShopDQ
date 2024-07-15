@@ -14,6 +14,8 @@ namespace WebShopDQ.App.Services.IServices
         Task<int> CountNotifiesNotIsRead(Guid userId);
         Task<ICollection<NotifyViewModel>> GetByUser(Guid userId, int page, int pageSize, bool? status);
         Task NotifyFollowersAsync(Guid userIdSender, string userFullName, string avatarUrl, string productName);
+        Task NotifyWhenUserCreatePost(Guid userIdSender,string userFullName, string avatarUrl, string productName);
+        Task NotifyWhenSellerUpdateStatusOrder(Guid userIdSender, Guid userIdReceiver, string productName, string status);
         Task<bool> UpdateIsRead(Guid id, Guid userId);
     }
 }

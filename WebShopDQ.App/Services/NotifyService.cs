@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using WebShopDQ.App.Common;
+using WebShopDQ.App.Common.Constant;
 using WebShopDQ.App.DTO;
 using WebShopDQ.App.Hubs;
 using WebShopDQ.App.Models;
@@ -20,17 +24,23 @@ namespace WebShopDQ.App.Services
         private readonly IFriendshipRepository _friendshipRepository;
         private readonly INotifyRepository _notifyRepository;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly IHubContext<ChatHub> _hubContext;
         public NotifyService(
             IFriendshipRepository friendshipRepository,
             IHubContext<ChatHub> hubContext,
             INotifyRepository notifyRepository,
-            IMapper mapper)
+            IMapper mapper,
+            UserManager<User> userManager,
+            RoleManager<Role> roleManager)
         {
             _friendshipRepository = friendshipRepository;
             _hubContext = hubContext;
             _notifyRepository = notifyRepository;
             _mapper = mapper;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<int> CountNotifiesNotIsRead(Guid userId)
@@ -63,12 +73,47 @@ namespace WebShopDQ.App.Services
 
         public async Task NotifyFollowersAsync(Guid userIdSender,string userFullName,string avatarUrl, string productName)
         {
+            string titleNotify = "ReceiveNotification";
+            string notifyText = $"{userFullName} vừa đăng tin: {productName}";
             var followers = await _friendshipRepository.GetFollowers(userIdSender);
             foreach (var follower in followers)
             {
                 
-                await SendNotifyToFollowers(follower.FollowerID, userIdSender, userFullName, avatarUrl, productName);
+                await SendNotify(follower.FollowerID, userIdSender, avatarUrl, titleNotify,notifyText);
             }
+        }
+
+        public async Task NotifyWhenUserCreatePost(Guid userIdSender,
+            string userFullName, string avatarUrl, string productName)
+        {
+            
+            var roleAdmin = await _roleManager.FindByNameAsync(RoleConstant.Admin)
+                ?? throw new KeyNotFoundException("Role không tồn tại");
+            string titleNotify = "ReceiveNotificationCreatePost";
+            string notifyText = $"{userFullName} vừa đăng tin: {productName}";
+            foreach (var user in _userManager.Users.ToList())
+            {
+                if (await _userManager.IsInRoleAsync(user,RoleConstant.Admin))
+                {
+                    await SendNotify(user.Id, userIdSender, avatarUrl, titleNotify,notifyText);
+                }
+            }
+        }
+        public async Task NotifyWhenUserCreateOrder(Guid userIdSender,Guid userIdReceiver,string productName)
+        {
+            var userSender = await _userManager.FindByIdAsync(userIdSender.ToString())
+                ?? throw new KeyNotFoundException(Messages.UserNotFound);
+            string titleNotify = "ReceiveNotificationCreateOrder";
+            string notifyText = $"{userSender.FullName} vừa đặt hàng sản phẩm: {productName}";
+            await SendNotify(userIdReceiver, userIdSender, userSender!.AvatarUrl, titleNotify, notifyText);
+        }
+        public async Task NotifyWhenSellerUpdateStatusOrder(Guid userIdSender, Guid userIdReceiver, string productName,string status)
+        {
+            var userSender = await _userManager.FindByIdAsync(userIdSender.ToString())
+                ?? throw new KeyNotFoundException(Messages.UserNotFound);
+            string titleNotify = "ReceiveNotificationUpdateStatusOrder";
+            string notifyText = $"{userSender.FullName} vừa cập nhập trạng thái đơn hàng : {productName}";
+            await SendNotify(userIdReceiver, userIdSender, userSender!.AvatarUrl, titleNotify, notifyText);
         }
 
         public async Task<bool> UpdateIsRead(Guid id, Guid userId)
@@ -79,9 +124,8 @@ namespace WebShopDQ.App.Services
             return await Task.FromResult(true);
         }
 
-        private async Task SendNotifyToFollowers(Guid userIdReceiver, Guid userIdSender, string name, string avatarUrl, string productName)
+        private async Task SendNotify(Guid userIdReceiver, Guid userIdSender, string avatarUrl,string titleNotify, string notifyText)
         {
-            string notifyText = $"{name} vừa đăng tin: {productName}";
             var notifyDTO = new NotifyDTO {UserIdSender = userIdSender ,UserIdReceiver = userIdReceiver, IsRead = false, NotifyText = notifyText, };
             var notifyTemp = new
             {
@@ -89,7 +133,7 @@ namespace WebShopDQ.App.Services
                 AvatarUrl = avatarUrl
             };
 
-            await Task.WhenAll(_hubContext.Clients.Group(userIdReceiver.ToString()).SendAsync("ReceiveNotification", notifyTemp),
+            await Task.WhenAll(_hubContext.Clients.Group(userIdReceiver.ToString()).SendAsync(titleNotify, notifyTemp),
                     _notifyRepository.Create(notifyDTO));
            
         }

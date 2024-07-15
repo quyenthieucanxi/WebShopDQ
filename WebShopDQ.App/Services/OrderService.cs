@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CloudinaryDotNet.Actions;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
@@ -26,18 +27,27 @@ namespace WebShopDQ.App.Services
         private readonly IPaymentService _paymentService;
         private readonly IPostRepository _postRepository;
         private readonly IMapper _mapper;
-        public OrderService(IUserRepository userRepository, IOrderRepository orderRepository, 
-                        IPaymentService paymentService, IMapper mapper, IPostRepository postRepository)
+        private readonly IBackgroundJobClient _backgroundJobClient;
+        public OrderService(
+            IUserRepository userRepository,
+            IOrderRepository orderRepository,
+            IPaymentService paymentService,
+            IMapper mapper,
+            IPostRepository postRepository,
+            IBackgroundJobClient backgroundJobClient)
         {
             _userRepository = userRepository;
             _orderRepository = orderRepository;
             _paymentService = paymentService;
             _mapper = mapper;
             _postRepository = postRepository;
+            _backgroundJobClient = backgroundJobClient;
         }
         public async Task<bool> Create(OrderDTO orderDTO, Guid userId)
         {
-            return await _orderRepository.Create(orderDTO, userId);
+            await _orderRepository.Create(orderDTO, userId);
+            
+            return await Task.FromResult(true);
         }
 
         public async Task<OrderListViewModel> GetAll(Guid userId) => await _orderRepository.GetAllVM(userId);
@@ -47,9 +57,9 @@ namespace WebShopDQ.App.Services
 
         public async Task<OrderViewModel> GetById(Guid orderId)
         {
-            string[] orderInclude = { "AddressShipping", "Products" };
+            string[] orderInclude = { nameof(Order.AddressShipping), nameof(Order.Products) };
             var order = await _orderRepository.FindAsync(o => o.Id == orderId, orderInclude) ?? throw new KeyNotFoundException(Messages.OrderNotFound);
-            string[] productInclude = { "User" };
+            string[] productInclude = { nameof(Post.User) };
             var product = await _postRepository.FindAsync(p => p.Id == order.ProductID, productInclude);
             order.Products?.Add(product!);
             var orderVM = _mapper.Map<OrderViewModel>(order);
@@ -66,11 +76,14 @@ namespace WebShopDQ.App.Services
             return await _orderRepository.GetByStatus(status, userId);
         }
 
-        public async Task<bool> UpdateStatus(Guid orderId, string status)
+        public async Task<bool> UpdateStatus(Guid orderId, string status, Guid userId)
         {
             var order = await _orderRepository.GetById(orderId) ?? throw new KeyNotFoundException(Messages.OrderNotFound);
             order.Status = status;
             await _orderRepository.Update(order);
+            string[] productInclude = { nameof(Post.User) };
+            var product = await _postRepository.FindAsync(p => p.Id == order.ProductID, productInclude);
+            _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyWhenSellerUpdateStatusOrder(userId,order.UserID, product!.Title, status));
             return await Task.FromResult(true);
         }
     }

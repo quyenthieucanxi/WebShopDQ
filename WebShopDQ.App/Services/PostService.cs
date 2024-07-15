@@ -27,19 +27,21 @@ namespace WebShopDQ.App.Services
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
 
         public PostService(
-            IPostRepository postRepository, 
-            IUserRepository userRepository, 
+            IPostRepository postRepository,
+            IUserRepository userRepository,
             UserManager<User> userManager,
-            ICategoryRepository categoryRepository, 
-            IUnitOfWork uow, 
-            IMapper mapper, 
+            ICategoryRepository categoryRepository,
+            IUnitOfWork uow,
+            IMapper mapper,
             IBackgroundJobClient backgroundJobClient
-        )
+,
+            RoleManager<Role> roleManager)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
@@ -47,6 +49,7 @@ namespace WebShopDQ.App.Services
             _categoryRepository = categoryRepository;
             _mapper = mapper;
             _backgroundJobClient = backgroundJobClient;
+            _roleManager = roleManager;
         }
 
         public async Task<bool> Create(PostDTO postDTO, Guid userId)
@@ -68,7 +71,14 @@ namespace WebShopDQ.App.Services
                     post.Status = "Đang hiển thị";
                 }
                 await _postRepository.Add(post);
-                 _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyFollowersAsync(data!.Id,data!.FullName,data!.AvatarUrl,post.Title));
+                if (role[0] == "Seller")
+                {
+                    _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyFollowersAsync(data!.Id,data!.FullName,data!.AvatarUrl,post.Title));
+                }
+                else
+                {
+                    _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyWhenUserCreatePost(data!.Id,data.FullName, data!.AvatarUrl,post.Title));
+                }
                 return await Task.FromResult(true);
             }
             catch (Exception ex)
