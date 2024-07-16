@@ -14,6 +14,6 @@ namespace WebShopDQ.App.Services.IServices
     public interface IPaymentService
     {
        public Task<string> CreateUrlPayment(OrderDTO order,Guid userId);
-       public Task<PaymentViewModel> CallbackPayment(VNPayDTO vNPayDTO);
+       public Task<PaymentViewModel> CallbackPayment(VNPayDTO vNPayDTO, Guid userId);
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebShopDQ.App.Data;
 
@@ -11,9 +12,10 @@ using WebShopDQ.App.Data;
 namespace WebShopDQ.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240715140723_Fix model Shop")]
+    partial class FixmodelShop
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -344,32 +346,6 @@ namespace WebShopDQ.App.Migrations
                     b.HasIndex("SenderID", "ReceiverID");
 
                     b.ToTable("Chats");
-                });
-
-            modelBuilder.Entity("WebShopDQ.App.Models.Files", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModifiedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("productID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("productID");
-
-                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("WebShopDQ.App.Models.Friendship", b =>
@@ -737,35 +713,35 @@ namespace WebShopDQ.App.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b9c10aa3-58f9-4480-8353-fa1e212cf360"),
+                            Id = new Guid("30d28771-22f5-4074-9cc5-b99dffadad12"),
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("a6398c84-b210-4f6f-954b-f853f17b9ac7"),
+                            Id = new Guid("6d61a132-66b7-4dea-890a-aafe03877693"),
                             ConcurrencyStamp = "2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = new Guid("977f9b67-f5b2-41b6-ad89-633cf982d372"),
+                            Id = new Guid("aeb0e8e1-5f10-4b83-9811-a3db6ea7a1f4"),
                             ConcurrencyStamp = "3",
                             Name = "Shiper",
                             NormalizedName = "SHIPER"
                         },
                         new
                         {
-                            Id = new Guid("06c0c362-ddf6-4272-83ef-9efcd6cc2119"),
+                            Id = new Guid("a10753b5-8214-4082-b422-ac48834c9385"),
                             ConcurrencyStamp = "4",
                             Name = "Seller",
                             NormalizedName = "SELLER"
                         },
                         new
                         {
-                            Id = new Guid("30c00e58-51a9-49ea-92e2-f544a960ab01"),
+                            Id = new Guid("5bdd7573-9b90-4d5b-b5da-579a217e4fd3"),
                             ConcurrencyStamp = "5",
                             Name = "User",
                             NormalizedName = "USER"
@@ -898,17 +874,6 @@ namespace WebShopDQ.App.Migrations
                     b.Navigation("Receiver");
 
                     b.Navigation("Sender");
-                });
-
-            modelBuilder.Entity("WebShopDQ.App.Models.Files", b =>
-                {
-                    b.HasOne("WebShopDQ.App.Models.Post", "Product")
-                        .WithMany("Files")
-                        .HasForeignKey("productID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("WebShopDQ.App.Models.Friendship", b =>
@@ -1085,11 +1050,6 @@ namespace WebShopDQ.App.Migrations
             modelBuilder.Entity("WebShopDQ.App.Models.Order", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("WebShopDQ.App.Models.Post", b =>
-                {
-                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("WebShopDQ.App.Models.User", b =>

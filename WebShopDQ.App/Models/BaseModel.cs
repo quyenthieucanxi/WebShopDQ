@@ -17,7 +17,7 @@ namespace WebShopDQ.App.Models
             Id = id;
         }
         public Guid Id { get; set; }
-        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
-        public DateTime ModifiedTime { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedTime { get; set; } = DateTime.Now;
+        public DateTime ModifiedTime { get; set; } = DateTime.Now;
     }
 }

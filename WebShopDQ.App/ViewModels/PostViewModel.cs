@@ -23,6 +23,7 @@ namespace WebShopDQ.App.ViewModels
         public string? Status { get; set; }
         public int Quantity { get; set; }
         public UserInfoViewModel? User { get; set; }
+        public List<FilesViewModel>? Files { get; set; }
     }
 
     public class PostListViewModel

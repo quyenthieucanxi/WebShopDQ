@@ -154,7 +154,7 @@ namespace WebShopDQ.App.Repositories
             var total = data.Count;
             foreach (var order in data)
             {
-                var product = await _postRepository.GetById(order.ProductID);
+                var product = await _postRepository.FindAsync(p => p.Id == order.ProductID, new string[] { nameof(Post.User) });
                 order.Products?.Add(product!);
             }
             var OrderList = _mapper.Map<ICollection<OrderViewModel>>(data.OrderByDescending(p => p.CreatedTime));

@@ -49,5 +49,6 @@ namespace WebShopDQ.App.Models
         public  Category? Category { get; set; }
         [NotMapped]
         public Order? Order { get; set; }
+        public List<Files>? Files { get; set; } 
     }
 }

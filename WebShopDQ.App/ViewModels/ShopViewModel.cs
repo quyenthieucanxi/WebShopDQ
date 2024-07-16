@@ -3,22 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebShopDQ.App.Models;
 
-namespace WebShopDQ.App.Models
+namespace WebShopDQ.App.ViewModels
 {
-    public class Shop : BaseModel
+    public class ShopViewModel : BaseVM
     {
-        public Shop() { }
-        public Shop(Guid id) : base(id)
-        {
-        }
-
         public string Name { get; set; } = null!;
-        public string Path { get; set; }  = null!;
         public string Status { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string Address { get; set; } = null!;
-        public Guid? UserId { get; set; }
-        public User? User { get; set; }
+        public UserInfoViewModel? User { get; set; }
     }
 }

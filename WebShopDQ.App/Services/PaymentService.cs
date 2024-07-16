@@ -21,6 +21,7 @@ using AutoMapper;
 using Serilog.Core;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.Common.Exceptions;
+using Hangfire;
 
 namespace WebShopDQ.App.Services
 {
@@ -31,11 +32,12 @@ namespace WebShopDQ.App.Services
         private readonly IPostRepository _postRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
+        private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly IUnitOfWork _unitOfWork;
 
         public PaymentService(IConfiguration configuration, IOrderRepository orderRepository,
                                 IHttpContextAccessor httpContextAccessor,
-                                IMapper mapper, IUnitOfWork unitOfWork, IPostRepository postRepository)
+                                IMapper mapper, IUnitOfWork unitOfWork, IPostRepository postRepository, IBackgroundJobClient backgroundJobClient)
         {
             _configuration = configuration;
             _orderRepository = orderRepository;
@@ -43,6 +45,7 @@ namespace WebShopDQ.App.Services
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _postRepository = postRepository;
+            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task<string> CreateUrlPayment(OrderDTO orderDTO, Guid userId)
@@ -75,7 +78,7 @@ namespace WebShopDQ.App.Services
             string paymentUrl = vnpay.CreateRequestUrl(vnp_Url!, vnp_HashSecret!);
             return await Task.FromResult(paymentUrl);
         }
-        public async Task<PaymentViewModel> CallbackPayment(VNPayDTO vNPayDTO)
+        public async Task<PaymentViewModel> CallbackPayment(VNPayDTO vNPayDTO, Guid userId)
         {
             VnPayLibrary vnpay = new VnPayLibrary();
             foreach (var property in vNPayDTO.GetType().GetProperties())
@@ -121,6 +124,7 @@ namespace WebShopDQ.App.Services
                         await _orderRepository.Update(order);
                         await _unitOfWork.SaveChanges();
                         _unitOfWork.CommitTransaction();
+                        _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyWhenUserCreateOrder(userId, post.UserID, post.Title));
 
                     }
                     catch (Exception ex)

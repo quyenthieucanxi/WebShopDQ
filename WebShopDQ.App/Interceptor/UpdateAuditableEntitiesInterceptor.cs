@@ -27,7 +27,7 @@ namespace WebShopDQ.App.Interceptor
             {
                 if (entry.State == EntityState.Modified)
                 {
-                    entry.Property(p => p.ModifiedTime).CurrentValue = DateTime.UtcNow;
+                    entry.Property(p => p.ModifiedTime).CurrentValue = DateTime.Now;
                 }
             }
 

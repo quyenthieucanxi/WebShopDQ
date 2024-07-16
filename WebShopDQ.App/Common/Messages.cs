@@ -10,6 +10,7 @@ namespace WebShopDQ.App.Common
         public const string PostNotFound = "Post not found!";
         public const string OrderNotFound = "Order not found!";
         public const string CategoryNotFound = "Category not found!";
+        public const string ShopNotFound = "Shop not found!";
         public const string ConfirmEmail = "Your account has been confirmed.";
         public const string AddressShippingNotFound = "AddressShipping not found!";
         public const string QuantityInvalid = "Số lượng không hợp lệ ";

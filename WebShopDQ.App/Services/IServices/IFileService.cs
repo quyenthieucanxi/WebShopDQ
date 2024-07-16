@@ -12,5 +12,6 @@ namespace WebShopDQ.App.Services.IServices
     {
         Task<FileDTO> UploadFile(IFormFile? file);
         Task<bool> RemoveFile(string? publicId);
+        Task<List<FileDTO>> UploadMulti(List<IFormFile>? formFilesDTO);
     }
 }

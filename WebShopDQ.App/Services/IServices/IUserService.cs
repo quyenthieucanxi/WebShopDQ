@@ -29,5 +29,7 @@ namespace WebShopDQ.App.Services.IServices
         Task<bool> CreateShop(Guid userId, ShopDTO shopDTO);
         Task<UserInfoViewModel> GetProfile(string url);
         Task<bool> UpdateAvatar(Guid userId, string urlAvt);
+        Task<ICollection<ShopViewModel>> GetShopsPending(Guid userId);
+        Task<bool> UpdateStatusShop(Guid idShop, string status, Guid userId);
     }
 }
