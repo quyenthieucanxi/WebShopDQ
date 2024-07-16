@@ -94,12 +94,17 @@ namespace WebShopDQ.App.Repositories
             };
         }
 
-        public async Task<OrderListViewModel> GetAllVMBySeller(Guid userId)
+        public async Task<OrderListViewModel> GetAllVMBySeller(Guid userId, string? status)
         {
             var data = await Entities.Include(o => o.Products!)
                                      .Include(o => o.UserOrder)
                                      .Include(o => o.AddressShipping).ToListAsync();
+            if (!string.IsNullOrEmpty(status))
+            {
+                data = data.Where(o => o.Status == status).ToList();
+            }
             var orders = data.OrderByDescending(p => p.CreatedTime);
+            
             foreach (var order in orders)
             {
                 var product = await _postRepository.GetById(order.ProductID);

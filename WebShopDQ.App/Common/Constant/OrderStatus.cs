@@ -15,6 +15,8 @@ namespace WebShopDQ.App.Common.Constant
         public const string Delivered = "Đã giao";
         public const string Cancle = "Huỷ";
         public const string Review = "Đánh giá";
+        public const string RequsetReturn = "Yêu cầu trả hàng";
+        public const string NotReturn = "Không trả hàng";
         public const string Return = "Trả hàng";
     }
 }

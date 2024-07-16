@@ -95,11 +95,11 @@ namespace WebShopDQ.API.Controllers
         }
         [HttpGet("[action]")]
         //[Authorize(Roles = "User, Seller")]
-        public async Task<IActionResult> GetAllBySeller()
+        public async Task<IActionResult> GetAllBySeller(string? status)
         {
             var infoToken = await _tokenInfoService.GetTokenInfo();
             var userId = infoToken.UserId;
-            var orderList = await _orderService.GetAllBySeller(userId);
+            var orderList = await _orderService.GetAllBySeller(userId, status);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get orders successfully.", Data = orderList });
         }
