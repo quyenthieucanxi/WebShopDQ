@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebShopDQ.App.DTO;
 using WebShopDQ.App.Models;
 
 namespace WebShopDQ.App.Repositories.IRepositories
 {
-    public interface IShopRepository : IRepository<Shop>
+    public interface IFilesRepository : IRepository<Files>
     {
-        Task<bool> Create(User user, ShopDTO shopDTO);
-        Task<bool> Update(Guid idShop, string status, Guid userId);
     }
 }

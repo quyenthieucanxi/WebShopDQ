@@ -83,7 +83,7 @@ namespace WebShopDQ.App.Services
             await _orderRepository.Update(order);
             string[] productInclude = { nameof(Post.User) };
             var product = await _postRepository.FindAsync(p => p.Id == order.ProductID, productInclude);
-            _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyWhenSellerUpdateStatusOrder(userId,order.UserID, product!.Title, status));
+            _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyWhenSellerUpdateStatusOrder(userId,order.UserID,product.User.Id, product!.Title,product!.User!.FullName,product!.User!.AvatarUrl ,status));
             return await Task.FromResult(true);
         }
     }

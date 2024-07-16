@@ -51,8 +51,8 @@ namespace WebShopDQ.API.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> CallBackPayment([FromQuery] VNPayDTO vNPayDTO)
         {
-            await _tokenInfoService.GetTokenInfo();
-            var paymentViewModel = await _paymentService.CallbackPayment(vNPayDTO);
+            var info=  await _tokenInfoService.GetTokenInfo();
+            var paymentViewModel = await _paymentService.CallbackPayment(vNPayDTO,info.UserId);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Payment Success" ,Data = paymentViewModel });
         }

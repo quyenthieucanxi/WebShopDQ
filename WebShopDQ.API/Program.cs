@@ -23,6 +23,8 @@ using Microsoft.AspNetCore.Http.Features;
 using WebShopDQ.App.Interceptor;
 using WebShopDQ.App.Hubs;
 using Hangfire;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -192,6 +194,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 {
     options.SignIn.RequireConfirmedEmail = true;
 });
+
 
 var app = builder.Build();
 app.UseCors("corpolicyHttp");

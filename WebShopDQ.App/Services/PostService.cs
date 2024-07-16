@@ -3,6 +3,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using WebShopDQ.App.Common;
+using WebShopDQ.App.Common.Constant;
 using WebShopDQ.App.Common.Exceptions;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
@@ -29,6 +31,8 @@ namespace WebShopDQ.App.Services
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ITokenInfoService _tokenInfoService;
+        private readonly IFilesRepository _filesRepository;
         private readonly IMapper _mapper;
 
 
@@ -41,7 +45,9 @@ namespace WebShopDQ.App.Services
             IMapper mapper,
             IBackgroundJobClient backgroundJobClient
 ,
-            RoleManager<Role> roleManager)
+            RoleManager<Role> roleManager,
+            ITokenInfoService tokenInfoService,
+            IFilesRepository filesRepository)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
@@ -50,6 +56,8 @@ namespace WebShopDQ.App.Services
             _mapper = mapper;
             _backgroundJobClient = backgroundJobClient;
             _roleManager = roleManager;
+            _tokenInfoService = tokenInfoService;
+            _filesRepository = filesRepository;
         }
 
         public async Task<bool> Create(PostDTO postDTO, Guid userId)
@@ -63,15 +71,24 @@ namespace WebShopDQ.App.Services
             {
                 var data = await _userRepository.GetById(userId);
                 var role = await _userManager.GetRolesAsync(data!);
-                var post = new Post (Guid.NewGuid(),userId,postDTO.CategoryId,postDTO.Title!,
+                Guid postID = Guid.NewGuid();
+                var post = new Post (postID, userId,postDTO.CategoryId,postDTO.Title!,
                     postDTO.PostPath!,postDTO.Description,postDTO.UrlImage,postDTO.Price,
                     postDTO.Address,postDTO.Quantity);
-                
+          
                 if (role[0] == "Seller")
                 {
-                    post.Status = "Đang hiển thị";
+                    post.Status = PostStatus.View;
                 }
                 await _postRepository.Add(post);
+                if (!string.IsNullOrEmpty(postDTO.UrlImage1))
+                {
+                    await _filesRepository.Add(new Files { Id = Guid.NewGuid(), url = postDTO.UrlImage1, productID = postID });
+                }
+                if (!string.IsNullOrEmpty(postDTO.UrlImage2))
+                {
+                    await _filesRepository.Add(new Files { Id = Guid.NewGuid(), url = postDTO.UrlImage2, productID = postID });
+                }
                 if (role[0] == "Seller")
                 {
                     _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyFollowersAsync(data!.Id,data!.FullName,data!.AvatarUrl,post.Title));
@@ -92,7 +109,7 @@ namespace WebShopDQ.App.Services
             var postList = new List<PostViewModel>();
             try
             {
-                var data =  await _postRepository.FindAllAsync(p => p.Status == "Chờ duyệt");
+                var data =  await _postRepository.FindAllAsync(p => p.Status == PostStatus.Pending);
                 foreach (var item in data.OrderByDescending(p=> p.CreatedTime))
                 {
                     var post = _mapper.Map<PostViewModel>(item);
@@ -137,6 +154,9 @@ namespace WebShopDQ.App.Services
             var post = await _postRepository.GetById(postId) ?? throw new KeyNotFoundException(Messages.PostNotFound);
             post.Status = status;
             await _postRepository.Update(post);
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyWhenUpdateStatusPost(userId, post.UserID, post.Title,status));
             return await Task.FromResult(true);
         }
 
@@ -144,7 +164,7 @@ namespace WebShopDQ.App.Services
         {
             try
             {
-                var data = await _postRepository.FindAsync(p => p.PostPath == pathPost, new string[] { "User" })
+                var data = await _postRepository.FindAsync(p => p.PostPath == pathPost, new string[] { nameof(Post.User),nameof(Post.Files) })
                         ?? throw new KeyNotFoundException(Messages.PostNotFound);
                 var role = await _userManager.GetRolesAsync(data.User!);
                 var post = _mapper.Map<PostViewModel>(data);

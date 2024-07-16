@@ -189,5 +189,22 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Create Shop successfully" });
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetShopsPending()
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            var shops = await _userService.GetShopsPending(userId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get Shops Pending successfully",Data= shops });
+        }
+        [HttpPut("[action]/{idShop}")]
+        public async Task<IActionResult> UpdateStatusShop(Guid idShop, string status)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            await _userService.UpdateStatusShop(idShop,status, infoToken.UserId);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get Shops Pending successfully", Data = null });
+        }
     }
 }

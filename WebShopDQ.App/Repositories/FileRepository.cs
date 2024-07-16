@@ -87,5 +87,48 @@ namespace WebShopDQ.App.Repositories
 
             }
         }
+
+        public async Task<List<FileDTO>> UploadMulti(List<IFormFile>? files)
+        {
+            var filesDT0 = new List<FileDTO>();
+            foreach (var file in files)
+            {
+                if (file != null && file!.Length > 0)
+                {
+                    try
+                    {
+                        var encodedFileName = WebUtility.UrlEncode(file.FileName);
+                        var uploadParams = new RawUploadParams
+                        {
+                            //File = new FileDescription(uniqueId + "." + file.FileName.Split('.').Last(), file.OpenReadStream()),
+                            File = new FileDescription(encodedFileName, file.OpenReadStream()),
+                            AccessMode = "public",
+                            UseFilename = true,
+                            UniqueFilename = true,
+                            Folder = "File"
+                        };
+                        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                        var publicId = uploadResult.PublicId;
+                        var publicUrl = _cloudinary.Api.UrlImgUp.Transform(new Transformation()).Version(uploadResult.Version).BuildUrl(publicId + "." + uploadResult.Format);
+                        var infoFile = new FileDTO
+                        {
+                            Url = publicUrl,
+                            PublicId = publicId
+                        };
+                        filesDT0.Add(infoFile);
+                        //return await Task.FromResult(true);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
+                }
+                else
+                {
+                    throw new MissingFieldException("Choose file.");
+                }
+            }
+            return filesDT0;
+        }
     }
 }

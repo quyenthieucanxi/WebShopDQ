@@ -23,5 +23,12 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Upload successfully.", Data = file });
         }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> UploadMulti([FromForm] FormMultiFileDTO formFilesDTO)
+        {
+            var files = await _fileUploadService.UploadMulti(formFilesDTO.FormFile);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Upload successfully.", Data = files });
+        }
     }
 }

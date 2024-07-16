@@ -12,6 +12,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using WebShopDQ.App.Common;
+using WebShopDQ.App.Common.Constant;
 using WebShopDQ.App.Common.Exceptions;
 using WebShopDQ.App.Data;
 using WebShopDQ.App.DTO;
@@ -249,6 +250,16 @@ namespace WebShopDQ.App.Services
             return userVM;
         }
 
-        
+        public async Task<ICollection<ShopViewModel>> GetShopsPending(Guid userId)
+        {
+            var shopsqQuery = await _shopRepository.FindAllAsync(s => s.Status == ShopStatus.Pending, new string[] {nameof(Shop.User)});
+            var shops = _mapper.Map<ICollection<ShopViewModel>>(shopsqQuery);
+            return shops;
+        }
+
+        public async Task<bool> UpdateStatusShop(Guid idShop, string status, Guid userId)
+        {
+            return await _shopRepository.Update(idShop, status, userId);
+        }
     }
 }

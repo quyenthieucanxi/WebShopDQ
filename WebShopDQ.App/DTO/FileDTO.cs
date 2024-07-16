@@ -17,4 +17,8 @@ namespace WebShopDQ.App.DTO
     {
         public IFormFile? FormFile { get; set; }
     }
+    public class FormMultiFileDTO
+    {
+        public List<IFormFile>? FormFile { get; set; }
+    }
 }

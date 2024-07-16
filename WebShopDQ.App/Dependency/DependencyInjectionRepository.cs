@@ -22,6 +22,7 @@ namespace WebShopDQ.App.Dependency
             service.AddTransient<IOrderRepository, OrderRepository>();
             service.AddTransient<IOrderReviewRepository, OrderReviewRepository>();
             service.AddTransient<IFileRepository, FileRepository>();
+            service.AddTransient<IFilesRepository, FilesRepository>();
             service.AddTransient<ISavePostRepository, SavePostRepository>();
             service.AddTransient<IAddressShippingRepository, AddressShippingRepository>();
             service.AddTransient<IShopRepository, ShopRepository>();

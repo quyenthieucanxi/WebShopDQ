@@ -23,11 +23,17 @@ namespace WebShopDQ.App.Services
             var data = await _fileUploadRepository.UploadFile(file);
             return data;
         }
-
+        public async Task<List<FileDTO>> UploadMulti(List<IFormFile>? formFilesDTO)
+        {
+            var data = await _fileUploadRepository.UploadMulti(formFilesDTO);
+            return data;
+        }
         public async Task<bool> RemoveFile(string? publicId)
         {
             var data = await _fileUploadRepository.RemoveFile(publicId);
             return data;
         }
+
+        
     }
 }

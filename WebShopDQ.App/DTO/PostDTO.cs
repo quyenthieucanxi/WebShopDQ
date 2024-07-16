@@ -18,6 +18,8 @@ namespace WebShopDQ.App.DTO
         public string? Description { get; set; }
         [Required]
         public string? UrlImage { get; set; }
+        public string? UrlImage1 { get; set; }
+        public string? UrlImage2 { get; set; }
         public double Price { get; set; }
         [Required]
         public string? Address { get; set; }
