@@ -4,6 +4,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,7 +47,7 @@ namespace WebShopDQ.App.Services
         public async Task<bool> Create(OrderDTO orderDTO, Guid userId)
         {
             await _orderRepository.Create(orderDTO, userId);
-            
+
             return await Task.FromResult(true);
         }
 
@@ -54,6 +55,36 @@ namespace WebShopDQ.App.Services
 
         public async Task<OrderListViewModel> GetAllBySeller(Guid userId, string? status) => await _orderRepository.GetAllVMBySeller(userId, status);
 
+        public async Task<List<WeeklyRevenue>> GetAllRevenueInMonth(Guid userId, int month, int year)
+        {
+            var orders = await GetAllBySeller(userId, null);
+            var firstDayOfMonth = new DateTime(year, month, 1);
+            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+            var weeklyRevenues = orders.OrderList
+                .Where(o => o.CreatedTime >= firstDayOfMonth && o.CreatedTime <= lastDayOfMonth)
+                .GroupBy(o => CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(o.CreatedTime, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday))
+                .Select(g => new WeeklyRevenue
+                {
+                    Week = $"Week {g.Key}",
+                    Revenue = g.Sum(o => o.TotalPrice)
+                }).ToList();
+            return weeklyRevenues;
+        }
+
+        public async Task<List<DailyRevenue>> GetAllRevenueInWeek(Guid userId, DateTime start, DateTime end)
+        {
+            var orders = await GetAllBySeller(userId, null);
+            var dailyRevenue = orders.OrderList.Where(o => o.CreatedTime >= start && o.CreatedTime <= end)
+                                    .GroupBy(o => o.CreatedTime.Date)
+                                    .Select(g => new DailyRevenue
+                                    {
+                                        Date = g.Key.ToString("yyyy-MM-dd"),
+                                        Revenue = g.Sum(o => o.TotalPrice)
+                                    }).ToList();
+            return dailyRevenue;
+
+        }
 
         public async Task<OrderViewModel> GetById(Guid orderId)
         {
@@ -83,7 +114,7 @@ namespace WebShopDQ.App.Services
             await _orderRepository.Update(order);
             string[] productInclude = { nameof(Post.User) };
             var product = await _postRepository.FindAsync(p => p.Id == order.ProductID, productInclude);
-            _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyWhenSellerUpdateStatusOrder(userId,order.UserID,product.User.Id, product!.Title,product!.User!.FullName,product!.User!.AvatarUrl ,status));
+            _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyWhenSellerUpdateStatusOrder(userId, order.UserID, product.User.Id, product!.Title, product!.User!.FullName, product!.User!.AvatarUrl, status));
             return await Task.FromResult(true);
         }
     }
