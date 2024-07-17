@@ -20,5 +20,8 @@ namespace WebShopDQ.App.Services.IServices
         Task<PostViewModel> GetByPath(string pathPost);
         Task<bool> Update(UpdatePostDTO postDTO);
         Task<PostListViewModel> GetByStatusByUrl(int? page, int? limit, string status, string url);
+        Task<IEnumerable<PostViewModel>> GetAllRequestTrend();
+        Task<bool> UpdateRequestTrend(Guid idPost, string status);
+        Task<PostListViewModel> GetByRequestTrendByUrl(int? page, int? limit, string status, string url);
     }
 }

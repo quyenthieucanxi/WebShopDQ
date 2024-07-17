@@ -40,6 +40,8 @@ namespace WebShopDQ.App.Models
         [Required]
         public string? Address { get; set; }
         public bool IsDelete { get; set; } = false;
+        public bool IsTrend { get; set; } = false;
+        public string? requestTrend { get; set; }
         public string Status { get; set; } = "Chờ duyệt";
         [Required]
         public int Quantity { get; set; }

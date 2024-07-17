@@ -18,6 +18,8 @@ namespace WebShopDQ.App.ViewModels
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string? UrlImage { get; set; }
+        public bool IsTrend { get; set; } 
+        public string? requestTrend { get; set; }
         public double Price { get; set; }
         public string? Address { get; set; }
         public string? Status { get; set; }

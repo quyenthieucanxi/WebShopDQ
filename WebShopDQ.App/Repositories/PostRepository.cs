@@ -74,6 +74,40 @@ namespace WebShopDQ.App.Repositories
             }
         }
 
+        public async Task<PostListViewModel> GetByRequestTrendByUrl(int? page, int? limit, string status, Guid userId)
+        {
+            try
+            {
+                var query = Entities.Include(p => p.Category)
+                                    .Include(p => p.User);
+                var listData = new List<PostViewModel>();
+                var data = await query.OrderByDescending(post => post.CreatedTime)
+                    .Where(p => p.requestTrend!= null && p.requestTrend.ToLower() == status.ToLower() && p.UserID == userId).ToListAsync();
+                var totalCount = data.Count;
+                if (page != null && limit != null)
+                {
+                    page = page > 0 ? page : 1;
+                    limit = limit > 0 ? limit : 4;
+                    data = data.Skip((int)((page - 1) * limit)).Take((int)(limit)).ToList();
+                }
+
+                foreach (var item in data)
+                {
+                    var post = _mapper.Map<PostViewModel>(item);
+                    listData.Add(post);
+                }
+                return new PostListViewModel
+                {
+                    TotalPost = totalCount,
+                    PostList = listData
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<PostListViewModel> GetByStatus(int? page, int? limit, string status, Guid userId)
         {
             try

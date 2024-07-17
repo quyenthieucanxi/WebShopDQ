@@ -44,7 +44,15 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get all post successfully.", Data = postList });
         }
-
+        [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Seller")]
+        public async Task<IActionResult> GetAllRequestTrend()
+        {
+            await _tokenInfoService.GetTokenInfo();
+            var postList = await _postService.GetAllRequestTrend();
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get all posts trend successfully.", Data = postList });
+        }
         [HttpGet("[action]")]
         //[Authorize(Roles = "User, Seller")]
         public async Task<IActionResult> GetAllByItemPage(int page, int limit,string? catName,string? search,string? orderByDirection= null)
@@ -71,12 +79,27 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get posts successfully.", Data = postList });
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetByRequestTrendByUrl(string url, int? page, int? limit, string status)
+        {
+            var postList = await _postService.GetByRequestTrendByUrl(page, limit, status, url);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get posts successfully.", Data = postList });
+        }
 
         [HttpPut("[action]/{idPost}")]
         //[Authorize(Roles = "Manager")]
         public async Task<IActionResult> UpdateStatus(Guid idPost,string status)
         {
             await _postService.UpdateStatus(idPost, status);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Update post successfully." });
+        }
+        [HttpPut("[action]/{idPost}")]
+        //[Authorize(Roles = "Manager")]
+        public async Task<IActionResult> UpdateRequestTrend(Guid idPost, string status)
+        {
+            await _postService.UpdateRequestTrend(idPost, status);
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Update post successfully." });
         }

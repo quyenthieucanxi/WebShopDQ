@@ -159,6 +159,33 @@ namespace WebShopDQ.App.Services
             }
             await SendNotify(userIdReceiver, userIdSender, userReceiver!.AvatarUrl, titleNotify, notifyText);
         }
+        public async Task NotifyWhenUpdateRequestTrend(Guid userIdSender, Guid userIdReceiver, string productName, string status)
+        {
+            var userSender = await _userManager.FindByIdAsync(userIdSender.ToString())
+                ?? throw new KeyNotFoundException(Messages.UserNotFound);
+            var roleAdmin = await _roleManager.FindByNameAsync(RoleConstant.Admin)
+                ?? throw new KeyNotFoundException("Role không tồn tại");
+            string titleNotify = "ReceiveNotificationCreateRequestTrend";
+            string notifyText = string.Empty; 
+            if (await _userManager.IsInRoleAsync(userSender, RoleConstant.Admin))
+            {
+                notifyText = $"{userSender.FullName} vừa yêu cầu tin: {productName} lên nổi bật";
+                await SendNotify(userIdReceiver, userSender.Id, userSender.AvatarUrl, titleNotify, notifyText);
+            }
+            else
+            {
+                foreach (var user in _userManager.Users.ToList())
+                {
+                    if (await _userManager.IsInRoleAsync(user, RoleConstant.Admin))
+                    {
+                        notifyText = $"Yêu cầu tin: {productName} của bạn đã được  ${status} ";
+                        await SendNotify(user.Id, userIdSender, userSender.AvatarUrl, titleNotify, notifyText);
+                    }
+                }
+            } 
+            
+            
+        }
         public async Task NotifyWhenUpdateStatusShop(Guid userIdSender, Guid userIdReceiver,string AvatarUrl, string status,string shopName )
         {
   

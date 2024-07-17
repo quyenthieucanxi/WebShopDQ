@@ -109,7 +109,7 @@ namespace WebShopDQ.App.Services
             var postList = new List<PostViewModel>();
             try
             {
-                var data =  await _postRepository.FindAllAsync(p => p.Status == PostStatus.Pending);
+                var data =  await _postRepository.FindAllAsync(p => p.Status == PostStatus.Pending,new string[] {nameof(Post.User)});
                 foreach (var item in data.OrderByDescending(p=> p.CreatedTime))
                 {
                     var post = _mapper.Map<PostViewModel>(item);
@@ -122,6 +122,24 @@ namespace WebShopDQ.App.Services
                 throw new Exception(ex.Message);
             }  
                  
+        }
+        public async Task<IEnumerable<PostViewModel>> GetAllRequestTrend()
+        {
+            var postList = new List<PostViewModel>();
+            try
+            {
+                var data = await _postRepository.FindAllAsync(p => p.requestTrend == PostStatus.RequestTrend, new string[] { nameof(Post.User) });
+                foreach (var item in data.OrderByDescending(p => p.CreatedTime))
+                {
+                    var post = _mapper.Map<PostViewModel>(item);
+                    postList.Add(post);
+                }
+                return postList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<PostListViewModel> GetAllByItemPage(int page, int limit,string? catName,string? search,string? orderByDirection)
@@ -159,7 +177,20 @@ namespace WebShopDQ.App.Services
             _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyWhenUpdateStatusPost(userId, post.UserID, post.Title,status));
             return await Task.FromResult(true);
         }
-
+        public async Task<bool> UpdateRequestTrend(Guid postId, string status)
+        {
+            var post = await _postRepository.GetById(postId) ?? throw new KeyNotFoundException(Messages.PostNotFound);
+            post.Status = status;
+            if (status == PostStatus.Trend)
+            {
+                post.IsTrend = true;
+            }
+            await _postRepository.Update(post);
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            _backgroundJobClient.Enqueue<NotifyService>(service => service.NotifyWhenUpdateRequestTrend(userId, post.UserID, post.Title, status));
+            return await Task.FromResult(true);
+        }
         public async Task<PostViewModel> GetByPath(string pathPost)
         {
             try
@@ -187,5 +218,11 @@ namespace WebShopDQ.App.Services
             var user = await  _userRepository.FindAsync(u => u.Url == url) ?? throw new KeyNotFoundException(Messages.UserNotFound);
             return await _postRepository.GetByStatus(page, limit, status, user.Id);
         }
+        public async Task<PostListViewModel> GetByRequestTrendByUrl(int? page, int? limit, string status, string url)
+        {
+            var user = await _userRepository.FindAsync(u => u.Url == url) ?? throw new KeyNotFoundException(Messages.UserNotFound);
+            return await _postRepository.GetByRequestTrendByUrl(page, limit, status, user.Id);
+        }
+
     }
 }
