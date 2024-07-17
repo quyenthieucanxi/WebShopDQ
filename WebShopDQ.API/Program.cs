@@ -113,7 +113,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();*/
 // Add Cors\
 builder.Services.AddCors(options => options.AddPolicy("corpolicyHttp",policy =>
 {
-    policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+    policy.WithOrigins("https://fe-web-shop-dq.vercel.app").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 }
 ));
 builder.Services.AddCors(options => options.AddPolicy("corpolicyHttps", policy =>
