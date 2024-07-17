@@ -61,6 +61,14 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get all post successfully.",Data = postList });
         }
+        [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Seller")]
+        public async Task<IActionResult> GetAllTrend(int page, int limit)
+        {
+            var postList = await _postService.GetAllTrend(page, limit);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get all posts trend successfully.", Data = postList });
+        }
 
         [HttpGet("[action]")]
         //[Authorize(Roles = "User, Seller")]

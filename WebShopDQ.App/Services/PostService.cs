@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
@@ -147,6 +148,11 @@ namespace WebShopDQ.App.Services
             return await _postRepository.GetAllByItemPage(page, limit,catName,search, orderByDirection);
         }
 
+        public async Task<PostListViewModel> GetAllTrend(int page, int limit)
+        {
+            return await _postRepository.GetAllTrend(page, limit);
+        }
+
         public async Task<PostListViewModel> GetByStatus(int? page, int? limit, string status, Guid userId)
         {
             return await _postRepository.GetByStatus(page, limit, status, userId);
@@ -180,7 +186,7 @@ namespace WebShopDQ.App.Services
         public async Task<bool> UpdateRequestTrend(Guid postId, string status)
         {
             var post = await _postRepository.GetById(postId) ?? throw new KeyNotFoundException(Messages.PostNotFound);
-            post.Status = status;
+            post.requestTrend = status;
             if (status == PostStatus.Trend)
             {
                 post.IsTrend = true;

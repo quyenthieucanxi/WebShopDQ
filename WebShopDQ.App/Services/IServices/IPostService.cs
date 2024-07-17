@@ -23,5 +23,6 @@ namespace WebShopDQ.App.Services.IServices
         Task<IEnumerable<PostViewModel>> GetAllRequestTrend();
         Task<bool> UpdateRequestTrend(Guid idPost, string status);
         Task<PostListViewModel> GetByRequestTrendByUrl(int? page, int? limit, string status, string url);
+        Task<PostListViewModel> GetAllTrend(int page, int limit);
     }
 }

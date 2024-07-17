@@ -169,7 +169,8 @@ namespace WebShopDQ.App.Services
             string notifyText = string.Empty; 
             if (await _userManager.IsInRoleAsync(userSender, RoleConstant.Admin))
             {
-                notifyText = $"{userSender.FullName} vừa yêu cầu tin: {productName} lên nổi bật";
+                notifyText = $"Yêu cầu tin: {productName} của bạn đã được {status} ";
+                
                 await SendNotify(userIdReceiver, userSender.Id, userSender.AvatarUrl, titleNotify, notifyText);
             }
             else
@@ -178,7 +179,7 @@ namespace WebShopDQ.App.Services
                 {
                     if (await _userManager.IsInRoleAsync(user, RoleConstant.Admin))
                     {
-                        notifyText = $"Yêu cầu tin: {productName} của bạn đã được  ${status} ";
+                        notifyText = $"{userSender.FullName} vừa yêu cầu tin: {productName} lên nổi bật";
                         await SendNotify(user.Id, userIdSender, userSender.AvatarUrl, titleNotify, notifyText);
                     }
                 }

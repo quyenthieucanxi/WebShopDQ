@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -55,6 +56,37 @@ namespace WebShopDQ.App.Repositories
                 {
                     data = await query.OrderByDescending(post => post.CreatedTime).ToListAsync();
                 }
+                var totalCount = data.Count;
+                data = data.Skip((page - 1) * limit).Take(limit).ToList();
+                foreach (var item in data)
+                {
+                    var post = _mapper.Map<PostViewModel>(item);
+                    listData.Add(post);
+                }
+                return new PostListViewModel
+                {
+                    TotalPost = totalCount,
+                    PostList = listData
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<PostListViewModel> GetAllTrend(int page, int limit)
+        {
+            try
+            {
+                var query = Entities.Include(p => p.Category)
+                                    .Include(p => p.User).Where(p => p.IsTrend == true && p.Status == "Đang hiển thị");
+  
+                page = page != 0 ? page : 1;
+                limit = limit != 0 ? limit : 10;
+                var listData = new List<PostViewModel>();
+                var data = new List<Post>();
+                data = await query.OrderByDescending(post => post.CreatedTime).ToListAsync();
                 var totalCount = data.Count;
                 data = data.Skip((page - 1) * limit).Take(limit).ToList();
                 foreach (var item in data)
