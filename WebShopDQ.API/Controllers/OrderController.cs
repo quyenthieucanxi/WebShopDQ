@@ -103,6 +103,25 @@ namespace WebShopDQ.API.Controllers
             return StatusCode(StatusCodes.Status200OK,
                         new Response { Status = "Success", Code = 200, Message = "Get orders successfully.", Data = orderList });
         }
+        [HttpGet("[action]")]
+        //[Authorize(Roles = "User, Seller")]
+        public async Task<IActionResult> GetAllRevenueInMonth(int month,int year)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            var weeklyRevenue = await _orderService.GetAllRevenueInMonth(userId,month, year);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get weeklyRevenue successfully.", Data = weeklyRevenue });
+        }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetAllRevenueInWeek(DateTime start, DateTime end)
+        {
+            var infoToken = await _tokenInfoService.GetTokenInfo();
+            var userId = infoToken.UserId;
+            var weeklyRevenue = await _orderService.GetAllRevenueInWeek(userId, start, end);
+            return StatusCode(StatusCodes.Status200OK,
+                        new Response { Status = "Success", Code = 200, Message = "Get weeklyRevenue successfully.", Data = weeklyRevenue });
+        }
         [HttpPut("[action]")]
         //[Authorize(Roles = "User, Seller")]
         public async Task<IActionResult> UpdateStatus(string status,Guid orderId)
